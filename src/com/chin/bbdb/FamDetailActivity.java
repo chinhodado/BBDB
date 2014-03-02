@@ -46,7 +46,7 @@ public class FamDetailActivity extends Activity {
 		// Image section
 		////////////////////////////////////////////////////////////////////////////////////
 		Element infoBoxFam = famDOM.getElementsByClass("infobox").first();
-		String imageUrl = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr").get(1).getElementsByTag("th").first().getElementsByTag("a").first().getElementsByTag("img").first().attr("src");
+		String imageUrl = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr").get(1).getElementsByTag("th").first().getElementsByTag("a").first().attr("href");
 		new DownloadImageTask((ImageView) findViewById(R.id.imageView1)).execute(imageUrl);
 
 		////////////////////////////////////////////////////////////////////////////////////
