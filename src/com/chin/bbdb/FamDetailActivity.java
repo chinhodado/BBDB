@@ -229,7 +229,7 @@ public class FamDetailActivity extends Activity {
 				}
 				count++;
 			}
-			skillTable.setShrinkAllColumns(true);
+			skillTable.setColumnShrinkable(1, true);
 			skillTable.setStretchAllColumns(true);
 			
 		}
