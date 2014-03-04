@@ -189,7 +189,7 @@ public class FamDetailActivity extends Activity {
 				TableRow tr = new TableRow(this);
 				TextView tv1 = new TextView(this);//title
 				TextView tv2 = new TextView(this);//desc
-				tv1.setText("Skill name");
+				tv1.setText("Description");
 				tv2.setText(skillDesc);
 				tr.addView(tv1);
 				tr.addView(tv2);
@@ -229,10 +229,69 @@ public class FamDetailActivity extends Activity {
 				}
 				count++;
 			}
-			skillTable.setColumnShrinkable(1, true);
-			skillTable.setStretchAllColumns(true);
-			
 		}
+		// add an empty row as a separator
+		TableRow trtmp = new TableRow(this);
+		TextView tvtmp = new TextView(this);//title
+		trtmp.addView(tvtmp);
+		skillTable.addView(trtmp);
+		
+		skillTable.setColumnShrinkable(1, true);
+		skillTable.setStretchAllColumns(true);
+		
+		/////////////////////////////////////////////////////////////////////////////////
+		// Details section
+		/////////////////////////////////////////////////////////////////////////////////
+		count = 0;
+		TableLayout detailTable = (TableLayout) findViewById(R.id.detailTable);
+		Elements detailRows = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr");
+		
+		for (Element detailRow : detailRows) {
+			if (count <= 3) {
+				// 0: fam name, 1: image, 2: detail, 3: skill
+				// do nothing
+				count++;
+			}
+			else if (count == 4) {
+				// TODO: add the evolution images
+				count++;
+			}			
+			else {
+				Elements cells = detailRow.getElementsByTag("td");
+				String st1 = "", st2 = "";
+				try {
+					st1 = cells.get(0).getElementsByTag("b").first().childNode(0).toString().trim();
+					st2 = cells.get(1).childNode(0).toString().replace("&amp;", "&").trim();
+				} catch (Exception e) {}
+				
+				if  (st2.equals("")) {
+					// if st2 is blank, the first thing to do is assume that this is a link
+					try {
+						st2 = cells.get(1).getElementsByTag("a").first().childNode(0).toString().replace("&amp;", "&").trim();
+					} catch (Exception e2) {}
+				}
+
+				if (!st1.equals("") || !st2.equals("")) {
+					TableRow tr = new TableRow(this);
+					TextView tv1 = new TextView(this);//title
+					TextView tv2 = new TextView(this);//desc
+					tv1.setText(st1);
+					tv2.setText(st2);
+					tr.addView(tv1);
+					tr.addView(tv2);
+					detailTable.addView(tr);
+					
+					// add the line separator
+					View tmpView = new View(this);
+					tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+					tmpView.setBackgroundColor(0xff444444);//dark grey
+					detailTable.addView(tmpView);
+				}
+				count++;
+			}
+		}
+		detailTable.setColumnShrinkable(1, true);
+		detailTable.setStretchAllColumns(true);
  	}
 
 	/**
