@@ -1,6 +1,7 @@
 package com.chin.bbdb;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,18 +11,22 @@ import org.jsoup.select.Elements;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
 public class FamDetailActivity extends Activity {
+	
+	public static HashMap<String, Integer> evolutionMap = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,10 +119,9 @@ public class FamDetailActivity extends Activity {
 			
 			DecimalFormat formatter = new DecimalFormat("#,###");
 			peTotalString = formatter.format(totalPE);
-			maxTotalString = formatter.format(totalMax);
-			
+			maxTotalString = formatter.format(totalMax);			
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.i("FamDetail", "Error parsing number, probably N/A");
 		}
 		
 		baseHP_textView.setText(hpBase); 
@@ -143,6 +147,7 @@ public class FamDetailActivity extends Activity {
 		/////////////////////////////////////////////////////////////////////////
 		// Skill section
 		/////////////////////////////////////////////////////////////////////////
+		
 		Elements skillList = famDOM.getElementsByClass("infobox").first().getElementsByTag("tr").get(3).getElementsByTag("a");
 		String skillLink1 = skillList.first().attr("href");
 		
@@ -242,6 +247,27 @@ public class FamDetailActivity extends Activity {
 		/////////////////////////////////////////////////////////////////////////////////
 		// Details section
 		/////////////////////////////////////////////////////////////////////////////////
+		if (evolutionMap == null) {
+			evolutionMap = new HashMap<String, Integer>();
+			evolutionMap.put("Common", R.drawable.common);
+			evolutionMap.put("Uncommon", R.drawable.uncommon);
+			evolutionMap.put("Rare", R.drawable.rare);
+			evolutionMap.put("Epic", R.drawable.epic);
+			evolutionMap.put("Legendary", R.drawable.legend);
+			evolutionMap.put("Mythic", R.drawable.mythic);
+			
+			evolutionMap.put("1of1", R.drawable.star11);
+			evolutionMap.put("1of2", R.drawable.star12);
+			evolutionMap.put("2of2", R.drawable.star22);
+			evolutionMap.put("1of3", R.drawable.star13);
+			evolutionMap.put("2of3", R.drawable.star23);
+			evolutionMap.put("3of3", R.drawable.star33);
+			evolutionMap.put("1of4", R.drawable.star14);
+			evolutionMap.put("2of4", R.drawable.star24);
+			evolutionMap.put("3of4", R.drawable.star34);
+			evolutionMap.put("4of4", R.drawable.star44);
+		}
+		
 		count = 0;
 		TableLayout detailTable = (TableLayout) findViewById(R.id.detailTable);
 		Elements detailRows = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr");
@@ -253,8 +279,48 @@ public class FamDetailActivity extends Activity {
 				count++;
 			}
 			else if (count == 4) {
-				// TODO: add the evolution images
+				Elements cells = detailRow.getElementsByTag("td");
+				String st1 = "", st2 = "";
+				try {
+					// try to get the rarity and stars so we can display our offline image (avoid downloading)
+					// get the rarity
+					String[] tmpArr = cells.get(1).getElementsByTag("a").first().attr("href").split("\\."); // split by .
+					st1 = tmpArr[tmpArr.length - 2]; // get the second last token
+					
+					// get the star name
+					String tmpStr = cells.get(1).getElementsByTag("a").last().attr("href");
+					st2 = tmpStr.substring(tmpStr.length() - 8, tmpStr.length() - 4); // will be of form "AofB"
+				} catch (Exception e) {
+					Log.e("FamDetail", "Error getting the evolution images' details");
+				}
+				
+				TableRow tr = new TableRow(this);
+				TextView tv1 = new TextView(this); tv1.setText("Evolution"); // not sure if it should be hard-coded like this...
+				
+				LinearLayout tmpViewGroup = new LinearLayout(this);
+				tmpViewGroup.setLayoutParams(new TableRow.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+				
+				ImageView imvRarity = new ImageView(this);				
+				imvRarity.setScaleType(ImageView.ScaleType.FIT_START);
+				imvRarity.setLayoutParams(new TableRow.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+				imvRarity.setImageResource(evolutionMap.get(st1));
+				
+				ImageView imvStar = new ImageView(this);
+				imvStar.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+				imvStar.setLayoutParams(new TableRow.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+				imvStar.setImageResource(evolutionMap.get(st2));
+				
+				tr.addView(tv1);
+				tmpViewGroup.addView(imvRarity); tmpViewGroup.addView(imvStar);
+				tr.addView(tmpViewGroup);
+				detailTable.addView(tr);
 				count++;
+				
+				// add the line separator
+				View tmpView = new View(this);
+				tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+				tmpView.setBackgroundColor(0xff444444);//dark grey
+				detailTable.addView(tmpView);
 			}			
 			else {
 				Elements cells = detailRow.getElementsByTag("td");
@@ -266,8 +332,9 @@ public class FamDetailActivity extends Activity {
 				
 				if  (st2.equals("")) {
 					// if st2 is blank, the first thing to do is assume that this is a link
+					// also use last "a" to avoid junk in elite fams (first a is the elite seal image)
 					try {
-						st2 = cells.get(1).getElementsByTag("a").first().childNode(0).toString().replace("&amp;", "&").trim();
+						st2 = cells.get(1).getElementsByTag("a").last().childNode(0).toString().replace("&amp;", "&").trim();
 					} catch (Exception e2) {}
 				}
 
