@@ -43,6 +43,7 @@ public class FamDetailActivity extends Activity {
 		try {
 			famHTML = new NetworkTask().execute(famURL).get();
 		} catch (Exception e) {
+			Log.e("FamDetail", "Error fetching the fam HTML page");
 			e.printStackTrace();
 		}
 		Document famDOM = Jsoup.parse(famHTML);
@@ -50,9 +51,15 @@ public class FamDetailActivity extends Activity {
 		////////////////////////////////////////////////////////////////////////////////////
 		// Image section
 		////////////////////////////////////////////////////////////////////////////////////
-		Element infoBoxFam = famDOM.getElementsByClass("infobox").first();
-		String imageUrl = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr").get(1).getElementsByTag("th").first().getElementsByTag("a").first().attr("href");
-		new DownloadImageTask((ImageView) findViewById(R.id.imageView1)).execute(imageUrl);
+		Element infoBoxFam = null;
+		try {
+			infoBoxFam = famDOM.getElementsByClass("infobox").first();
+			String imageUrl = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr").get(1).getElementsByTag("th").first().getElementsByTag("a").first().attr("href");
+			new DownloadImageTask((ImageView) findViewById(R.id.imageView1)).execute(imageUrl);
+		} catch (Exception e) {
+			Log.e("FamDetail", "Error displaying the fam image");
+			e.printStackTrace();
+		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Stats section
@@ -156,6 +163,7 @@ public class FamDetailActivity extends Activity {
 		try {
 			skillHTML = new NetworkTask().execute(skillURL).get();
 		} catch (Exception e) {
+			Log.e("FamDetail", "Error fetching the fam skill page");
 			e.printStackTrace();
 		}
 		Document skillDOM = Jsoup.parse(skillHTML);
@@ -300,20 +308,25 @@ public class FamDetailActivity extends Activity {
 				LinearLayout tmpViewGroup = new LinearLayout(this);
 				tmpViewGroup.setLayoutParams(new TableRow.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
 				
-				ImageView imvRarity = new ImageView(this);				
-				imvRarity.setScaleType(ImageView.ScaleType.FIT_START);
-				imvRarity.setLayoutParams(new TableRow.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
-				imvRarity.setImageResource(evolutionMap.get(st1));
-				
-				ImageView imvStar = new ImageView(this);
-				imvStar.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-				imvStar.setLayoutParams(new TableRow.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
-				imvStar.setImageResource(evolutionMap.get(st2));
-				
-				tr.addView(tv1);
-				tmpViewGroup.addView(imvRarity); tmpViewGroup.addView(imvStar);
-				tr.addView(tmpViewGroup);
-				detailTable.addView(tr);
+				try {
+					ImageView imvRarity = new ImageView(this);				
+					imvRarity.setScaleType(ImageView.ScaleType.FIT_START);
+					imvRarity.setLayoutParams(new TableRow.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+					imvRarity.setImageResource(evolutionMap.get(st1));
+					
+					ImageView imvStar = new ImageView(this);
+					imvStar.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+					imvStar.setLayoutParams(new TableRow.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+					imvStar.setImageResource(evolutionMap.get(st2));
+					
+					tr.addView(tv1);
+					tmpViewGroup.addView(imvRarity); tmpViewGroup.addView(imvStar);
+					tr.addView(tmpViewGroup);
+					detailTable.addView(tr);
+				} catch (Exception e) {
+					Log.e("FamDetail", "Error setting the evolution images");
+					e.printStackTrace();
+				}
 				count++;
 				
 				// add the line separator
@@ -338,6 +351,7 @@ public class FamDetailActivity extends Activity {
 					} catch (Exception e2) {}
 				}
 
+				// this is important since there are empty filler rows like <tr></tr>, we skip those
 				if (!st1.equals("") || !st2.equals("")) {
 					TableRow tr = new TableRow(this);
 					TextView tv1 = new TextView(this);//title
