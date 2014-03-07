@@ -70,7 +70,6 @@ public class FamDetailActivity extends Activity {
 		TextView baseDEF_textView   = (TextView) findViewById(R.id.baseDEF_textView);
 		TextView baseWIS_textView   = (TextView) findViewById(R.id.baseWIS_textView);
 		TextView baseAGI_textView   = (TextView) findViewById(R.id.baseAGI_textView);
-		TextView baseTotal_textView = (TextView) findViewById(R.id.baseTotal_textView);
 		
 		TextView maxHP_textView    = (TextView) findViewById(R.id.maxHP_textView);
 		TextView maxATK_textView   = (TextView) findViewById(R.id.maxATK_textView);
@@ -151,9 +150,9 @@ public class FamDetailActivity extends Activity {
 		peAGI_textView.setText(agiPE);
 		peTotal_textView.setText(peTotalString);
 		
-		/////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////
 		// Skill section
-		/////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////
 		
 		Elements skillList = famDOM.getElementsByClass("infobox").first().getElementsByTag("tr").get(3).getElementsByTag("a");
 		String skillLink1 = skillList.first().attr("href");
@@ -188,10 +187,7 @@ public class FamDetailActivity extends Activity {
 				skillTable.addView(tr);
 				
 				// add the line separator
-				View tmpView = new View(this);
-				tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
-				tmpView.setBackgroundColor(0xff444444);//dark grey
-				skillTable.addView(tmpView);
+				addLineSeparator(skillTable);
 
 				count++;
 			}
@@ -209,10 +205,7 @@ public class FamDetailActivity extends Activity {
 				skillTable.addView(tr);
 				
 				// add the line separator
-				View tmpView = new View(this);
-				tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
-				tmpView.setBackgroundColor(0xff444444);//dark grey
-				skillTable.addView(tmpView);
+				addLineSeparator(skillTable);
 				
 				count++;
 			}			
@@ -235,10 +228,7 @@ public class FamDetailActivity extends Activity {
 					skillTable.addView(tr);
 					
 					// add the line separator
-					View tmpView = new View(this);
-					tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
-					tmpView.setBackgroundColor(0xff444444);//dark grey
-					skillTable.addView(tmpView);
+					addLineSeparator(skillTable);
 				}
 				count++;
 			}
@@ -330,10 +320,7 @@ public class FamDetailActivity extends Activity {
 				count++;
 				
 				// add the line separator
-				View tmpView = new View(this);
-				tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
-				tmpView.setBackgroundColor(0xff444444);//dark grey
-				detailTable.addView(tmpView);
+				addLineSeparator(detailTable);
 			}			
 			else {
 				Elements cells = detailRow.getElementsByTag("td");
@@ -363,10 +350,7 @@ public class FamDetailActivity extends Activity {
 					detailTable.addView(tr);
 					
 					// add the line separator
-					View tmpView = new View(this);
-					tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
-					tmpView.setBackgroundColor(0xff444444);//dark grey
-					detailTable.addView(tmpView);
+					addLineSeparator(detailTable);
 				}
 				count++;
 			}
@@ -406,6 +390,13 @@ public class FamDetailActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void addLineSeparator(ViewGroup view) {
+		View tmpView = new View(this);
+		tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+		tmpView.setBackgroundColor(0xff444444);//dark grey
+		view.addView(tmpView);
 	}
 
 }
