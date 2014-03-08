@@ -27,6 +27,9 @@ import android.support.v4.app.NavUtils;
 public class FamDetailActivity extends Activity {
 	
 	public static HashMap<String, Integer> evolutionMap = null;
+	public static HashMap<String, String> pvpTierMap    = null;
+	public static HashMap<String, String> raidTierMap   = null;
+	public static HashMap<String, String> towerTierMap  = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -393,6 +396,20 @@ public class FamDetailActivity extends Activity {
 				count++;
 			}
 		}
+		
+		// the tier rows
+		if (pvpTierMap == null || raidTierMap == null || towerTierMap == null) {
+			fetchTierMaps();
+		}
+		String famPVPTier = null, famRaidTier = null, famTowerTier = null;
+		famPVPTier   = pvpTierMap.get(intent.getStringExtra(MainActivity.FAM_NAME));
+		famRaidTier  = raidTierMap.get(intent.getStringExtra(MainActivity.FAM_NAME));
+		famTowerTier = towerTierMap.get(intent.getStringExtra(MainActivity.FAM_NAME));
+		
+		addRowWithTwoTextView(detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
+		addRowWithTwoTextView(detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);
+		addRowWithTwoTextView(detailTable, "Tower tier", famTowerTier==null? "N/A" : famTowerTier, true);		
+				
 		detailTable.setColumnShrinkable(1, true);
 		detailTable.setStretchAllColumns(true);
  	}
@@ -435,6 +452,82 @@ public class FamDetailActivity extends Activity {
 		tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
 		tmpView.setBackgroundColor(0xff444444);//dark grey
 		view.addView(tmpView);
+	}
+	
+	/**
+	 * Add a row with 2 TextView (e.g. Title/Description) to a table.
+	 * @param table The table to add the row to
+	 * @param textView1String The text of the first Textview
+	 * @param textView2String The text of the second TextView
+	 * @param showLineSeparator true if a line separator is added after the new row
+	 */
+	public void addRowWithTwoTextView(TableLayout table, String textView1String, String textView2String, boolean showLineSeparator) {
+		TableRow tr = new TableRow(this);
+		TextView tv1 = new TextView(this); tv1.setText(textView1String); tr.addView(tv1);
+		TextView tv2 = new TextView(this); tv2.setText(textView2String); tr.addView(tv2);
+		table.addView(tr);
+		if (showLineSeparator) addLineSeparator(table);
+	}
+	
+	public void fetchTierMaps() {
+		String pvpTierHTML = null, raidTierHTML = null, towerTierHTML = null;
+		try {
+			pvpTierHTML = new NetworkTask().execute("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/PvP&action=render").get();
+			raidTierHTML = new NetworkTask().execute("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/Raid&action=render").get();
+			towerTierHTML = new NetworkTask().execute("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/Tower&action=render").get();
+		} catch (Exception e) {
+			Log.e("FamDetail", "Error fetching the tier HTML pages");
+			e.printStackTrace();
+		}
+		
+		Document pvpDOM   = Jsoup.parse(pvpTierHTML);
+		Document raidDOM  = Jsoup.parse(raidTierHTML);
+		Document towerDOM = Jsoup.parse(towerTierHTML);
+		
+	    Elements pvpTables   = pvpDOM.getElementsByClass("wikitable");
+	    Elements raidTables  = raidDOM.getElementsByClass("wikitable");
+	    Elements towerTables = towerDOM.getElementsByClass("wikitable");
+
+	    String[] tiers = {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"};
+	    
+	    pvpTierMap = new HashMap<String, String>();
+	    raidTierMap = new HashMap<String, String>();
+	    towerTierMap = new HashMap<String, String>();
+
+	    for (int i = 0; i < 9; i++){ // 9 tables		
+	    	Elements pvpRows = pvpTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
+	    	int countRow = 0;
+	    	for (Element pvpRow : pvpRows) {
+		    	countRow++;
+				if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+	    		
+	    		// second cell, bold text, a, text
+	    		String famName = pvpRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
+	    		pvpTierMap.put(famName, tiers[i]);
+	    	}
+	    	
+	    	Elements raidRows = raidTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
+	    	countRow = 0;
+	    	for (Element raidRow : raidRows) {
+		    	countRow++;
+				if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+	    		
+	    		// second cell, bold text, a, text
+	    		String famName = raidRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
+	    		raidTierMap.put(famName, tiers[i]);
+	    	}
+	    	
+	    	Elements towerRows = towerTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
+	    	countRow = 0;
+	    	for (Element towerRow : towerRows) {
+		    	countRow++;
+				if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+	    		
+	    		// second cell, bold text, a, text
+	    		String famName = towerRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
+	    		towerTierMap.put(famName, tiers[i]);
+	    	}
+	    }
 	}
 
 }
