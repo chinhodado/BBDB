@@ -42,6 +42,8 @@ public class FamDetailActivity extends Activity {
 		setTitle(intent.getStringExtra(MainActivity.FAM_NAME));
 		String famURL = "http://bloodbrothersgame.wikia.com" + intent.getStringExtra(MainActivity.FAM_LINK);
 		
+		initialize();
+		
 		String famHTML = null;
 		try {
 			famHTML = new NetworkTask().execute(famURL).get();
@@ -218,17 +220,7 @@ public class FamDetailActivity extends Activity {
 				// get the skill name
 				String skillName = row.getElementsByTag("th").first().childNode(0).toString().trim();
 				
-				TableRow tr = new TableRow(this);
-				TextView tv1 = new TextView(this);//title
-				TextView tv2 = new TextView(this);//desc
-				tv1.setText("Skill name");
-				tv2.setText(skillName);
-				tr.addView(tv1);
-				tr.addView(tv2);
-				skillTable.addView(tr);
-				
-				// add the line separator
-				addLineSeparator(skillTable);
+				addRowWithTwoTextView(skillTable, "Skill name", skillName, true);
 
 				count++;
 			}
@@ -236,17 +228,7 @@ public class FamDetailActivity extends Activity {
 				// get the skill description
 				String skillDesc = row.getElementsByTag("div").first().childNode(0).toString().trim();
 				
-				TableRow tr = new TableRow(this);
-				TextView tv1 = new TextView(this);//title
-				TextView tv2 = new TextView(this);//desc
-				tv1.setText("Description");
-				tv2.setText(skillDesc);
-				tr.addView(tv1);
-				tr.addView(tv2);
-				skillTable.addView(tr);
-				
-				// add the line separator
-				addLineSeparator(skillTable);
+				addRowWithTwoTextView(skillTable, "Description", skillDesc, true);
 				
 				count++;
 			}			
@@ -259,24 +241,14 @@ public class FamDetailActivity extends Activity {
 				} catch (Exception e) {}
 
 				if (!st1.equals("") || !st2.equals("")) {
-					TableRow tr = new TableRow(this);
-					TextView tv1 = new TextView(this);//title
-					TextView tv2 = new TextView(this);//desc
-					tv1.setText(st1);
-					tv2.setText(st2);
-					tr.addView(tv1);
-					tr.addView(tv2);
-					skillTable.addView(tr);
-					
-					// add the line separator
-					addLineSeparator(skillTable);
+					addRowWithTwoTextView(skillTable, st1, st2, true);
 				}
 				count++;
 			}
 		}
 		// add an empty row as a separator
 		TableRow trtmp = new TableRow(this);
-		TextView tvtmp = new TextView(this);//title
+		TextView tvtmp = new TextView(this);
 		trtmp.addView(tvtmp);
 		skillTable.addView(trtmp);
 		
@@ -286,27 +258,7 @@ public class FamDetailActivity extends Activity {
 		/////////////////////////////////////////////////////////////////////////////////
 		// Details section
 		/////////////////////////////////////////////////////////////////////////////////
-		if (evolutionMap == null) {
-			evolutionMap = new HashMap<String, Integer>();
-			evolutionMap.put("Common", R.drawable.common);
-			evolutionMap.put("Uncommon", R.drawable.uncommon);
-			evolutionMap.put("Rare", R.drawable.rare);
-			evolutionMap.put("Epic", R.drawable.epic);
-			evolutionMap.put("Legendary", R.drawable.legend);
-			evolutionMap.put("Mythic", R.drawable.mythic);
-			
-			evolutionMap.put("1of1", R.drawable.star11);
-			evolutionMap.put("1of2", R.drawable.star12);
-			evolutionMap.put("2of2", R.drawable.star22);
-			evolutionMap.put("1of3", R.drawable.star13);
-			evolutionMap.put("2of3", R.drawable.star23);
-			evolutionMap.put("3of3", R.drawable.star33);
-			evolutionMap.put("1of4", R.drawable.star14);
-			evolutionMap.put("2of4", R.drawable.star24);
-			evolutionMap.put("3of4", R.drawable.star34);
-			evolutionMap.put("4of4", R.drawable.star44);
-		}
-		
+	
 		count = 0;
 		TableLayout detailTable = (TableLayout) findViewById(R.id.detailTable);
 		Elements detailRows = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr");
@@ -381,26 +333,13 @@ public class FamDetailActivity extends Activity {
 
 				// this is important since there are empty filler rows like <tr></tr>, we skip those
 				if (!st1.equals("") || !st2.equals("")) {
-					TableRow tr = new TableRow(this);
-					TextView tv1 = new TextView(this);//title
-					TextView tv2 = new TextView(this);//desc
-					tv1.setText(st1);
-					tv2.setText(st2);
-					tr.addView(tv1);
-					tr.addView(tv2);
-					detailTable.addView(tr);
-					
-					// add the line separator
-					addLineSeparator(detailTable);
+					addRowWithTwoTextView(detailTable, st1, st2, true);
 				}
 				count++;
 			}
 		}
 		
 		// the tier rows
-		if (pvpTierMap == null || raidTierMap == null || towerTierMap == null) {
-			fetchTierMaps();
-		}
 		String famPVPTier = null, famRaidTier = null, famTowerTier = null;
 		famPVPTier   = pvpTierMap.get(intent.getStringExtra(MainActivity.FAM_NAME));
 		famRaidTier  = raidTierMap.get(intent.getStringExtra(MainActivity.FAM_NAME));
@@ -455,6 +394,36 @@ public class FamDetailActivity extends Activity {
 	}
 	
 	/**
+	 * Some one-time initialization will be done here
+	 */
+	public void initialize() {
+		if (evolutionMap == null) {
+			evolutionMap = new HashMap<String, Integer>();
+			evolutionMap.put("Common", R.drawable.common);
+			evolutionMap.put("Uncommon", R.drawable.uncommon);
+			evolutionMap.put("Rare", R.drawable.rare);
+			evolutionMap.put("Epic", R.drawable.epic);
+			evolutionMap.put("Legendary", R.drawable.legend);
+			evolutionMap.put("Mythic", R.drawable.mythic);
+			
+			evolutionMap.put("1of1", R.drawable.star11);
+			evolutionMap.put("1of2", R.drawable.star12);
+			evolutionMap.put("2of2", R.drawable.star22);
+			evolutionMap.put("1of3", R.drawable.star13);
+			evolutionMap.put("2of3", R.drawable.star23);
+			evolutionMap.put("3of3", R.drawable.star33);
+			evolutionMap.put("1of4", R.drawable.star14);
+			evolutionMap.put("2of4", R.drawable.star24);
+			evolutionMap.put("3of4", R.drawable.star34);
+			evolutionMap.put("4of4", R.drawable.star44);
+		}
+		
+		if (pvpTierMap == null || raidTierMap == null || towerTierMap == null) {
+			fetchTierMaps();
+		}
+	}
+	
+	/**
 	 * Add a row with 2 TextView (e.g. Title/Description) to a table.
 	 * @param table The table to add the row to
 	 * @param textView1String The text of the first Textview
@@ -469,6 +438,9 @@ public class FamDetailActivity extends Activity {
 		if (showLineSeparator) addLineSeparator(table);
 	}
 	
+	/**
+	 * Initialize pvpTierMap, raidTierMap and towerTierMap 
+	 */
 	public void fetchTierMaps() {
 		String pvpTierHTML = null, raidTierHTML = null, towerTierHTML = null;
 		try {
