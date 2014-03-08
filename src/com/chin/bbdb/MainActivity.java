@@ -8,9 +8,11 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -51,37 +53,46 @@ public class MainActivity extends Activity {
 					famLinkTable.put(famName, myArray.getJSONObject(i).getString("url"));
 				}	
 			} catch (Exception e) {
+				DialogFragment newFragment = new NetworkDialogFragment();
+				newFragment.setCancelable(false);
+			    newFragment.show(getFragmentManager(), "no net");
 				e.printStackTrace();
+				return;
 			}
 		}
 		
-		final RegexFilterArrayAdapter<String> adapter = new RegexFilterArrayAdapter<String>(this, android.R.layout.simple_list_item_1, famList);
-		
-		famEditText = (EditText) findViewById(R.id.famEditText);	
-		
-		famEditText.addTextChangedListener(new TextWatcher() {
-		    public void onTextChanged(CharSequence s, int start, int before, int count) {
-		        //adapter.getFilter().filter(s);
-		    }
+		try {
+			final RegexFilterArrayAdapter<String> adapter = new RegexFilterArrayAdapter<String>(this, android.R.layout.simple_list_item_1, famList);
+			
+			famEditText = (EditText) findViewById(R.id.famEditText);	
+			
+			famEditText.addTextChangedListener(new TextWatcher() {
+			    public void onTextChanged(CharSequence s, int start, int before, int count) {
+			        //adapter.getFilter().filter(s);
+			    }
 
-		    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-		    public void afterTextChanged(Editable s) {
-		    	adapter.getFilter().filter(s);
-		    }
-		});
-		
-		famListView = (ListView) findViewById(R.id.famListView);
-		famListView.setAdapter(adapter);
-		famListView.setOnItemClickListener(new OnItemClickListener(){
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) 
-		      {
-		            String famName = (String)arg0.getItemAtPosition(position); 
-		            Intent intent = new Intent(activity, FamDetailActivity.class);
-		            intent.putExtra(FAM_NAME, famName);
-		            intent.putExtra(FAM_LINK, MainActivity.famLinkTable.get(famName));
-		            startActivity(intent);
-		      }
-		});
+			    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			    public void afterTextChanged(Editable s) {
+			    	adapter.getFilter().filter(s);
+			    }
+			});
+			
+			famListView = (ListView) findViewById(R.id.famListView);
+			famListView.setAdapter(adapter);
+			famListView.setOnItemClickListener(new OnItemClickListener(){
+				public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) 
+			      {
+			            String famName = (String)arg0.getItemAtPosition(position); 
+			            Intent intent = new Intent(activity, FamDetailActivity.class);
+			            intent.putExtra(FAM_NAME, famName);
+			            intent.putExtra(FAM_LINK, MainActivity.famLinkTable.get(famName));
+			            startActivity(intent);
+			      }
+			});
+		} catch (Exception e) {
+			Log.e("MainActivity", "Error setting up the fam list");
+			e.printStackTrace();
+		}
 	}
 
 	@Override
