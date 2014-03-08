@@ -65,6 +65,8 @@ public class FamDetailActivity extends Activity {
 		// Stats section
 		////////////////////////////////////////////////////////////////////////////////////
 		
+		TableLayout statTableLayout = (TableLayout) findViewById(R.id.statTable);
+		
 		TextView baseHP_textView    = (TextView) findViewById(R.id.baseHP_textView);
 		TextView baseATK_textView   = (TextView) findViewById(R.id.baseATK_textView);
 		TextView baseDEF_textView   = (TextView) findViewById(R.id.baseDEF_textView);
@@ -110,12 +112,17 @@ public class FamDetailActivity extends Activity {
 		
 		String maxTotalString = "";
 		String peTotalString = "N/A";
+		
+		// array to store stats: HP, ATK, DEF, WIS, AGI, Total
+		int[] PEStats = new int[6];
+		
 		try {
-			int totalPE = Integer.parseInt(hpPE.replace(",", "").replace(" ", "")) +
-						 Integer.parseInt(atkPE.replace(",", "").replace(" ", "")) + 
-						 Integer.parseInt(wisPE.replace(",", "").replace(" ", "")) + 
-						 Integer.parseInt(defPE.replace(",", "").replace(" ", "")) + 
-						 Integer.parseInt(agiPE.replace(",", "").replace(" ", ""));
+			PEStats[0] = Integer.parseInt(hpPE.replace(",", "").replace(" ", ""));
+			PEStats[1] = Integer.parseInt(atkPE.replace(",", "").replace(" ", ""));
+			PEStats[2] = Integer.parseInt(defPE.replace(",", "").replace(" ", ""));
+			PEStats[3] = Integer.parseInt(wisPE.replace(",", "").replace(" ", ""));
+			PEStats[4] = Integer.parseInt(agiPE.replace(",", "").replace(" ", ""));
+			PEStats[5] = PEStats[0] + PEStats[1] + PEStats[2] + PEStats[3] + PEStats[4];
 			
 			int totalMax = Integer.parseInt(hpMax.replace(",", "").replace(" ", "")) +
 						 Integer.parseInt(atkMax.replace(",", "").replace(" ", "")) + 
@@ -124,7 +131,7 @@ public class FamDetailActivity extends Activity {
 						 Integer.parseInt(agiMax.replace(",", "").replace(" ", ""));
 			
 			DecimalFormat formatter = new DecimalFormat("#,###");
-			peTotalString = formatter.format(totalPE);
+			peTotalString = formatter.format(PEStats[5]);
 			maxTotalString = formatter.format(totalMax);			
 		} catch (Exception e) {
 			Log.i("FamDetail", "Error parsing number, probably N/A");
@@ -149,6 +156,37 @@ public class FamDetailActivity extends Activity {
 		peWIS_textView.setText(wisPE);
 		peAGI_textView.setText(agiPE);
 		peTotal_textView.setText(peTotalString);
+		
+		// POPE row
+		String famCategory = famDOM.getElementsByClass("name").first().getElementsByTag("a").first().childNode(0).toString();
+		int toAdd = 0;
+	    if (famCategory.equals("Epic 4")) toAdd = 666;           // POPE EP4
+	    else if (famCategory.equals("Epic 2")) toAdd = 550;      // POPE EP2
+	    else if (famCategory.equals("Legendary 2")) toAdd = 550; // POPE L2
+	    else if (famCategory.equals("Legendary 3")) toAdd = 605; // POPE L3
+	    else if (famCategory.equals("Mythic 2")) toAdd = 550;    // POPE M2
+	    
+	    if (toAdd != 0) {
+	    	addLineSeparator(statTableLayout);
+	    	TableRow popeRow = new TableRow(this); statTableLayout.addView(popeRow);
+	    	TextView tmpTv1 = new TextView(this); tmpTv1.setText("POPE"); popeRow.addView(tmpTv1);
+	    	
+			DecimalFormat formatter = new DecimalFormat("#,###");
+	    	
+	    	int[] POPEStats = new int[6];
+	    	for (int i = 0; i < 6; i++) {
+	    		if (i <= 4) { // the individual stats
+	    			POPEStats[i] = PEStats[i] + toAdd;
+	    		}
+	    		else if (i == 5) { // the total
+	    			POPEStats[i] = PEStats[i] + toAdd*5;
+	    		}
+	    		TextView tmpTv = new TextView(this); tmpTv.setText(formatter.format(POPEStats[i])); popeRow.addView(tmpTv);
+	    	}
+	    }
+	    
+	    TableRow emptyRow = new TableRow(this); statTableLayout.addView(emptyRow);
+	    TextView emptyTv = new TextView(this); emptyRow.addView(emptyTv);
 		
 		///////////////////////////////////////////////////////////////////////////////////
 		// Skill section

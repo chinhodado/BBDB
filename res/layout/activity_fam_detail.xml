@@ -31,7 +31,7 @@
 	        android:textColor="#FFFFFF" />
 
 	    <TableLayout
-	        android:id="@+id/tableLayout1"
+	        android:id="@+id/statTable"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:shrinkColumns="*"
@@ -231,13 +231,6 @@
 	                android:text="N/A" />
 	        </TableRow>
 
-	        <TableRow>
-
-	            <TextView
-	                android:id="@+id/dummy"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content" />
-	        </TableRow>
 	    </TableLayout>
 
 	    <TextView
