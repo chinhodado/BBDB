@@ -344,14 +344,7 @@ public class FamDetailActivity extends Activity {
 		}
 		
 		// the tier rows
-		String famPVPTier = null, famRaidTier = null, famTowerTier = null;
-		famPVPTier   = pvpTierMap.get(intent.getStringExtra(MainActivity.FAM_NAME));
-		famRaidTier  = raidTierMap.get(intent.getStringExtra(MainActivity.FAM_NAME));
-		famTowerTier = towerTierMap.get(intent.getStringExtra(MainActivity.FAM_NAME));
-		
-		addRowWithTwoTextView(detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
-		addRowWithTwoTextView(detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);
-		addRowWithTwoTextView(detailTable, "Tower tier", famTowerTier==null? "N/A" : famTowerTier, true);		
+		new AddFamTierInfoTask(detailTable, this, intent.getStringExtra(MainActivity.FAM_NAME)).execute();
 				
 		detailTable.setColumnShrinkable(1, true);
 		detailTable.setStretchAllColumns(true);
@@ -421,10 +414,6 @@ public class FamDetailActivity extends Activity {
 			evolutionMap.put("3of4", R.drawable.star34);
 			evolutionMap.put("4of4", R.drawable.star44);
 		}
-		
-		if (pvpTierMap == null || raidTierMap == null || towerTierMap == null) {
-			fetchTierMaps();
-		}
 	}
 	
 	/**
@@ -441,69 +430,4 @@ public class FamDetailActivity extends Activity {
 		table.addView(tr);
 		if (showLineSeparator) addLineSeparator(table);
 	}
-	
-	/**
-	 * Initialize pvpTierMap, raidTierMap and towerTierMap 
-	 */
-	public void fetchTierMaps() {
-		String pvpTierHTML = null, raidTierHTML = null, towerTierHTML = null;
-		try {
-			pvpTierHTML = new NetworkTask().execute("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/PvP&action=render").get();
-			raidTierHTML = new NetworkTask().execute("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/Raid&action=render").get();
-			towerTierHTML = new NetworkTask().execute("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/Tower&action=render").get();
-		} catch (Exception e) {
-			Log.e("FamDetail", "Error fetching the tier HTML pages");
-			e.printStackTrace();
-		}
-		
-		Document pvpDOM   = Jsoup.parse(pvpTierHTML);
-		Document raidDOM  = Jsoup.parse(raidTierHTML);
-		Document towerDOM = Jsoup.parse(towerTierHTML);
-		
-	    Elements pvpTables   = pvpDOM.getElementsByClass("wikitable");
-	    Elements raidTables  = raidDOM.getElementsByClass("wikitable");
-	    Elements towerTables = towerDOM.getElementsByClass("wikitable");
-
-	    String[] tiers = {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"};
-	    
-	    pvpTierMap = new HashMap<String, String>();
-	    raidTierMap = new HashMap<String, String>();
-	    towerTierMap = new HashMap<String, String>();
-
-	    for (int i = 0; i < 9; i++){ // 9 tables		
-	    	Elements pvpRows = pvpTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
-	    	int countRow = 0;
-	    	for (Element pvpRow : pvpRows) {
-		    	countRow++;
-				if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
-	    		
-	    		// second cell, bold text, a, text
-	    		String famName = pvpRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
-	    		pvpTierMap.put(famName, tiers[i]);
-	    	}
-	    	
-	    	Elements raidRows = raidTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
-	    	countRow = 0;
-	    	for (Element raidRow : raidRows) {
-		    	countRow++;
-				if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
-	    		
-	    		// second cell, bold text, a, text
-	    		String famName = raidRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
-	    		raidTierMap.put(famName, tiers[i]);
-	    	}
-	    	
-	    	Elements towerRows = towerTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
-	    	countRow = 0;
-	    	for (Element towerRow : towerRows) {
-		    	countRow++;
-				if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
-	    		
-	    		// second cell, bold text, a, text
-	    		String famName = towerRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
-	    		towerTierMap.put(famName, tiers[i]);
-	    	}
-	    }
-	}
-
 }
