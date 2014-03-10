@@ -7,6 +7,8 @@ import org.jsoup.select.Elements;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ class AddFamSkillInfoTask extends AsyncTask<Document, Void, Void> {
 	TableLayout skillTable;
 	FamDetailActivity activity;
 	String[] skillLink = {null, null};
+	String[] skillHTML = {null, null};
     
     public AddFamSkillInfoTask(TableLayout skillTable, FamDetailActivity activity) {
         this.skillTable = skillTable;
@@ -29,25 +32,37 @@ class AddFamSkillInfoTask extends AsyncTask<Document, Void, Void> {
 			skillLink[1] = skillList.get(1).attr("href");
 		} catch (Exception e) {};
 		
+		for (int i = 0; i < skillLink.length; i++) {
+			if (skillLink[i] == null) continue;
+			String skillURL = "http://bloodbrothersgame.wikia.com" + skillLink[i];
+			
+			try {
+				skillHTML[i] = Jsoup.connect(skillURL).ignoreContentType(true).execute().body();
+			} catch (Exception e) {
+				Log.e("FamDetail", "Error fetching the fam skill page");
+				e.printStackTrace();
+			}
+		}
+		
 		return null;
     }
 
 	@Override
     protected void onPostExecute(Void param) {
+		
+    	// remove the spinner
+    	ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar2);
+    	LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
+    	layout.removeView(pgrBar);
+    	
 		for (int i = 0; i < skillLink.length; i++) {
+			
 			if (skillLink[i] == null) continue;
-			String skillURL = "http://bloodbrothersgame.wikia.com" + skillLink[i];
-			String skillHTML = null;
-			try {
-				skillHTML = new NetworkTask().execute(skillURL).get();
-			} catch (Exception e) {
-				Log.e("FamDetail", "Error fetching the fam skill page");
-				e.printStackTrace();
-			}
-			Document skillDOM = Jsoup.parse(skillHTML);
+			
+			Document skillDOM = Jsoup.parse(skillHTML[i]);
 			Element infoBox = skillDOM.getElementsByClass("infobox").first();
 			Elements skRows = infoBox.getElementsByTag("tbody").first().getElementsByTag("tr");
-			
+
 			int count = 0;
 	
 			for (Element row : skRows) {

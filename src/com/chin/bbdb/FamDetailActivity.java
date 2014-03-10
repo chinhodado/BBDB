@@ -60,7 +60,7 @@ public class FamDetailActivity extends Activity {
 		try {
 			infoBoxFam = famDOM.getElementsByClass("infobox").first();
 			String imageUrl = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr").get(1).getElementsByTag("th").first().getElementsByTag("a").first().attr("href");
-			new DownloadImageTask((ImageView) findViewById(R.id.imageView1)).execute(imageUrl);
+			new DownloadImageTask(this).execute(imageUrl);
 		} catch (Exception e) {
 			Log.e("FamDetail", "Error displaying the fam image");
 			e.printStackTrace();
