@@ -264,17 +264,9 @@ public class FamDetailActivity extends Activity {
 				Elements cells = detailRow.getElementsByTag("td");
 				String st1 = "", st2 = "";
 				try {
-					st1 = cells.get(0).getElementsByTag("b").first().childNode(0).toString().trim();
-					st2 = cells.get(1).childNode(0).toString().replace("&amp;", "&").trim();
+					st1 = cells.get(0).text().trim();
+					st2 = cells.get(1).text().trim();
 				} catch (Exception e) {}
-				
-				if  (st2.equals("")) {
-					// if st2 is blank, the first thing to do is assume that this is a link
-					// also use last "a" to avoid junk in elite fams (first a is the elite seal image)
-					try {
-						st2 = cells.get(1).getElementsByTag("a").last().childNode(0).toString().replace("&amp;", "&").trim();
-					} catch (Exception e2) {}
-				}
 
 				// this is important since there are empty filler rows like <tr></tr>, we skip those
 				if (!st1.equals("") || !st2.equals("")) {
