@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -69,7 +70,7 @@ class AddFamSkillInfoTask extends AsyncTask<Document, Void, Void> {
 				if (count == 0) {
 					// get the skill name
 					String skillName = row.getElementsByTag("th").text().trim();				
-					activity.addRowWithTwoTextView(skillTable, "Skill name", skillName, true);
+					activity.addRowWithTwoTextView(skillTable, "Skill name", skillName, true, Typeface.DEFAULT_BOLD);
 					count++;
 				}
 				else {

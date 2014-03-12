@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -362,5 +363,22 @@ public class FamDetailActivity extends Activity {
 		TextView tv2 = new TextView(this); tv2.setText(textView2String); tr.addView(tv2);
 		table.addView(tr);
 		if (showLineSeparator) addLineSeparator(table);
+	}
+	
+	/**
+	 * Add a row with 2 TextView (e.g. Title/Description) to a table.
+	 * @param table The table to add the row to
+	 * @param textView1String The text of the first Textview
+	 * @param textView2String The text of the second TextView
+	 * @param typeface The typeface for the two TextView
+	 * @param showLineSeparator true if a line separator is added after the new row
+	 */
+	public void addRowWithTwoTextView(TableLayout table, String textView1String, String textView2String, boolean showLineSeparator, Typeface typeface) {
+		TableRow tr = new TableRow(this);
+		TextView tv1 = new TextView(this); tv1.setText(textView1String); tr.addView(tv1);
+		TextView tv2 = new TextView(this); tv2.setText(textView2String); tr.addView(tv2);
+		table.addView(tr);
+		if (showLineSeparator) addLineSeparator(table);
+		tv1.setTypeface(typeface); tv2.setTypeface(typeface);
 	}
 }
