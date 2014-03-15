@@ -2,11 +2,10 @@ package com.chin.bbdb;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -31,6 +30,7 @@ public class MainActivity extends Activity {
     public static ArrayList<String> famList = null;
     public static Hashtable<String, String> famLinkTable = null;
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,10 +53,13 @@ public class MainActivity extends Activity {
 					famLinkTable.put(famName, myArray.getJSONObject(i).getString("url"));
 				}	
 			} catch (Exception e) {
-				DialogFragment newFragment = new NetworkDialogFragment();
-				newFragment.setCancelable(false);
-			    newFragment.show(getFragmentManager(), "no net");
-				e.printStackTrace();
+				if (android.os.Build.VERSION.SDK_INT >= 11)
+				{
+					DialogFragment newFragment = new NetworkDialogFragment();
+					newFragment.setCancelable(false);
+				    newFragment.show(getFragmentManager(), "no net");
+					e.printStackTrace();					
+				}
 				return;
 			}
 		}

@@ -1,8 +1,8 @@
 package com.chin.bbdb;
 
 import java.util.HashMap;
-
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -42,9 +42,10 @@ public class FamDetailActivity extends Activity {
 	/**
 	 * Set up the {@link android.app.ActionBar}.
 	 */
+	@SuppressLint("NewApi")
 	private void setupActionBar() {
-
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		if (android.os.Build.VERSION.SDK_INT >= 11)
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 
 	}
 
