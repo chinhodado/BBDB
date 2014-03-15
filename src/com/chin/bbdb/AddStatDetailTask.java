@@ -117,24 +117,27 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 		
 		// array to store stats: HP, ATK, DEF, WIS, AGI, Total
 		int[] PEStats = new int[6];
+		int[] MaxStats = new int[6];
 		
 		try {
+			DecimalFormat formatter = new DecimalFormat("#,###");
+			
+			MaxStats[0] = Integer.parseInt(hpMax.replace(",", "").replace(" ", ""));
+			MaxStats[1] = Integer.parseInt(atkMax.replace(",", "").replace(" ", "")); 
+			MaxStats[2] = Integer.parseInt(defMax.replace(",", "").replace(" ", ""));
+			MaxStats[3] = Integer.parseInt(wisMax.replace(",", "").replace(" ", ""));
+			MaxStats[4] = Integer.parseInt(agiMax.replace(",", "").replace(" ", ""));
+			MaxStats[5] = MaxStats[0] + MaxStats[1] + MaxStats[2] + MaxStats[3] + MaxStats[4];
+			maxTotalString = formatter.format(MaxStats[5]);
+			
 			PEStats[0] = Integer.parseInt(hpPE.replace(",", "").replace(" ", ""));
 			PEStats[1] = Integer.parseInt(atkPE.replace(",", "").replace(" ", ""));
 			PEStats[2] = Integer.parseInt(defPE.replace(",", "").replace(" ", ""));
 			PEStats[3] = Integer.parseInt(wisPE.replace(",", "").replace(" ", ""));
 			PEStats[4] = Integer.parseInt(agiPE.replace(",", "").replace(" ", ""));
-			PEStats[5] = PEStats[0] + PEStats[1] + PEStats[2] + PEStats[3] + PEStats[4];
-			
-			int totalMax = Integer.parseInt(hpMax.replace(",", "").replace(" ", "")) +
-						 Integer.parseInt(atkMax.replace(",", "").replace(" ", "")) + 
-						 Integer.parseInt(wisMax.replace(",", "").replace(" ", "")) + 
-						 Integer.parseInt(defMax.replace(",", "").replace(" ", "")) + 
-						 Integer.parseInt(agiMax.replace(",", "").replace(" ", ""));
-			
-			DecimalFormat formatter = new DecimalFormat("#,###");
+			PEStats[5] = PEStats[0] + PEStats[1] + PEStats[2] + PEStats[3] + PEStats[4];			
 			peTotalString = formatter.format(PEStats[5]);
-			maxTotalString = formatter.format(totalMax);			
+				
 		} catch (Exception e) {
 			Log.i("FamDetail", "Error parsing number, probably N/A");
 		}
@@ -159,32 +162,37 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 		peAGI_textView.setText(agiPE);
 		peTotal_textView.setText(peTotalString);
 		
-		// POPE row
-		String famCategory = famDOM.getElementsByClass("name").first().getElementsByTag("a").first().childNode(0).toString();
-		int toAdd = 0;
-	    if (famCategory.equals("Epic 4")) toAdd = 666;           // POPE EP4
-	    else if (famCategory.equals("Epic 2")) toAdd = 550;      // POPE EP2
-	    else if (famCategory.equals("Legendary 2")) toAdd = 550; // POPE L2
-	    else if (famCategory.equals("Legendary 3")) toAdd = 605; // POPE L3
-	    else if (famCategory.equals("Mythic 2")) toAdd = 550;    // POPE M2
+		// POPE row	    
+	    boolean isFinalEvolution = famDOM.getElementsByClass("container").first().html().indexOf("Final Evolution") != -1;
 	    
-	    if (toAdd != 0) {
-	    	activity.addLineSeparator(statTableLayout);
-	    	TableRow popeRow = new TableRow(activity); statTableLayout.addView(popeRow);
-	    	TextView tmpTv1 = new TextView(activity); tmpTv1.setText("POPE"); popeRow.addView(tmpTv1);
-	    	
-			DecimalFormat formatter = new DecimalFormat("#,###");
-	    	
-	    	int[] POPEStats = new int[6];
-	    	for (int i = 0; i < 6; i++) {
-	    		if (i <= 4) { // the individual stats
-	    			POPEStats[i] = PEStats[i] + toAdd;
-	    		}
-	    		else if (i == 5) { // the total
-	    			POPEStats[i] = PEStats[i] + toAdd*5;
-	    		}
-	    		TextView tmpTv = new TextView(activity); tmpTv.setText(formatter.format(POPEStats[i])); popeRow.addView(tmpTv);
-	    	}
+	    if (isFinalEvolution) {
+	    	String famCategory = famDOM.getElementsByClass("name").first().text();
+
+	    	int toAdd = 0;
+
+	    	if (famCategory.endsWith("1")) toAdd = 500;      // 1 star
+	    	else if (famCategory.endsWith("2")) toAdd = 550; // 2 star
+	    	else if (famCategory.endsWith("3")) toAdd = 605; // 3 star
+	    	else if (famCategory.endsWith("4")) toAdd = 666; // 4 star
+
+    		activity.addLineSeparator(statTableLayout);
+    		TableRow popeRow = new TableRow(activity); statTableLayout.addView(popeRow);
+    		TextView tmpTv1 = new TextView(activity); tmpTv1.setText("POPE"); popeRow.addView(tmpTv1);
+
+    		DecimalFormat formatter = new DecimalFormat("#,###");
+
+    		int[] POPEStats = new int[6];
+    		for (int i = 0; i < 6; i++) {
+    			if (i <= 4) { // the individual stats
+    				if (famCategory.endsWith("1")) POPEStats[i] = MaxStats[i] + toAdd;
+    				else POPEStats[i] = PEStats[i] + toAdd;
+    			}
+    			else if (i == 5) { // the total
+    				if (famCategory.endsWith("1")) POPEStats[i] = MaxStats[i] + toAdd*5;
+    				else POPEStats[i] = PEStats[i] + toAdd*5;
+    			}
+    			TextView tmpTv = new TextView(activity); tmpTv.setText(formatter.format(POPEStats[i])); popeRow.addView(tmpTv);
+    		}
 	    }
 	    
 	    TableRow emptyRow = new TableRow(activity); statTableLayout.addView(emptyRow);
