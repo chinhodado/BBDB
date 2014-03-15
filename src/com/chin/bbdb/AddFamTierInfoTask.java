@@ -9,6 +9,8 @@ import org.jsoup.select.Elements;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 
 class AddFamTierInfoTask extends AsyncTask<Void, Void, Void> {
@@ -41,6 +43,11 @@ class AddFamTierInfoTask extends AsyncTask<Void, Void, Void> {
 		famPVPTier   = FamDetailActivity.pvpTierMap.get(famName);
 		famRaidTier  = FamDetailActivity.raidTierMap.get(famName);
 		famTowerTier = FamDetailActivity.towerTierMap.get(famName);
+		
+    	// remove the spinner
+    	ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar3);
+    	LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
+    	layout.removeView(pgrBar);
 		
 		activity.addRowWithTwoTextView(detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
 		activity.addRowWithTwoTextView(detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);

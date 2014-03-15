@@ -110,31 +110,31 @@
 	                android:id="@+id/baseHP_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/baseATK_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/baseDEF_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/baseWIS_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/baseAGI_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/baseTotal_textView"
@@ -157,31 +157,31 @@
 	                android:id="@+id/maxHP_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/maxATK_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/maxDEF_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/maxWIS_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/maxAGI_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/maxTotal_textView"
@@ -204,37 +204,37 @@
 	                android:id="@+id/peHP_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/peATK_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/peDEF_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/peWIS_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/peAGI_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 
 	            <TextView
 	                android:id="@+id/peTotal_textView"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="N/A" />
+	                android:text="" />
 	        </TableRow>
 
 	    </TableLayout>
@@ -280,6 +280,12 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content" >
 	    </TableLayout>
+	    
+	    <ProgressBar
+		    android:id="@+id/progressBar3"
+		    style="?android:attr/progressBarStyleLarge"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content" />
 	</LinearLayout>
 
 </ScrollView>
