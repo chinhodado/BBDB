@@ -2,8 +2,12 @@ package com.chin.bbdb;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.google.analytics.tracking.android.EasyTracker;
+
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -104,5 +108,17 @@ public class MainActivity extends Activity {
 		// getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
+	public void onStart() {
+	    super.onStart();
+	    // Google Analytics
+	    EasyTracker.getInstance(this).activityStart(this);
+	  }
 
+	  @Override
+	  public void onStop() {
+	    super.onStop();
+	    // Google Analytics
+	    EasyTracker.getInstance(this).activityStop(this);
+	  }
 }

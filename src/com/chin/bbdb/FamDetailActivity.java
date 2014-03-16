@@ -1,6 +1,9 @@
 package com.chin.bbdb;
 
 import java.util.HashMap;
+
+import com.google.analytics.tracking.android.EasyTracker;
+
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -137,4 +140,17 @@ public class FamDetailActivity extends Activity {
 		if (showLineSeparator) addLineSeparator(table);
 		tv1.setTypeface(typeface); tv2.setTypeface(typeface);
 	}
+	
+	public void onStart() {
+	    super.onStart();
+	    // Google Analytics
+	    EasyTracker.getInstance(this).activityStart(this);
+	  }
+
+	  @Override
+	  public void onStop() {
+	    super.onStop();
+	    // Google Analytics
+	    EasyTracker.getInstance(this).activityStop(this);
+	  }
 }
