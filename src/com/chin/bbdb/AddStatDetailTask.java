@@ -166,14 +166,20 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 	    boolean isFinalEvolution = famDOM.getElementsByClass("container").first().html().indexOf("Final Evolution") != -1;
 	    
 	    if (isFinalEvolution) {
-	    	String famCategory = famDOM.getElementsByClass("name").first().text();
+	    	
+	    	// the link to the star level image
+	    	String starLevelLink = famDOM.getElementsByClass("infobox").first() // the detail box
+	    						.getElementsByTag("tbody").first().getElementsByTag("tr").get(4) // the evolution row
+	    						.getElementsByTag("td").get(1) // the second cell (star image)
+	    						.getElementsByTag("a").last().attr("href"); // link to the image
+	    	String starLevel =	starLevelLink.substring(starLevelLink.length() - 8, starLevelLink.length() - 4); // will be of form "AofB"
 
 	    	int toAdd = 0;
 
-	    	if (famCategory.endsWith("1")) toAdd = 500;      // 1 star
-	    	else if (famCategory.endsWith("2")) toAdd = 550; // 2 star
-	    	else if (famCategory.endsWith("3")) toAdd = 605; // 3 star
-	    	else if (famCategory.endsWith("4")) toAdd = 666; // 4 star
+	    	if (starLevel.startsWith("1")) toAdd = 500;      // 1 star
+	    	else if (starLevel.startsWith("2")) toAdd = 550; // 2 star
+	    	else if (starLevel.startsWith("3")) toAdd = 605; // 3 star
+	    	else if (starLevel.startsWith("4")) toAdd = 666; // 4 star
 
     		activity.addLineSeparator(statTableLayout);
     		TableRow popeRow = new TableRow(activity); statTableLayout.addView(popeRow);
@@ -184,11 +190,11 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
     		int[] POPEStats = new int[6];
     		for (int i = 0; i < 6; i++) {
     			if (i <= 4) { // the individual stats
-    				if (famCategory.endsWith("1")) POPEStats[i] = MaxStats[i] + toAdd;
+    				if (starLevel.startsWith("1")) POPEStats[i] = MaxStats[i] + toAdd;
     				else POPEStats[i] = PEStats[i] + toAdd;
     			}
     			else if (i == 5) { // the total
-    				if (famCategory.endsWith("1")) POPEStats[i] = MaxStats[i] + toAdd*5;
+    				if (starLevel.startsWith("1")) POPEStats[i] = MaxStats[i] + toAdd*5;
     				else POPEStats[i] = PEStats[i] + toAdd*5;
     			}
     			TextView tmpTv = new TextView(activity); tmpTv.setText(formatter.format(POPEStats[i])); popeRow.addView(tmpTv);
