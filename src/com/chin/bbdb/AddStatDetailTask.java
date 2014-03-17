@@ -9,6 +9,7 @@ import org.jsoup.select.Elements;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,6 +47,7 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 		
 		// this should be fast
 		addFamStat(famDOM);
+		addFamSpecialInformation(famDOM);
     }
 	
 	public void addFamImage(Document famDOM) {
@@ -284,5 +286,44 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 				
 		detailTable.setColumnShrinkable(1, true);
 		detailTable.setStretchAllColumns(true);		
+	}
+
+	public void addFamSpecialInformation(Document famDOM) {
+		Element div = famDOM.getElementById("mw-content-text");
+		boolean hasSpecialInformation = false;
+		for (Element child : div.children()) {
+			String text = child.text();
+			if (text.equals("Special Information")) {
+				hasSpecialInformation = true;
+			}
+			else if (text.equals("Evolution Line") || text.equals("Locations")) {
+				hasSpecialInformation = false; // just to be safe
+				break;
+			}
+			else if (hasSpecialInformation) {
+				if (text.startsWith("See") || text.endsWith("tier.") || text.endsWith("origins.") || text.equals("")) continue;
+				else {
+					// maybe called several times, doesn't matter
+					activity.findViewById(R.id.textViewSpecialInformationLabel).setVisibility(View.VISIBLE);
+					activity.findViewById(R.id.textViewSpecialInformation).setVisibility(View.VISIBLE);
+					
+					// the actual special information
+					((TextView) activity.findViewById(R.id.textViewSpecialInformation)).append(text + "\n\n");
+				}				
+			}
+		}
+		
+		String categories = famDOM.getElementById("WikiaArticleCategories").text();
+		if (categories.contains("Mounted Familiars")) {
+			// maybe called several times, doesn't matter
+			activity.findViewById(R.id.textViewSpecialInformationLabel).setVisibility(View.VISIBLE);
+			activity.findViewById(R.id.textViewSpecialInformation).setVisibility(View.VISIBLE);
+			
+			// the actual special information
+			((TextView) activity.findViewById(R.id.textViewSpecialInformation)).append(
+					"This is a mounted familiar. Mounted familiars gets two attacks each turn and has two skills. "
+					+ "The first attack it does in a turn can only trigger the first skill, "
+					+ "while the second attack can only trigger the second skill." + "\n\n");
+		}
 	}
 }

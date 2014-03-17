@@ -265,6 +265,24 @@
 	            android:layout_height="wrap_content" >
 	        </TableRow>
 	    </TableLayout>
+	    
+	    <TextView
+	        android:id="@+id/textViewSpecialInformationLabel"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:background="#2C001E"
+	        android:gravity="center"
+	        android:text="Special Information"
+	        android:textColor="#FFFFFF"
+	        android:visibility="gone" />
+	    
+	    <TextView
+	        android:id="@+id/textViewSpecialInformation"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="left"
+	        android:text="\n"
+	        android:visibility="gone" />
 
 	    <TextView
 	        android:id="@+id/textView11"
