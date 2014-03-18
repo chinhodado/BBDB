@@ -42,12 +42,15 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
     protected void onPostExecute(Document famDOM) {
 		// these need to be execute first so they can spawn async tasks to run in background
 		addFamImage(famDOM);
-		addFamSkill(famDOM);
-		addFamDetail(famDOM);
+		boolean isWarlord = famDOM.getElementById("WikiaArticleCategories").text().contains("Warlord");
+
+		addFamSkill(famDOM, isWarlord);
+		addFamDetail(famDOM, isWarlord);
 		
 		// this should be fast
-		addFamStat(famDOM);
-		addFamSpecialInformation(famDOM);
+		addFamStat(famDOM, isWarlord);
+		addFamSpecialInformation(famDOM, isWarlord);
+
     }
 	
 	public void addFamImage(Document famDOM) {
@@ -62,12 +65,12 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 		}
 	}
 	
-	public void addFamSkill(Document famDOM) {
+	public void addFamSkill(Document famDOM, boolean isWarlord) {
 		TableLayout skillTable = (TableLayout) activity.findViewById(R.id.skillTable);
-		new AddFamSkillInfoTask(skillTable, activity).execute(famDOM);		
+		new AddFamSkillInfoTask(skillTable, activity, isWarlord).execute(famDOM);		
 	}
 	
-	public void addFamStat(Document famDOM) {
+	public void addFamStat(Document famDOM, boolean isWarlord) {
 		
 		TableLayout statTableLayout = (TableLayout) activity.findViewById(R.id.statTable);
 		
@@ -91,10 +94,19 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 		TextView peAGI_textView   = (TextView) activity.findViewById(R.id.peAGI_textView);
 		TextView peTotal_textView = (TextView) activity.findViewById(R.id.peTotal_textView);
 		
+		if (isWarlord) {
+			activity.findViewById(R.id.textView3).setVisibility(View.GONE);
+			peHP_textView.setVisibility(View.GONE);
+			peATK_textView.setVisibility(View.GONE);
+			peDEF_textView.setVisibility(View.GONE);
+			peWIS_textView.setVisibility(View.GONE);
+			peAGI_textView.setVisibility(View.GONE);
+			peTotal_textView.setVisibility(View.GONE);
+		}
+		
 		Elements statTable = famDOM.getElementsByClass("article-table");
 		Element rowBase = statTable.first().getElementsByTag("tbody").first().getElementsByTag("tr").get(1);
 		Element rowMax = statTable.first().getElementsByTag("tbody").first().getElementsByTag("tr").get(2);
-		Element rowPE = statTable.first().getElementsByTag("tbody").first().getElementsByTag("tr").get(3);
 		
 		String hpBase  = rowBase.getElementsByTag("td").get(1).childNode(0).toString();		
 		String atkBase = rowBase.getElementsByTag("td").get(2).childNode(0).toString();
@@ -108,11 +120,15 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 		String wisMax = rowMax.getElementsByTag("td").get(4).childNode(0).toString();
 		String agiMax = rowMax.getElementsByTag("td").get(5).childNode(0).toString();
 		
-		String hpPE  = rowPE.getElementsByTag("td").get(1).childNode(0).toString();		
-		String atkPE = rowPE.getElementsByTag("td").get(2).childNode(0).toString();
-		String defPE = rowPE.getElementsByTag("td").get(3).childNode(0).toString();
-		String wisPE = rowPE.getElementsByTag("td").get(4).childNode(0).toString();
-		String agiPE = rowPE.getElementsByTag("td").get(5).childNode(0).toString();
+		String hpPE = null, atkPE = null, defPE = null, wisPE = null, agiPE = null;
+		if (!isWarlord) {
+			Element rowPE = statTable.first().getElementsByTag("tbody").first().getElementsByTag("tr").get(3);
+			hpPE = rowPE.getElementsByTag("td").get(1).childNode(0).toString();
+			atkPE = rowPE.getElementsByTag("td").get(2).childNode(0).toString();
+			defPE = rowPE.getElementsByTag("td").get(3).childNode(0).toString();
+			wisPE = rowPE.getElementsByTag("td").get(4).childNode(0).toString();
+			agiPE = rowPE.getElementsByTag("td").get(5).childNode(0).toString();
+		}
 		
 		String maxTotalString = "";
 		String peTotalString = "N/A";
@@ -132,13 +148,15 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 			MaxStats[5] = MaxStats[0] + MaxStats[1] + MaxStats[2] + MaxStats[3] + MaxStats[4];
 			maxTotalString = formatter.format(MaxStats[5]);
 			
-			PEStats[0] = Integer.parseInt(hpPE.replace(",", "").replace(" ", ""));
-			PEStats[1] = Integer.parseInt(atkPE.replace(",", "").replace(" ", ""));
-			PEStats[2] = Integer.parseInt(defPE.replace(",", "").replace(" ", ""));
-			PEStats[3] = Integer.parseInt(wisPE.replace(",", "").replace(" ", ""));
-			PEStats[4] = Integer.parseInt(agiPE.replace(",", "").replace(" ", ""));
-			PEStats[5] = PEStats[0] + PEStats[1] + PEStats[2] + PEStats[3] + PEStats[4];			
-			peTotalString = formatter.format(PEStats[5]);
+			if (!isWarlord) {
+				PEStats[0] = Integer.parseInt(hpPE.replace(",", "").replace(" ", ""));
+				PEStats[1] = Integer.parseInt(atkPE.replace(",", "").replace(" ", ""));
+				PEStats[2] = Integer.parseInt(defPE.replace(",", "").replace(" ", ""));
+				PEStats[3] = Integer.parseInt(wisPE.replace(",", "").replace(" ", ""));
+				PEStats[4] = Integer.parseInt(agiPE.replace(",", "").replace(" ", ""));
+				PEStats[5] = PEStats[0] + PEStats[1] + PEStats[2] + PEStats[3] + PEStats[4];			
+				peTotalString = formatter.format(PEStats[5]);
+			}
 				
 		} catch (Exception e) {
 			Log.i("FamDetail", "Error parsing number, probably N/A");
@@ -157,17 +175,19 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 		maxAGI_textView.setText(agiMax);
 		maxTotal_textView.setText(maxTotalString);
 	
-		peHP_textView.setText(hpPE);
-		peATK_textView.setText(atkPE);
-		peDEF_textView.setText(defPE);
-		peWIS_textView.setText(wisPE);
-		peAGI_textView.setText(agiPE);
-		peTotal_textView.setText(peTotalString);
+		if (!isWarlord) {
+			peHP_textView.setText(hpPE);
+			peATK_textView.setText(atkPE);
+			peDEF_textView.setText(defPE);
+			peWIS_textView.setText(wisPE);
+			peAGI_textView.setText(agiPE);
+			peTotal_textView.setText(peTotalString);
+		}
 		
 		// POPE row	    
 	    boolean isFinalEvolution = famDOM.getElementsByClass("container").first().html().indexOf("Final Evolution") != -1;
 	    
-	    if (isFinalEvolution) {
+	    if (isFinalEvolution || isWarlord) {
 	    	
 	    	// the link to the star level image
 	    	String starLevelLink = famDOM.getElementsByClass("infobox").first() // the detail box
@@ -178,7 +198,7 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 
 	    	int toAdd = 0;
 
-	    	if (starLevel.startsWith("1")) toAdd = 500;      // 1 star
+	    	if (isWarlord || starLevel.startsWith("1")) toAdd = 500;      // 1 star
 	    	else if (starLevel.startsWith("2")) toAdd = 550; // 2 star
 	    	else if (starLevel.startsWith("3")) toAdd = 605; // 3 star
 	    	else if (starLevel.startsWith("4")) toAdd = 666; // 4 star
@@ -192,11 +212,11 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
     		int[] POPEStats = new int[6];
     		for (int i = 0; i < 6; i++) {
     			if (i <= 4) { // the individual stats
-    				if (starLevel.startsWith("1")) POPEStats[i] = MaxStats[i] + toAdd;
+    				if (isWarlord || starLevel.startsWith("1")) POPEStats[i] = MaxStats[i] + toAdd;
     				else POPEStats[i] = PEStats[i] + toAdd;
     			}
     			else if (i == 5) { // the total
-    				if (starLevel.startsWith("1")) POPEStats[i] = MaxStats[i] + toAdd*5;
+    				if (isWarlord || starLevel.startsWith("1")) POPEStats[i] = MaxStats[i] + toAdd*5;
     				else POPEStats[i] = PEStats[i] + toAdd*5;
     			}
     			TextView tmpTv = new TextView(activity); tmpTv.setText(formatter.format(POPEStats[i])); popeRow.addView(tmpTv);
@@ -207,15 +227,15 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 	    TextView emptyTv = new TextView(activity); emptyRow.addView(emptyTv);
 	}
 	
-	public void addFamDetail(Document famDOM) {
+	public void addFamDetail(Document famDOM, boolean isWarlord) {
 		int count = 0;
 		TableLayout detailTable = (TableLayout) activity.findViewById(R.id.detailTable);
 		Element infoBoxFam = famDOM.getElementsByClass("infobox").first();
 		Elements detailRows = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr");
 		
 		for (Element detailRow : detailRows) {
-			if (count <= 3) {
-				// 0: fam name, 1: image, 2: detail, 3: skill
+			if (count <= 3 && count!=2) {
+				// 0: fam name, 1: image, 2: detail, 3: skill/race(on warlord)
 				// do nothing
 				count++;
 			}
@@ -266,6 +286,10 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 				activity.addLineSeparator(detailTable);
 			}			
 			else {
+				if (count == 2 && !isWarlord) {
+					count++;
+					continue;
+				}
 				Elements cells = detailRow.getElementsByTag("td");
 				String st1 = "", st2 = "";
 				try {
@@ -288,7 +312,8 @@ class AddStatDetailTask extends AsyncTask<String, Void, Document> {
 		detailTable.setStretchAllColumns(true);		
 	}
 
-	public void addFamSpecialInformation(Document famDOM) {
+	public void addFamSpecialInformation(Document famDOM, boolean isWarlord) {
+		if (isWarlord) return;
 		Element div = famDOM.getElementById("mw-content-text");
 		boolean hasSpecialInformation = false;
 		for (Element child : div.children()) {

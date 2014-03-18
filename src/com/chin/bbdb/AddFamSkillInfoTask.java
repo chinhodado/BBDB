@@ -17,17 +17,25 @@ import android.widget.TextView;
 class AddFamSkillInfoTask extends AsyncTask<Document, Void, Void> {
 	TableLayout skillTable;
 	FamDetailActivity activity;
+	boolean isWarlord;
 	String[] skillLink = {null, null};
 	String[] skillHTML = {null, null};
     
-    public AddFamSkillInfoTask(TableLayout skillTable, FamDetailActivity activity) {
+    public AddFamSkillInfoTask(TableLayout skillTable, FamDetailActivity activity, boolean isWarlord) {
         this.skillTable = skillTable;
         this.activity = activity;
+        this.isWarlord = isWarlord;
     }
 
     @Override
 	protected Void doInBackground(Document... params) {
-    	Elements skillList = params[0].getElementsByClass("infobox").first().getElementsByTag("tr").get(3).getElementsByTag("a");
+    	Elements skillList = null;
+    	if (isWarlord) {
+    		skillList = params[0].getElementsByClass("infobox").first().getElementsByTag("tr").get(7).getElementsByTag("a");
+    	}
+    	else {
+    		skillList = params[0].getElementsByClass("infobox").first().getElementsByTag("tr").get(3).getElementsByTag("a");
+    	}
 		skillLink[0] = skillList.get(0).attr("href");
 		try {
 			skillLink[1] = skillList.get(1).attr("href");
