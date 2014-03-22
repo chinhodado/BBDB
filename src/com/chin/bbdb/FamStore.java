@@ -15,7 +15,12 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 /**
- * A storage for familiar information. Support lazy loading information.
+ * A singleton class that acts as a storage for familiar information. Support lazy loading information.
+ * 
+ * For now:
+ * - the famDOM is saved, so if you want the details from it you need to parse it manually, except the 
+ *   stats, which is inconsistent, but I'm lazy and let's just make it this way for now
+ *   
  * @author Chin
  *
  */
@@ -31,7 +36,6 @@ public final class FamStore {
 		FamStats stats = null;
 		String starLevel = null;
 		Document famDOM;
-		String[] skillHTML = {null, null};
 		
 		boolean isFinalEvolution = false;
 		boolean isWarlord = false;
@@ -58,6 +62,10 @@ public final class FamStore {
      };
 	
 	private static Hashtable<String, FamDetail> famStore = new Hashtable<String, FamDetail>();
+	
+	// a table that maps a skill name to its DOM
+	private static Hashtable<String, String> skillStore = new Hashtable<String, String>();
+	
 	private static final FamStore FAMSTORE = new FamStore();
 	
 	private FamStore() {
@@ -233,6 +241,72 @@ public final class FamStore {
         return famImage;
     }
     
+    /**
+     * 
+     * @param famName
+     * @return An array of skillDOM
+     */
+    public String[] getSkillHTMLString(String famName) {
+    	// TODO: make proper check for null
+    	FamDetail currentFam = famStore.get(famName);
+    	
+    	// get the skill(s) name
+    	Elements skillList = null;
+    	if (currentFam.isWarlord) {
+    		skillList = currentFam.famDOM.getElementsByClass("infobox").first().getElementsByTag("tr").get(7).getElementsByTag("a");
+    	}
+    	else {
+    		skillList = currentFam.famDOM.getElementsByClass("infobox").first().getElementsByTag("tr").get(3).getElementsByTag("a");
+    	}
+    	
+    	boolean allCached = true;    	
+
+    	String skill1 = skillList.get(0).text();
+    	
+    	if (skillStore.get(skill1) == null)  // if the first skill is not cached
+    		allCached = false;
+    	try {
+	    	if (skillList.get(1) == null || skillStore.get(skillList.get(1).text()) == null)  // if the second skill is not cached
+	    		allCached = false;
+    	} catch (Exception e) {
+    		allCached = false;
+    	}
+    	
+    	if (allCached) // if both are available, return
+    		return new String[] {skillStore.get(skill1), skillStore.get(skillList.get(1).text())};
+    	
+    	// if not, fetch the missing
+    	String[] skillLink = {null, null};
+    	String[] skillHTML = {null, null};
+    	
+		skillLink[0] = skillList.get(0).attr("href");
+		try {
+			skillLink[1] = skillList.get(1).attr("href");
+		} catch (Exception e) {};		
+	
+		for (int i = 0; i < skillLink.length; i++) {
+			if (skillLink[i] == null || skillStore.get(skillList.get(i).text()) != null) continue;
+			String skillURL = "http://bloodbrothersgame.wikia.com" + skillLink[i];
+			
+			try {
+				skillHTML[i] = Jsoup.connect(skillURL).ignoreContentType(true).execute().body();
+			} catch (Exception e) {
+				Log.e("FamDetail", "Error fetching the fam skill page");
+				e.printStackTrace();
+			}
+			skillStore.put(skillList.get(i).text(), skillHTML[i]);
+		}
+		
+		String[] toReturn = {null, null};
+		toReturn[0] = skillStore.get(skillList.get(0).text());
+		
+		try {
+			toReturn[1] = skillStore.get(skillList.get(1).text());
+		} catch (Exception e) {}
+		
+		return toReturn;
+    	
+    }
 	/**
 	 * No check for null right now. Always remember to call only after the info is available
 	 * @param famName
@@ -253,6 +327,10 @@ public final class FamStore {
 	
 	public String getStarLevel(String famName) {
 		return famStore.get(famName).starLevel;
+	}
+	
+	public Document getFamDOM(String famName) {
+		return famStore.get(famName).famDOM;
 	}
 }
 

@@ -9,6 +9,7 @@ import org.jsoup.select.Elements;
 
 import com.chin.bbdb.FamStore.FamStats;
 
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -34,21 +35,18 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
     	this.famName = params[0];
     	MainActivity.famStore.getStats(this.famName);
     	MainActivity.famStore.getImage(this.famName);
+    	MainActivity.famStore.getSkillHTMLString(this.famName);
 		return MainActivity.famStore;
     }
 
 	@Override
     protected void onPostExecute(FamStore famStore) {
-		// these need to be execute first so they can spawn async tasks to run in background
+		// all of these should be fast
 		addFamImage(famStore);
-//
-//		addFamSkill(famDOM, isWarlord);
-//		addFamDetail(famDOM, isWarlord);
-		
-		// this should be fast
+		addFamSkill(famStore);
 		addFamStat(famStore);
-//		addFamSpecialInformation(famDOM, isWarlord);
-
+		addFamDetail(famStore);		
+		addFamSpecialInformation(famStore);
     }
 	
 	public void addFamImage(FamStore famStore) {
@@ -62,9 +60,56 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
         bmImage.setImageBitmap(famStore.getImage(famName));
 	}
 	
-	public void addFamSkill(Document famDOM, boolean isWarlord) {
-		TableLayout skillTable = (TableLayout) activity.findViewById(R.id.skillTable);
-		new AddFamSkillInfoTask(skillTable, activity, isWarlord).execute(famDOM);		
+	public void addFamSkill(FamStore famStore) {
+		
+		String[] skillHTML = famStore.getSkillHTMLString(famName);
+        TableLayout skillTable = (TableLayout) activity.findViewById(R.id.skillTable);
+		
+    	// remove the spinner
+    	ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar2);
+    	LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
+    	layout.removeView(pgrBar);
+    	
+		for (int i = 0; i < skillHTML.length; i++) {
+			
+			if (skillHTML[i] == null) continue;
+			
+			Document skillDOM = Jsoup.parse(skillHTML[i]);
+			Element infoBox = skillDOM.getElementsByClass("infobox").first();
+			Elements skRows = infoBox.getElementsByTag("tbody").first().getElementsByTag("tr");
+			
+			int count = 0;
+
+			for (Element row : skRows) {
+				if (count == 0) {
+					// get the skill name
+					String skillName = row.getElementsByTag("th").text().trim();				
+					activity.addRowWithTwoTextView(skillTable, "Skill name", skillName, true, Typeface.DEFAULT_BOLD);
+					count++;
+				}
+				else {
+					Elements cells = row.getElementsByTag("td");
+					String st1 = "", st2 = "";
+					try {
+						st1 = cells.get(0).text().trim();
+						st2 = cells.get(1).text().trim();
+					} catch (Exception e) {}
+	
+					if (!st1.equals("") || !st2.equals("")) {
+						activity.addRowWithTwoTextView(skillTable, st1, st2, true);
+					}
+					count++;
+				}
+			}
+			
+			// add an empty row as a separator
+			TableRow trtmp = new TableRow(activity);
+			TextView tvtmp = new TextView(activity);
+			trtmp.addView(tvtmp);
+			skillTable.addView(trtmp);
+		}
+		skillTable.setColumnShrinkable(1, true);
+		skillTable.setStretchAllColumns(true);		
 	}
 	
 	public void addFamStat(FamStore famStore) {
@@ -148,7 +193,8 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 	    TextView emptyTv = new TextView(activity); emptyRow.addView(emptyTv);
 	}
 	
-	public void addFamDetail(Document famDOM, boolean isWarlord) {
+	public void addFamDetail(FamStore famStore) {
+		Document famDOM = famStore.getFamDOM(famName);
 		int count = 0;
 		TableLayout detailTable = (TableLayout) activity.findViewById(R.id.detailTable);
 		Element infoBoxFam = famDOM.getElementsByClass("infobox").first();
@@ -207,7 +253,7 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 				activity.addLineSeparator(detailTable);
 			}			
 			else {
-				if (count == 2 && !isWarlord) {
+				if (count == 2 && !famStore.isWarlord(famName)) {
 					count++;
 					continue;
 				}
@@ -233,8 +279,9 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 		detailTable.setStretchAllColumns(true);		
 	}
 
-	public void addFamSpecialInformation(Document famDOM, boolean isWarlord) {
-		if (isWarlord) return;
+	public void addFamSpecialInformation(FamStore famStore) {
+		if (famStore.isWarlord(famName)) return;
+		Document famDOM = famStore.getFamDOM(famName);
 		Element div = famDOM.getElementById("mw-content-text");
 		boolean hasSpecialInformation = false;
 		for (Element child : div.children()) {
