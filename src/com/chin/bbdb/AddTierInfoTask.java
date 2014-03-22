@@ -14,13 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 
-class AddFamTierInfoTask extends AsyncTask<Void, Void, Void> {
+class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
 	TableLayout detailTable;
 	FamDetailActivity activity;
 	String famName;
 	String pvpTierHTML = null, raidTierHTML = null, towerTierHTML = null;
     
-    public AddFamTierInfoTask(TableLayout detailTable, FamDetailActivity activity, String famName) {
+    public AddTierInfoTask(TableLayout detailTable, FamDetailActivity activity, String famName) {
         this.detailTable = detailTable;
         this.activity = activity;
         this.famName = famName;

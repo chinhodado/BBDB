@@ -21,7 +21,10 @@ import android.support.v4.app.NavUtils;
 
 public class FamDetailActivity extends Activity {
 	
+	// map a string (the evolution level) to a number that represents
+	// the image for that evolution level
 	public static HashMap<String, Integer> evolutionMap = null;
+	
 	public static HashMap<String, String> pvpTierMap    = null;
 	public static HashMap<String, String> raidTierMap   = null;
 	public static HashMap<String, String> towerTierMap  = null;
@@ -37,9 +40,8 @@ public class FamDetailActivity extends Activity {
 		Intent intent = getIntent();
 		famName = intent.getStringExtra(MainActivity.FAM_NAME);
 		setTitle(famName);
-		String famURL = "http://bloodbrothersgame.wikia.com" + intent.getStringExtra(MainActivity.FAM_LINK);		
 		initialize();
-		new AddStatDetailTask(this).execute(famURL);
+		new AddFamiliarInfoTask(this).execute(famName);
  	}
 
 	/**
