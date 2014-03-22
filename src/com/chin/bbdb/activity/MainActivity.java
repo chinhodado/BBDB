@@ -1,4 +1,4 @@
-package com.chin.bbdb;
+package com.chin.bbdb.activity;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -6,6 +6,10 @@ import java.util.Hashtable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.chin.bbdb.NetworkDialogFragment;
+import com.chin.bbdb.R;
+import com.chin.bbdb.RegexFilterArrayAdapter;
+import com.chin.bbdb.asyncTask.NetworkTask;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.Bundle;

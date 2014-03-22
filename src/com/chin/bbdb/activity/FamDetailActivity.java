@@ -1,7 +1,9 @@
-package com.chin.bbdb;
+package com.chin.bbdb.activity;
 
 import java.util.HashMap;
 
+import com.chin.bbdb.R;
+import com.chin.bbdb.asyncTask.AddFamiliarInfoTask;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.Bundle;
@@ -14,12 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
 public class FamDetailActivity extends Activity {
+	
+	public final Activity activity = this;
 	
 	// map a string (the evolution level) to a number that represents
 	// the image for that evolution level
@@ -42,6 +47,15 @@ public class FamDetailActivity extends Activity {
 		setTitle(famName);
 		initialize();
 		new AddFamiliarInfoTask(this).execute(famName);
+		
+        final Button button = (Button) findViewById(R.id.button1);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+	            Intent intent = new Intent(activity, FamCompareActivity.class);
+	            intent.putExtra("FAMNAME", famName);
+	            startActivity(intent);
+            }
+        });
  	}
 
 	/**

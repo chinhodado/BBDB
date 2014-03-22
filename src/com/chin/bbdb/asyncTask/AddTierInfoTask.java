@@ -1,4 +1,4 @@
-package com.chin.bbdb;
+package com.chin.bbdb.asyncTask;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -7,6 +7,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.chin.bbdb.R;
+import com.chin.bbdb.activity.FamDetailActivity;
 
 import android.os.AsyncTask;
 import android.util.Log;

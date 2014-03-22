@@ -22,7 +22,7 @@
 		    android:layout_height="wrap_content" />
 
 	    <ImageView
-	        android:id="@+id/imageView1"
+	        android:id="@+id/imageView_leftFam"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:contentDescription="Familiar image" />
@@ -143,12 +143,12 @@
 	        </TableRow>
 
 	        <TableRow
-	            android:id="@+id/tableRow3"
+	            android:id="@+id/tableRow_ATK"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
 
 	            <TextView
-	                android:id="@+id/textView2"
+	                android:id="@+id/textView_ATK_left"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:text="Max" />
@@ -190,12 +190,12 @@
 	        </TableRow>
 
 	        <TableRow
-	            android:id="@+id/tableRow4"
+	            android:id="@+id/tableRow_AGI"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
 
 	            <TextView
-	                android:id="@+id/textView3"
+	                android:id="@+id/textView_ATK_right"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:visibility="gone"
@@ -305,6 +305,13 @@
 		    style="?android:attr/progressBarStyleLarge"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content" />
+
+	    <Button
+	        android:id="@+id/button1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Button" />
+
 	</LinearLayout>
 
 </ScrollView>
