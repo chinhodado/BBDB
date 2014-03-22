@@ -21,35 +21,37 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
+class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 
 	FamDetailActivity activity;
 	String famName;
+	FamStore famStore;
     
-    public AddStatDetailTask(FamDetailActivity activity) {
+    public AddFamiliarInfoTask(FamDetailActivity activity) {
         this.activity = activity;
+        this.famStore = FamStore.getInstance();
     }
 
     @Override
-	protected FamStore doInBackground(String... params) {
+	protected Void doInBackground(String... params) {
     	this.famName = params[0];
-    	MainActivity.famStore.getStats(this.famName);
-    	MainActivity.famStore.getImage(this.famName);
-    	MainActivity.famStore.getSkillHTMLString(this.famName);
-		return MainActivity.famStore;
+    	famStore.getStats(this.famName);
+    	famStore.getImage(this.famName);
+    	famStore.getSkillHTMLString(this.famName);
+		return null;
     }
 
 	@Override
-    protected void onPostExecute(FamStore famStore) {
+    protected void onPostExecute(Void params) {
 		// all of these should be fast
-		addFamImage(famStore);
-		addFamSkill(famStore);
-		addFamStat(famStore);
-		addFamDetail(famStore);		
-		addFamSpecialInformation(famStore);
+		addFamImage();
+		addFamSkill();
+		addFamStat();
+		addFamDetail();		
+		addFamSpecialInformation();
     }
 	
-	public void addFamImage(FamStore famStore) {
+	public void addFamImage() {
     	// remove the spinner
     	ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar1);
     	LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
@@ -60,7 +62,7 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
         bmImage.setImageBitmap(famStore.getImage(famName));
 	}
 	
-	public void addFamSkill(FamStore famStore) {
+	public void addFamSkill() {
 		
 		String[] skillHTML = famStore.getSkillHTMLString(famName);
         TableLayout skillTable = (TableLayout) activity.findViewById(R.id.skillTable);
@@ -112,7 +114,7 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 		skillTable.setStretchAllColumns(true);		
 	}
 	
-	public void addFamStat(FamStore famStore) {
+	public void addFamStat() {
 		
 		TableLayout statTableLayout = (TableLayout) activity.findViewById(R.id.statTable);
 		
@@ -136,7 +138,10 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 		TextView peAGI_textView   = (TextView) activity.findViewById(R.id.peAGI_textView);
 		TextView peTotal_textView = (TextView) activity.findViewById(R.id.peTotal_textView);
 		
-		if (famStore.isWarlord(famName)) {
+		boolean isWarlord = famStore.isWarlord(famName);
+		FamStats stats = famStore.getStats(famName);
+		
+		if (isWarlord || stats.PEStats[0] == 0) {
 			activity.findViewById(R.id.textView3).setVisibility(View.GONE);
 			peHP_textView.setVisibility(View.GONE);
 			peATK_textView.setVisibility(View.GONE);
@@ -144,16 +149,9 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 			peWIS_textView.setVisibility(View.GONE);
 			peAGI_textView.setVisibility(View.GONE);
 			peTotal_textView.setVisibility(View.GONE);
-		}
-		
-		String maxTotalString = "";
-		String peTotalString = "N/A";
-		
-		FamStats stats = famStore.getStats(famName);
+		}		
 		
 		DecimalFormat formatter = new DecimalFormat("#,###");
-		maxTotalString = formatter.format(stats.maxStats[5]);
-		peTotalString = formatter.format(stats.PEStats[5]);
 		
 		baseHP_textView.setText(formatter.format(stats.baseStats[0])); 
 		baseATK_textView.setText(formatter.format(stats.baseStats[1])); 
@@ -168,7 +166,8 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 		maxAGI_textView.setText(formatter.format(stats.maxStats[4]));
 		maxTotal_textView.setText(formatter.format(stats.maxStats[5]));
 	
-		if (!famStore.isWarlord(famName)) {
+		if (!isWarlord && stats.PEStats[0] != 0) {
+			activity.findViewById(R.id.textView3).setVisibility(View.VISIBLE);
 			peHP_textView.setText(formatter.format(stats.PEStats[0]));
 			peATK_textView.setText(formatter.format(stats.PEStats[1]));
 			peDEF_textView.setText(formatter.format(stats.PEStats[2]));
@@ -178,7 +177,7 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 		}
 		
 		// POPE row	    
-	    if (famStore.isFinalEvolution(famName) || famStore.isWarlord(famName)) {
+	    if (famStore.isFinalEvolution(famName) || isWarlord) {
 	    	
     		activity.addLineSeparator(statTableLayout);
     		TableRow popeRow = new TableRow(activity); statTableLayout.addView(popeRow);
@@ -193,7 +192,7 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 	    TextView emptyTv = new TextView(activity); emptyRow.addView(emptyTv);
 	}
 	
-	public void addFamDetail(FamStore famStore) {
+	public void addFamDetail() {
 		Document famDOM = famStore.getFamDOM(famName);
 		int count = 0;
 		TableLayout detailTable = (TableLayout) activity.findViewById(R.id.detailTable);
@@ -273,13 +272,13 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 		}
 		
 		// the tier rows
-		new AddFamTierInfoTask(detailTable, activity, activity.famName).execute();
+		new AddTierInfoTask(detailTable, activity, activity.famName).execute();
 				
 		detailTable.setColumnShrinkable(1, true);
 		detailTable.setStretchAllColumns(true);		
 	}
 
-	public void addFamSpecialInformation(FamStore famStore) {
+	public void addFamSpecialInformation() {
 		if (famStore.isWarlord(famName)) return;
 		Document famDOM = famStore.getFamDOM(famName);
 		Element div = famDOM.getElementById("mw-content-text");

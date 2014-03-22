@@ -20,6 +20,9 @@ import android.util.Log;
  * For now:
  * - the famDOM is saved, so if you want the details from it you need to parse it manually, except the 
  *   stats, which is inconsistent, but I'm lazy and let's just make it this way for now
+ * - the HTML string of the skills are saved, and will have to be parsed manually
+ * 
+ * These inconsistent behaviors will probably change in the future, but not now.
  *   
  * @author Chin
  *
@@ -51,9 +54,14 @@ public final class FamStore {
 		public int[] PEStats   = null;
 		public int[] POPEStats = null;
 	}
-		
+	
+    // the heart of this class, a storage for familiars' detail
+	private static Hashtable<String, FamDetail> famStore = new Hashtable<String, FamDetail>();
+	
+	// maximum number of image to be cached. Don't set it too high, or you'll run short on memory
 	static final int MAX_CACHED_IMAGE = 5;    
     
+	// maps a fam name to its image. Remove the last inserted image when the capacity is exceeded
     @SuppressWarnings("serial")
     LinkedHashMap<String, Bitmap> imageStore = new LinkedHashMap<String, Bitmap>(MAX_CACHED_IMAGE + 1) {
         protected boolean removeEldestEntry(Map.Entry<String, Bitmap> eldest) {
@@ -61,19 +69,24 @@ public final class FamStore {
         }
      };
 	
-	private static Hashtable<String, FamDetail> famStore = new Hashtable<String, FamDetail>();
-	
-	// a table that maps a skill name to its DOM
+	// maps a skill name to its DOM
 	private static Hashtable<String, String> skillStore = new Hashtable<String, String>();
 	
 	private static final FamStore FAMSTORE = new FamStore();
 	
+	/**
+	 * Private constructor. For singleton.
+	 */
 	private FamStore() {
         if (FAMSTORE != null) {
             throw new IllegalStateException("Already instantiated");
         }
     }
 
+	/**
+	 * Get the only instance of this class. Because of singleton.
+	 * @return The only instance of this class.
+	 */
     public static FamStore getInstance() {
         return FAMSTORE;
     }
@@ -214,6 +227,13 @@ public final class FamStore {
 		return currentFam.stats;
 	}
 	
+	/**
+	 * Get the image of a familiar. If that image is in the last 5 loaded images, a cached version of it will
+	 * be returned. Otherwise it will be fetched from the net. Careful, it may block.
+	 * 
+	 * @param famName The name of the familiar
+	 * @return The image of that familiar
+	 */
     public Bitmap getImage(String famName) {
         Bitmap famImage = imageStore.get(famName);
         if (famImage != null) return famImage;
@@ -242,13 +262,22 @@ public final class FamStore {
     }
     
     /**
+     * Get the HTML string of the skill page(s) of a familiar. You'll have to parse it manually.
      * 
-     * @param famName
-     * @return An array of skillDOM
+     * @param famName The name of the familiar
+     * @return An array (size 2) of skill page(s) HTML. If there's no skill 2, the second element
+     *         in the array is null
      */
     public String[] getSkillHTMLString(String famName) {
-    	// TODO: make proper check for null
+    	
     	FamDetail currentFam = famStore.get(famName);
+        if (currentFam == null) {
+			currentFam = new FamDetail(famName);
+			famStore.put(famName, currentFam);
+        }
+        
+        // if the famDOM is not available yet, call getStats(). Or maybe just fetch it directly?
+        if (currentFam.famDOM == null) getStats(famName);
     	
     	// get the skill(s) name
     	Elements skillList = null;
@@ -307,10 +336,11 @@ public final class FamStore {
 		return toReturn;
     	
     }
+    
 	/**
 	 * No check for null right now. Always remember to call only after the info is available
-	 * @param famName
-	 * @return
+	 * @param famName The name of the familiar
+	 * @return true if the familiar is the final evolution in the line
 	 */
 	public boolean isFinalEvolution(String famName) {
 		return famStore.get(famName).isFinalEvolution;
@@ -318,17 +348,27 @@ public final class FamStore {
 	
 	/**
 	 * No check for null right now. Always remember to call only after the info is available
-	 * @param famName
-	 * @return
+	 * @param famName The name of the familiar
+	 * @return true if the familiar is a warlord
 	 */
 	public boolean isWarlord(String famName) {
 		return famStore.get(famName).isWarlord;
 	}
-	
+
+	/**
+	 * No check for null right now. Always remember to call only after the info is available
+	 * @param famName The name of the familiar
+	 * @return A string of form "AofB" that represents the star level of the familiar
+	 */
 	public String getStarLevel(String famName) {
 		return famStore.get(famName).starLevel;
 	}
 	
+	/**
+	 * No check for null right now. Always remember to call only after the info is available
+	 * @param famName The name of the familiar
+	 * @return The DOM of the familiar's wiki page
+	 */
 	public Document getFamDOM(String famName) {
 		return famStore.get(famName).famDOM;
 	}
