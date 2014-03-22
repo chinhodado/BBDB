@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -32,13 +33,14 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 	protected FamStore doInBackground(String... params) {
     	this.famName = params[0];
     	MainActivity.famStore.getStats(this.famName);
+    	MainActivity.famStore.getImage(this.famName);
 		return MainActivity.famStore;
     }
 
 	@Override
     protected void onPostExecute(FamStore famStore) {
 		// these need to be execute first so they can spawn async tasks to run in background
-//		addFamImage(famDOM);
+		addFamImage(famStore);
 //
 //		addFamSkill(famDOM, isWarlord);
 //		addFamDetail(famDOM, isWarlord);
@@ -49,16 +51,15 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 
     }
 	
-	public void addFamImage(Document famDOM) {
-		Element infoBoxFam = null;
-		try {
-			infoBoxFam = famDOM.getElementsByClass("infobox").first();
-			String imageUrl = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr").get(1).getElementsByTag("th").first().getElementsByTag("a").first().attr("href");
-			new DownloadImageTask(activity).execute(imageUrl);
-		} catch (Exception e) {
-			Log.e("FamDetail", "Error displaying the fam image");
-			e.printStackTrace();
-		}
+	public void addFamImage(FamStore famStore) {
+    	// remove the spinner
+    	ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar1);
+    	LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
+    	layout.removeView(pgrBar);
+    	
+    	// set the image
+    	ImageView bmImage = (ImageView) activity.findViewById(R.id.imageView1);
+        bmImage.setImageBitmap(famStore.getImage(famName));
 	}
 	
 	public void addFamSkill(Document famDOM, boolean isWarlord) {
@@ -132,7 +133,6 @@ class AddStatDetailTask extends AsyncTask<String, Void, FamStore> {
 		}
 		
 		// POPE row	    
-	    
 	    if (famStore.isFinalEvolution(famName) || famStore.isWarlord(famName)) {
 	    	
     		activity.addLineSeparator(statTableLayout);

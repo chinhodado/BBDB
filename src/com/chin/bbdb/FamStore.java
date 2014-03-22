@@ -1,16 +1,18 @@
 package com.chin.bbdb;
 
-import java.text.DecimalFormat;
+import java.io.InputStream;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 /**
  * A storage for familiar information. Support lazy loading information.
@@ -24,10 +26,12 @@ public final class FamStore {
 	 * @author Chin
 	 *
 	 */
-	public static class FamDetail {
+	public static class FamDetail {		
 		String name = null;
 		FamStats stats = null;
 		String starLevel = null;
+		Document famDOM;
+		String[] skillHTML = {null, null};
 		
 		boolean isFinalEvolution = false;
 		boolean isWarlord = false;
@@ -43,6 +47,15 @@ public final class FamStore {
 		public int[] PEStats   = null;
 		public int[] POPEStats = null;
 	}
+		
+	static final int MAX_CACHED_IMAGE = 5;    
+    
+    @SuppressWarnings("serial")
+    LinkedHashMap<String, Bitmap> imageStore = new LinkedHashMap<String, Bitmap>(MAX_CACHED_IMAGE + 1) {
+        protected boolean removeEldestEntry(Map.Entry<String, Bitmap> eldest) {
+           return size() > MAX_CACHED_IMAGE;
+        }
+     };
 	
 	private static Hashtable<String, FamDetail> famStore = new Hashtable<String, FamDetail>();
 	private static final FamStore FAMSTORE = new FamStore();
@@ -59,6 +72,11 @@ public final class FamStore {
 	
 	/**
 	 * Get all stats of a familiar. Careful, this can block!
+	 * Although the name is getStats(), it also fetches the following:
+	 * - starLevel
+	 * - isFinalEvolution
+	 * - isWarlord
+	 * so if you want to use those make sure to call this function first
 	 */
 	public FamStats getStats(String famName) {
 		
@@ -81,6 +99,9 @@ public final class FamStore {
 			e.printStackTrace();
 		}
 		Document famDOM = Jsoup.parse(famHTML);
+		
+		// save the DOM for later use. Should look into this so that it doesn't cause huge mem usage
+		currentFam.famDOM = famDOM;
 		
 		Elements statTable = famDOM.getElementsByClass("article-table");
 		Element rowBase = statTable.first().getElementsByTag("tbody").first().getElementsByTag("tr").get(1);
@@ -185,6 +206,33 @@ public final class FamStore {
 		return currentFam.stats;
 	}
 	
+    public Bitmap getImage(String famName) {
+        Bitmap famImage = imageStore.get(famName);
+        if (famImage != null) return famImage;
+        
+        FamDetail currentFam = famStore.get(famName);
+        if (currentFam == null) {
+			currentFam = new FamDetail(famName);
+			famStore.put(famName, currentFam);
+        }
+        
+        // if the famDOM is not available yet, call getStats(). Or maybe just fetch it directly?
+        if (currentFam.famDOM == null) getStats(famName);
+        
+        Element infoBoxFam = null;
+        try {
+            infoBoxFam = currentFam.famDOM.getElementsByClass("infobox").first();
+            String imageUrl = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr").get(1).getElementsByTag("th").first().getElementsByTag("a").first().attr("href");
+            InputStream in = new java.net.URL(imageUrl).openStream();
+            famImage = BitmapFactory.decodeStream(in);
+        } catch (Exception e) {
+            Log.e("FamDetail", "Error displaying the fam image");
+            e.printStackTrace();
+        }
+        imageStore.put(famName, famImage);
+        return famImage;
+    }
+    
 	/**
 	 * No check for null right now. Always remember to call only after the info is available
 	 * @param famName
