@@ -33,12 +33,15 @@ public class MainActivity extends Activity {
     public static String jsonString = null;
     public static ArrayList<String> famList = null;
     public static Hashtable<String, String> famLinkTable = null;
+    public static FamStore famStore = null;
 
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		famStore = FamStore.getInstance();
 			
 		// get the familiar list and their wiki url
 		if (famList == null) {

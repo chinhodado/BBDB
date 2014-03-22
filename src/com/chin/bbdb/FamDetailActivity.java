@@ -39,7 +39,7 @@ public class FamDetailActivity extends Activity {
 		setTitle(famName);
 		String famURL = "http://bloodbrothersgame.wikia.com" + intent.getStringExtra(MainActivity.FAM_LINK);		
 		initialize();
-		new AddStatDetailTask(this).execute(famURL);
+		new AddStatDetailTask(this).execute(famName);
  	}
 
 	/**
