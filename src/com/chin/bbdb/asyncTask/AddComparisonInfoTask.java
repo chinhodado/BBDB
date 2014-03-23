@@ -2,6 +2,7 @@ package com.chin.bbdb.asyncTask;
 
 import java.text.DecimalFormat;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -54,20 +55,23 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 	}
 	
 	public void addFamStat() {
-	
-		TextView textView_HP_left    = (TextView) activity.findViewById(R.id.textView_HP_left);
-		TextView textView_ATK_left   = (TextView) activity.findViewById(R.id.textView_ATK_left);
-		TextView textView_DEF_left   = (TextView) activity.findViewById(R.id.textView_DEF_left);
-		TextView textView_WIS_left   = (TextView) activity.findViewById(R.id.textView_WIS_left);
-		TextView textView_AGI_left   = (TextView) activity.findViewById(R.id.textView_AGI_left);
-		TextView textView_total_left   = (TextView) activity.findViewById(R.id.textView_total_left);
 		
-		TextView textView_HP_right    = (TextView) activity.findViewById(R.id.textView_HP_right);
-		TextView textView_ATK_right   = (TextView) activity.findViewById(R.id.textView_ATK_right);
-		TextView textView_DEF_right   = (TextView) activity.findViewById(R.id.textView_DEF_right);
-		TextView textView_WIS_right   = (TextView) activity.findViewById(R.id.textView_WIS_right);
-		TextView textView_AGI_right   = (TextView) activity.findViewById(R.id.textView_AGI_right);
-		TextView textView_total_right   = (TextView) activity.findViewById(R.id.textView_total_right);
+		TextView[] textViewStatsLeft = {null, null, null, null, null, null};
+		TextView[] textViewStatsRight = {null, null, null, null, null, null};
+	
+		textViewStatsLeft[0]   = (TextView) activity.findViewById(R.id.textView_HP_left);
+		textViewStatsLeft[1]   = (TextView) activity.findViewById(R.id.textView_ATK_left);
+		textViewStatsLeft[2]   = (TextView) activity.findViewById(R.id.textView_DEF_left);
+		textViewStatsLeft[3]   = (TextView) activity.findViewById(R.id.textView_WIS_left);
+		textViewStatsLeft[4]   = (TextView) activity.findViewById(R.id.textView_AGI_left);
+		textViewStatsLeft[5]   = (TextView) activity.findViewById(R.id.textView_total_left);
+		
+		textViewStatsRight[0]   = (TextView) activity.findViewById(R.id.textView_HP_right);
+		textViewStatsRight[1]   = (TextView) activity.findViewById(R.id.textView_ATK_right);
+		textViewStatsRight[2]   = (TextView) activity.findViewById(R.id.textView_DEF_right);
+		textViewStatsRight[3]   = (TextView) activity.findViewById(R.id.textView_WIS_right);
+		textViewStatsRight[4]   = (TextView) activity.findViewById(R.id.textView_AGI_right);
+		textViewStatsRight[5]   = (TextView) activity.findViewById(R.id.textView_total_right);
 	
 		FamStats statsLeft = famStore.getStats(famNameLeft);
 		FamStats statsRight = famStore.getStats(famNameRight);
@@ -94,8 +98,11 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 		
 		DecimalFormat formatter = new DecimalFormat("#,###");
 		
-		String[] leftVSRightPercent = new String[6];
-		String[] rightVSLeftPercent = new String[6];
+		String[] leftVSRightPercentString = new String[6];
+		String[] rightVSLeftPercentString = new String[6];
+		
+		int RED = Color.parseColor("#CC0000");
+		int GREEN = Color.parseColor("#669900");
 		
 		for (int i = 0; i < 6; i++) {
 			double leftVSRight = ((double) highestCommonLeft[i] - highestCommonRight[i]) / highestCommonRight[i] * 100;
@@ -103,25 +110,19 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 			leftVSRight = (double)Math.round(leftVSRight * 100) / 100;
 			
 			// get the strings
-			leftVSRightPercent[i] = ((leftVSRight > 0)? "+" : "") + leftVSRight;
+			leftVSRightPercentString[i] = leftVSRight == 0? "" : ("(" + (((leftVSRight > 0)? "+" : "") + leftVSRight) + "%)");
 			double rightVSLeft = -1 * leftVSRight;
-			rightVSLeftPercent[i] = ((rightVSLeft > 0)? "+" : "") + rightVSLeft;
+			rightVSLeftPercentString[i] = leftVSRight == 0? "" : ("(" + (((rightVSLeft > 0)? "+" : "") + rightVSLeft) + "%)");
+			
+			textViewStatsLeft[i].append(formatter.format(highestCommonLeft[i]) + leftVSRightPercentString[i]);
+			textViewStatsRight[i].append(formatter.format(highestCommonRight[i]) + rightVSLeftPercentString[i]);
+			if (leftVSRight!= 0 ) {
+				textViewStatsLeft[i].setTextColor(leftVSRight > 0? GREEN : RED);
+				textViewStatsRight[i].setTextColor(leftVSRight < 0? GREEN : RED);
+			}
 		}
 		
-		textView_HP_left.append(formatter.format(highestCommonLeft[0]) + " (" + leftVSRightPercent[0] + "%)");
-		textView_ATK_left.append(formatter.format(highestCommonLeft[1]) + " (" + leftVSRightPercent[1] + "%)");
-		textView_DEF_left.append(formatter.format(highestCommonLeft[2]) + " (" + leftVSRightPercent[2] + "%)");
-		textView_WIS_left.append(formatter.format(highestCommonLeft[3]) + " (" + leftVSRightPercent[3] + "%)");
-		textView_AGI_left.append(formatter.format(highestCommonLeft[4]) + " (" + leftVSRightPercent[4] + "%)");
-		textView_total_left.append(formatter.format(highestCommonLeft[5]) + " (" + leftVSRightPercent[5] + "%)");
-		
-		textView_HP_right.append(formatter.format(highestCommonRight[0]) + " (" + rightVSLeftPercent[0] + "%)");
-		textView_ATK_right.append(formatter.format(highestCommonRight[1]) + " (" + rightVSLeftPercent[1] + "%)");
-		textView_DEF_right.append(formatter.format(highestCommonRight[2]) + " (" + rightVSLeftPercent[2] + "%)");
-		textView_WIS_right.append(formatter.format(highestCommonRight[3]) + " (" + rightVSLeftPercent[3] + "%)");
-		textView_AGI_right.append(formatter.format(highestCommonRight[4]) + " (" + rightVSLeftPercent[4] + "%)");
-		textView_total_right.append(formatter.format(highestCommonRight[5]) + " (" + rightVSLeftPercent[5] + "%)");
-		
 		((TextView) activity.findViewById(R.id.statsLabel)).setText(label);
+		
 	}
 }
