@@ -34,7 +34,7 @@
             android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.chin.bbdb.MainActivity" />
+                android:value="com.chin.bbdb.activity.MainActivity" />
         </activity>
         <activity
             android:theme="@style/Theme.AppCompat.Light"
