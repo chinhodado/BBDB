@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.MatrixCursor;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,16 +19,12 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.SearchView;
-import android.text.InputType;
 
 public class FamDetailActivity extends ActionBarActivity {
 	

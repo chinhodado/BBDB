@@ -68,24 +68,44 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 		TextView maxWIS_textView_right   = (TextView) activity.findViewById(R.id.textView_WIS_right);
 		TextView maxAGI_textView_right   = (TextView) activity.findViewById(R.id.textView_AGI_right);
 	
-		boolean isWarlordLeft = famStore.isWarlord(famNameLeft);
-		boolean isWarlordRight = famStore.isWarlord(famNameRight);
 		FamStats statsLeft = famStore.getStats(famNameLeft);
 		FamStats statsRight = famStore.getStats(famNameRight);
-	
+		
+		int highestCommonStatCategory = (statsLeft.getHighestAvailableStatCategory() < statsRight.getHighestAvailableStatCategory())?
+								  statsLeft.getHighestAvailableStatCategory() : statsRight.getHighestAvailableStatCategory();
+	    int[] highestCommonLeft = null, highestCommonRight = null;
+	    String label = null;
+		if (highestCommonStatCategory == FamStats.HIGHEST_IS_POPE) {
+			highestCommonLeft = statsLeft.POPEStats;
+			highestCommonRight = statsRight.POPEStats;
+			label = "POPE Stats";
+		}
+		else if (highestCommonStatCategory == FamStats.HIGHEST_IS_PE) {
+			highestCommonLeft = statsLeft.PEStats;
+			highestCommonRight = statsRight.PEStats;
+			label = "PE Stats";
+		}
+		else if (highestCommonStatCategory == FamStats.HIGHEST_IS_MAX) {
+			highestCommonLeft = statsLeft.maxStats;
+			highestCommonRight = statsRight.maxStats;
+			label = "Max stats";
+		}
+		
 		DecimalFormat formatter = new DecimalFormat("#,###");
 		
-		maxHP_textView_left.append(formatter.format(statsLeft.maxStats[0]));
-		maxATK_textView_left.append(formatter.format(statsLeft.maxStats[1]));
-		maxDEF_textView_left.append(formatter.format(statsLeft.maxStats[2]));
-		maxWIS_textView_left.append(formatter.format(statsLeft.maxStats[3]));
-		maxAGI_textView_left.append(formatter.format(statsLeft.maxStats[4]));
+		maxHP_textView_left.append(formatter.format(highestCommonLeft[0]));
+		maxATK_textView_left.append(formatter.format(highestCommonLeft[1]));
+		maxDEF_textView_left.append(formatter.format(highestCommonLeft[2]));
+		maxWIS_textView_left.append(formatter.format(highestCommonLeft[3]));
+		maxAGI_textView_left.append(formatter.format(highestCommonLeft[4]));
 		//maxTotal_textView.setText(formatter.format(stats.maxStats[5]));
 		
-		maxHP_textView_right.append(formatter.format(statsRight.maxStats[0]));
-		maxATK_textView_right.append(formatter.format(statsRight.maxStats[1]));
-		maxDEF_textView_right.append(formatter.format(statsRight.maxStats[2]));
-		maxWIS_textView_right.append(formatter.format(statsRight.maxStats[3]));
-		maxAGI_textView_right.append(formatter.format(statsRight.maxStats[4]));
+		maxHP_textView_right.append(formatter.format(highestCommonRight[0]));
+		maxATK_textView_right.append(formatter.format(highestCommonRight[1]));
+		maxDEF_textView_right.append(formatter.format(highestCommonRight[2]));
+		maxWIS_textView_right.append(formatter.format(highestCommonRight[3]));
+		maxAGI_textView_right.append(formatter.format(highestCommonRight[4]));
+		
+		((TextView) activity.findViewById(R.id.statsLabel)).setText(label);
 	}
 }
