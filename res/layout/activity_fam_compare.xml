@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_container"
+    android:id="@+id/activity_fam_compare_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     tools:ignore="HardcodedText" >
 
     <TableLayout
@@ -21,16 +25,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:contentDescription="leftFam"
-                android:src="@drawable/ic_launcher" />
+                android:contentDescription="leftFam"/>
 
             <ImageView
                 android:id="@+id/imageView_rightFam"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:contentDescription="rightFam"
-                android:src="@drawable/ic_launcher" />
+                android:contentDescription="rightFam" />
         </TableRow>
 
         <TableRow
@@ -60,14 +62,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="     HP" />
+                android:text="     HP: " />
 
             <TextView
                 android:id="@+id/textView_HP_right"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="     HP" />
+                android:text="     HP: " />
         </TableRow>
 
         <TableRow
@@ -80,14 +82,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="     ATK" />
+                android:text="     ATK: " />
 
             <TextView
                 android:id="@+id/textView_ATK_right"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="     ATK" />
+                android:text="     ATK: " />
         </TableRow>
 
         <TableRow
@@ -100,14 +102,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="     DEF" />
+                android:text="     DEF: " />
 
             <TextView
                 android:id="@+id/textView_DEF_right"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="     DEF" />
+                android:text="     DEF: " />
         </TableRow>
 
         <TableRow
@@ -120,14 +122,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="     WIS" />
+                android:text="     WIS: " />
 
             <TextView
                 android:id="@+id/textView_WIS_right"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="     WIS" />
+                android:text="     WIS: " />
         </TableRow>
 
         <TableRow
@@ -140,14 +142,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="     AGI" />
+                android:text="     AGI: " />
 
             <TextView
                 android:id="@+id/textView_AGI_right"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="     AGI" />
+                android:text="     AGI: " />
         </TableRow>
     </TableLayout>
 

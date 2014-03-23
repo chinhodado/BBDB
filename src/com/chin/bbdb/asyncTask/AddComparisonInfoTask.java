@@ -75,17 +75,17 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 	
 		DecimalFormat formatter = new DecimalFormat("#,###");
 		
-		maxHP_textView_left.setText(formatter.format(statsLeft.maxStats[0]));
-		maxATK_textView_left.setText(formatter.format(statsLeft.maxStats[1]));
-		maxDEF_textView_left.setText(formatter.format(statsLeft.maxStats[2]));
-		maxWIS_textView_left.setText(formatter.format(statsLeft.maxStats[3]));
-		maxAGI_textView_left.setText(formatter.format(statsLeft.maxStats[4]));
+		maxHP_textView_left.append(formatter.format(statsLeft.maxStats[0]));
+		maxATK_textView_left.append(formatter.format(statsLeft.maxStats[1]));
+		maxDEF_textView_left.append(formatter.format(statsLeft.maxStats[2]));
+		maxWIS_textView_left.append(formatter.format(statsLeft.maxStats[3]));
+		maxAGI_textView_left.append(formatter.format(statsLeft.maxStats[4]));
 		//maxTotal_textView.setText(formatter.format(stats.maxStats[5]));
 		
-		maxHP_textView_right.setText(formatter.format(statsRight.maxStats[0]));
-		maxATK_textView_right.setText(formatter.format(statsRight.maxStats[1]));
-		maxDEF_textView_right.setText(formatter.format(statsRight.maxStats[2]));
-		maxWIS_textView_right.setText(formatter.format(statsRight.maxStats[3]));
-		maxAGI_textView_right.setText(formatter.format(statsRight.maxStats[4]));
+		maxHP_textView_right.append(formatter.format(statsRight.maxStats[0]));
+		maxATK_textView_right.append(formatter.format(statsRight.maxStats[1]));
+		maxDEF_textView_right.append(formatter.format(statsRight.maxStats[2]));
+		maxWIS_textView_right.append(formatter.format(statsRight.maxStats[3]));
+		maxAGI_textView_right.append(formatter.format(statsRight.maxStats[4]));
 	}
 }

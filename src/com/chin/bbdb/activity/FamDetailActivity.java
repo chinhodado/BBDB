@@ -8,10 +8,12 @@ import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.MatrixCursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,16 +60,16 @@ public class FamDetailActivity extends ActionBarActivity {
 		initialize();
 		new AddFamiliarInfoTask(this).execute(famName);
 		
-        AutoCompleteTextView autoCompleteTextView = new AutoCompleteTextView(this);
+        LayoutInflater inflator = (LayoutInflater) this
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.actionbar_layout, null);
+        
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setCustomView(autoCompleteTextView);
+        actionBar.setCustomView(v);
+        
+        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.compareAutoCompleteTextView);
         autoCompleteTextView.setAdapter(MainActivity.adapter);
-        autoCompleteTextView.setTextColor(Color.BLACK);
-        autoCompleteTextView.setDropDownWidth(-1);
-        autoCompleteTextView.setMinWidth(200);
-        autoCompleteTextView.setThreshold(1);
-        autoCompleteTextView.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
