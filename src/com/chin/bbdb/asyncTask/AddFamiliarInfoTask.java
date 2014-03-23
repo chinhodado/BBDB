@@ -275,7 +275,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 		}
 		
 		// the tier rows
-		new AddTierInfoTask(detailTable, activity, activity.famName).execute();
+		//new AddTierInfoTask(detailTable, activity, activity.famName).execute();
 				
 		detailTable.setColumnShrinkable(1, true);
 		detailTable.setStretchAllColumns(true);		

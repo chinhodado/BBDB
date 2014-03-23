@@ -37,6 +37,7 @@ public class MainActivity extends Activity {
     public static String jsonString = null;
     public static ArrayList<String> famList = null;
     public static Hashtable<String, String> famLinkTable = null;
+    public static RegexFilterArrayAdapter<String> adapter = null;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -73,7 +74,7 @@ public class MainActivity extends Activity {
 		}
 		
 		try {
-			final RegexFilterArrayAdapter<String> adapter = new RegexFilterArrayAdapter<String>(this, android.R.layout.simple_list_item_1, famList);
+			if (adapter == null) adapter = new RegexFilterArrayAdapter<String>(this, android.R.layout.simple_list_item_1, famList);
 			
 			famEditText = (EditText) findViewById(R.id.famEditText);	
 			

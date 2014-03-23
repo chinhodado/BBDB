@@ -7,22 +7,30 @@ import com.chin.bbdb.asyncTask.AddFamiliarInfoTask;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.Bundle;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.MatrixCursor;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
+import android.text.InputType;
 
-public class FamDetailActivity extends Activity {
+public class FamDetailActivity extends ActionBarActivity {
 	
 	public final Activity activity = this;
 	
@@ -33,45 +41,50 @@ public class FamDetailActivity extends Activity {
 	public static HashMap<String, String> pvpTierMap    = null;
 	public static HashMap<String, String> raidTierMap   = null;
 	public static HashMap<String, String> towerTierMap  = null;
-	public String famName = null;
+	public static String famName = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fam_detail);
-		// Show the Up button in the action bar.
-		setupActionBar();
 		
-		Intent intent = getIntent();
-		famName = intent.getStringExtra(MainActivity.FAM_NAME);
-		setTitle(famName);
+		Intent intent = getIntent(); // careful, this intent may not be the intent from MainActivity...
+		String tmpName = intent.getStringExtra(MainActivity.FAM_NAME);
+		if (tmpName != null) {
+			famName = tmpName; // needed since we may come back from other activity, not just the main one
+		}
+		
+		setTitle("");
 		initialize();
 		new AddFamiliarInfoTask(this).execute(famName);
 		
-        final Button button = (Button) findViewById(R.id.button1);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        AutoCompleteTextView autoCompleteTextView = new AutoCompleteTextView(this);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(autoCompleteTextView);
+        autoCompleteTextView.setAdapter(MainActivity.adapter);
+        autoCompleteTextView.setTextColor(Color.BLACK);
+        autoCompleteTextView.setDropDownWidth(-1);
+        autoCompleteTextView.setMinWidth(200);
+        autoCompleteTextView.setThreshold(1);
+        autoCompleteTextView.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	            String famName = (String)parent.getItemAtPosition(position); 
 	            Intent intent = new Intent(activity, FamCompareActivity.class);
-	            intent.putExtra("FAMNAME", famName);
-	            startActivity(intent);
-            }
-        });
+	            intent.putExtra("FAM_NAME_RIGHT", famName);
+	            intent.putExtra("FAM_NAME_LEFT", FamDetailActivity.famName);
+	            startActivity(intent);				
+			}
+		});
  	}
-
-	/**
-	 * Set up the {@link android.app.ActionBar}.
-	 */
-	@SuppressLint("NewApi")
-	private void setupActionBar() {
-		if (android.os.Build.VERSION.SDK_INT >= 11)
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		// getMenuInflater().inflate(R.menu.fam_detail, menu);
+		getMenuInflater().inflate(R.menu.fam_detail_menu, menu);
+
 		return true;
 	}
 
