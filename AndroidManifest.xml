@@ -18,7 +18,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.chin.bbdb.activity.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +30,8 @@
             android:theme="@style/Theme.AppCompat.Light"
             android:name="com.chin.bbdb.activity.FamDetailActivity"
             android:label="@string/title_activity_fam_detail"
-            android:parentActivityName="com.chin.bbdb.activity.MainActivity" >
+            android:parentActivityName="com.chin.bbdb.activity.MainActivity"
+            android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chin.bbdb.MainActivity" />
@@ -38,7 +40,8 @@
             android:theme="@style/Theme.AppCompat.Light"
             android:name="com.chin.bbdb.activity.FamCompareActivity"
             android:label="@string/title_activity_fam_compare"
-            android:parentActivityName="com.chin.bbdb.activity.FamDetailActivity" >
+            android:parentActivityName="com.chin.bbdb.activity.FamDetailActivity"
+            android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chin.bbdb.activity.FamDetailActivity" />
