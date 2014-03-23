@@ -1,4 +1,4 @@
-package com.chin.bbdb;
+package com.chin.bbdb.asyncTask;
 
 import java.text.DecimalFormat;
 
@@ -7,7 +7,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.chin.bbdb.FamStore;
+import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
+import com.chin.bbdb.activity.FamDetailActivity;
 
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -21,7 +24,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
+public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 
 	FamDetailActivity activity;
 	String famName;
@@ -58,7 +61,7 @@ class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
     	layout.removeView(pgrBar);
     	
     	// set the image
-    	ImageView bmImage = (ImageView) activity.findViewById(R.id.imageView1);
+    	ImageView bmImage = (ImageView) activity.findViewById(R.id.imageView_leftFam);
         bmImage.setImageBitmap(famStore.getImage(famName));
 	}
 	
@@ -142,7 +145,7 @@ class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 		FamStats stats = famStore.getStats(famName);
 		
 		if (isWarlord || stats.PEStats[0] == 0) {
-			activity.findViewById(R.id.textView3).setVisibility(View.GONE);
+			activity.findViewById(R.id.textView_ATK_right).setVisibility(View.GONE);
 			peHP_textView.setVisibility(View.GONE);
 			peATK_textView.setVisibility(View.GONE);
 			peDEF_textView.setVisibility(View.GONE);
@@ -167,7 +170,7 @@ class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 		maxTotal_textView.setText(formatter.format(stats.maxStats[5]));
 	
 		if (!isWarlord && stats.PEStats[0] != 0) {
-			activity.findViewById(R.id.textView3).setVisibility(View.VISIBLE);
+			activity.findViewById(R.id.textView_ATK_right).setVisibility(View.VISIBLE);
 			peHP_textView.setText(formatter.format(stats.PEStats[0]));
 			peATK_textView.setText(formatter.format(stats.PEStats[1]));
 			peDEF_textView.setText(formatter.format(stats.PEStats[2]));
@@ -272,7 +275,7 @@ class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 		}
 		
 		// the tier rows
-		new AddTierInfoTask(detailTable, activity, activity.famName).execute();
+		//new AddTierInfoTask(detailTable, activity, activity.famName).execute();
 				
 		detailTable.setColumnShrinkable(1, true);
 		detailTable.setStretchAllColumns(true);		

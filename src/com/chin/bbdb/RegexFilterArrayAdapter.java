@@ -16,6 +16,7 @@ package com.chin.bbdb;
  * limitations under the License.
  */
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +26,6 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,6 +50,7 @@ import java.util.regex.Pattern;
  * or to have some of data besides toString() results fill the views,
  * override {@link #getView(int, View, ViewGroup)} to return the type of view you want.
  */
+@SuppressLint("DefaultLocale")
 public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterable {
     /**
      * Contains the list of objects that represent the data of this ArrayAdapter.
@@ -453,7 +454,8 @@ public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterabl
      * is removed from the list.</p>
      */
     private class ArrayFilter extends Filter {
-        @Override
+        @SuppressLint("DefaultLocale")
+		@Override
         protected FilterResults performFiltering(CharSequence prefix) {
             FilterResults results = new FilterResults();
 
@@ -500,7 +502,8 @@ public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterabl
             return results;
         }
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             //noinspection unchecked
             mObjects = (List<T>) results.values;

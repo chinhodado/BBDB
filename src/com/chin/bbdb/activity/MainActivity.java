@@ -1,4 +1,4 @@
-package com.chin.bbdb;
+package com.chin.bbdb.activity;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -6,6 +6,10 @@ import java.util.Hashtable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.chin.bbdb.NetworkDialogFragment;
+import com.chin.bbdb.R;
+import com.chin.bbdb.RegexFilterArrayAdapter;
+import com.chin.bbdb.asyncTask.NetworkTask;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.Bundle;
@@ -33,6 +37,7 @@ public class MainActivity extends Activity {
     public static String jsonString = null;
     public static ArrayList<String> famList = null;
     public static Hashtable<String, String> famLinkTable = null;
+    public static RegexFilterArrayAdapter<String> adapter = null;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -69,7 +74,7 @@ public class MainActivity extends Activity {
 		}
 		
 		try {
-			final RegexFilterArrayAdapter<String> adapter = new RegexFilterArrayAdapter<String>(this, android.R.layout.simple_list_item_1, famList);
+			if (adapter == null) adapter = new RegexFilterArrayAdapter<String>(this, android.R.layout.simple_list_item_1, famList);
 			
 			famEditText = (EditText) findViewById(R.id.famEditText);	
 			

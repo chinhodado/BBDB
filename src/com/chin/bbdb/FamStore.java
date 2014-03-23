@@ -10,6 +10,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.chin.bbdb.activity.MainActivity;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -49,10 +51,25 @@ public final class FamStore {
 	}
 	
 	public static class FamStats {
-		public int[] baseStats = null;
-		public int[] maxStats  = null;
-		public int[] PEStats   = null;
-		public int[] POPEStats = null;
+		// all initialized to 0
+		public int[] baseStats = new int[6];
+		public int[] maxStats  = new int[6];
+		public int[] PEStats   = new int[6];
+		public int[] POPEStats = new int[6];
+		
+		public static final int HIGHEST_IS_MAX  = 100;
+		public static final int HIGHEST_IS_PE   = 101;
+		public static final int HIGHEST_IS_POPE = 102;
+		
+		/**
+		 * Get the highest available stat category of this familiar
+		 * @return The highest stat category available for this familiar
+		 */
+		public int getHighestAvailableStatCategory() {
+			if (POPEStats[0] != 0) return HIGHEST_IS_POPE;
+			else if (PEStats[0] != 0) return HIGHEST_IS_PE;
+			else return HIGHEST_IS_MAX; // the check is probably redundant. What fam doesn't have max stats?
+		}
 	}
 	
     // the heart of this class, a storage for familiars' detail
@@ -156,9 +173,6 @@ public final class FamStore {
 		
 		// array to store stats: HP, ATK, DEF, WIS, AGI, Total
 		currentFam.stats = new FamStats();
-		currentFam.stats.baseStats = new int[6];		
-		currentFam.stats.maxStats  = new int[6];
-		currentFam.stats.PEStats   = new int[6];
 		
 		try {
 			
@@ -211,7 +225,6 @@ public final class FamStore {
 	    	else if (starLevel.startsWith("3")) toAdd = 605; // 3 star
 	    	else if (starLevel.startsWith("4")) toAdd = 666; // 4 star
 
-	    	currentFam.stats.POPEStats = new int[6];
     		for (int i = 0; i < 6; i++) {
     			if (i <= 4) { // the individual stats
     				if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd;

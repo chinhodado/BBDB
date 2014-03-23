@@ -1,6 +1,9 @@
-package com.chin.bbdb;
+package com.chin.bbdb.asyncTask;
 
 import java.io.InputStream;
+
+import com.chin.bbdb.R;
+import com.chin.bbdb.activity.FamDetailActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,7 +41,7 @@ class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     	layout.removeView(pgrBar);
     	
     	// set the image
-    	ImageView bmImage = (ImageView) activity.findViewById(R.id.imageView1);
+    	ImageView bmImage = (ImageView) activity.findViewById(R.id.imageView_leftFam);
         bmImage.setImageBitmap(result);
     }
 }
