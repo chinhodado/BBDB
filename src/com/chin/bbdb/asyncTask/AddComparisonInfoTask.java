@@ -98,24 +98,19 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 		
 		DecimalFormat formatter = new DecimalFormat("#,###");
 		
-		String[] leftVSRightPercentString = new String[6];
-		String[] rightVSLeftPercentString = new String[6];
-		
 		int RED = Color.parseColor("#CC0000");
 		int GREEN = Color.parseColor("#669900");
 		
 		for (int i = 0; i < 6; i++) {
-			double leftVSRight = ((double) highestCommonLeft[i] - highestCommonRight[i]) / highestCommonRight[i] * 100;
-			// rounding to 2 decimal places
-			leftVSRight = (double)Math.round(leftVSRight * 100) / 100;
+			int leftVSRight = highestCommonLeft[i] - highestCommonRight[i];
 			
 			// get the strings
-			leftVSRightPercentString[i] = leftVSRight == 0? "" : ("(" + (((leftVSRight > 0)? "+" : "") + leftVSRight) + "%)");
-			double rightVSLeft = -1 * leftVSRight;
-			rightVSLeftPercentString[i] = leftVSRight == 0? "" : ("(" + (((rightVSLeft > 0)? "+" : "") + rightVSLeft) + "%)");
+			String leftVSRightString = leftVSRight == 0? "" : (" (" + (((leftVSRight > 0)? "+" : "") + leftVSRight) + ")");
+			int rightVSLeft = -1 * leftVSRight;
+			String rightVSLeftString = leftVSRight == 0? "" : (" (" + (((rightVSLeft > 0)? "+" : "") + rightVSLeft) + ")");
 			
-			textViewStatsLeft[i].append(formatter.format(highestCommonLeft[i]) + leftVSRightPercentString[i]);
-			textViewStatsRight[i].append(formatter.format(highestCommonRight[i]) + rightVSLeftPercentString[i]);
+			textViewStatsLeft[i].append(formatter.format(highestCommonLeft[i]) + leftVSRightString);
+			textViewStatsRight[i].append(formatter.format(highestCommonRight[i]) + rightVSLeftString);
 			if (leftVSRight!= 0 ) {
 				textViewStatsLeft[i].setTextColor(leftVSRight > 0? GREEN : RED);
 				textViewStatsRight[i].setTextColor(leftVSRight < 0? GREEN : RED);
