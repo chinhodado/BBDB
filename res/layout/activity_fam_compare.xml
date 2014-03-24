@@ -35,6 +35,43 @@
 	                android:layout_weight="1"
 	                android:contentDescription="rightFam" />
 	        </TableRow>
+
+	        <TableRow
+	            android:id="@+id/tableRowName"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+
+	            <TextView
+	                android:id="@+id/textView_name_left"
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:gravity="center"
+	                android:textStyle="bold" />
+
+	            <TextView
+	                android:id="@+id/textView_name_right"
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:gravity="center"
+	                android:textStyle="bold" />
+
+	        </TableRow>
+
+	        <TableRow
+	            android:id="@+id/tableRow_dummy"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+
+	            <TextView
+	                android:id="@+id/TextView01"
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:gravity="center"
+	                android:textStyle="bold" />
+	        </TableRow>
 	
 	        <TableRow
 	            android:id="@+id/tableRow2"

@@ -124,5 +124,8 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 		
 		((TextView) activity.findViewById(R.id.statsLabel)).setText(label);
 		
+		// add the name label
+		((TextView) activity.findViewById(R.id.textView_name_left)).setText(famNameLeft);
+		((TextView) activity.findViewById(R.id.textView_name_right)).setText(famNameRight);
 	}
 }

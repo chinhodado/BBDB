@@ -61,7 +61,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
     	layout.removeView(pgrBar);
     	
     	// set the image
-    	ImageView bmImage = (ImageView) activity.findViewById(R.id.imageView_leftFam);
+    	ImageView bmImage = (ImageView) activity.findViewById(R.id.imageView_detail_fam);
         bmImage.setImageBitmap(famStore.getImage(famName));
 	}
 	
@@ -193,6 +193,10 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 	    
 	    TableRow emptyRow = new TableRow(activity); statTableLayout.addView(emptyRow);
 	    TextView emptyTv = new TextView(activity); emptyRow.addView(emptyTv);
+	    
+	    // set the name label
+	    TextView nameLabelTV = (TextView) activity.findViewById(R.id.textView_detail_famName);
+	    nameLabelTV.setText(famName);
 	}
 	
 	public void addFamDetail() {
