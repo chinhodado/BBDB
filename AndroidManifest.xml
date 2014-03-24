@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/Theme.AppCompat.Light"
+            android:theme="@style/AppTheme"
             android:name="com.chin.bbdb.activity.FamDetailActivity"
             android:label="@string/title_activity_fam_detail"
             android:parentActivityName="com.chin.bbdb.activity.MainActivity"
@@ -37,7 +37,7 @@
                 android:value="com.chin.bbdb.activity.MainActivity" />
         </activity>
         <activity
-            android:theme="@style/Theme.AppCompat.Light"
+            android:theme="@style/AppTheme"
             android:name="com.chin.bbdb.activity.FamCompareActivity"
             android:label="@string/title_activity_fam_compare"
             android:parentActivityName="com.chin.bbdb.activity.FamDetailActivity"
