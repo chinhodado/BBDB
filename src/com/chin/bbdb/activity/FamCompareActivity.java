@@ -2,6 +2,7 @@ package com.chin.bbdb.activity;
 
 import com.chin.bbdb.R;
 import com.chin.bbdb.asyncTask.AddComparisonInfoTask;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
@@ -25,7 +26,7 @@ public class FamCompareActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.fam_compare_menu, menu);
+//		getMenuInflater().inflate(R.menu.fam_compare_menu, menu);
 		return true;
 	}
 
@@ -39,5 +40,19 @@ public class FamCompareActivity extends ActionBarActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		// Google Analytics
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		// Google Analytics
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 }

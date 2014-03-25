@@ -11,7 +11,9 @@ import com.chin.bbdb.FamStore;
 import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
 import com.chin.bbdb.activity.FamDetailActivity;
+import com.chin.bbdb.activity.MainActivity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -29,6 +31,12 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 	FamDetailActivity activity;
 	String famName;
 	FamStore famStore;
+	
+	// use to store the evolution names. 4 is the max number of fams in an
+	// evo line (for now). This doesn't get cleared for each new fam but is 
+	// overwritten (can be partially overwritten), so it can potentially be
+	// dangerous...
+	public static String[] famEvoNames = new String[4];
     
     public AddFamiliarInfoTask(FamDetailActivity activity) {
         this.activity = activity;
@@ -52,6 +60,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 		addFamStat();
 		addFamDetail();		
 		addFamSpecialInformation();
+		addFamEvolutionLine();
     }
 	
 	public void addFamImage() {
@@ -279,10 +288,10 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 		}
 		
 		// the tier rows
-		new AddTierInfoTask(detailTable, activity, activity.famName).execute();
+		new AddTierInfoTask(detailTable, activity, famName).execute();
 				
 		detailTable.setColumnShrinkable(1, true);
-		detailTable.setStretchAllColumns(true);		
+		detailTable.setStretchAllColumns(true);
 	}
 
 	public void addFamSpecialInformation() {
@@ -324,5 +333,35 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 					+ "The first attack it does in a turn can only trigger the first skill, "
 					+ "while the second attack can only trigger the second skill." + "\n\n");
 		}
+	}
+	
+	public void addFamEvolutionLine() {
+		if (famStore.isWarlord(famName)) return;
+		TableLayout evoTable = (TableLayout) activity.findViewById(R.id.evoTable);
+		Document famDOM = famStore.getFamDOM(famName);
+		
+		// get the evolution names
+		Elements evos = famDOM.getElementById("mw-content-text").getElementsByTag("ol").first().getElementsByTag("li");
+		
+		int count = 1;
+		for (Element evo : evos) {
+			String text = evo.text();
+			famEvoNames[count-1] = text;
+			TableRow tr = new TableRow(activity);
+			TextView tv1 = new TextView(activity); tv1.setText(count + ". " + text); tr.addView(tv1);
+			evoTable.addView(tr);
+			activity.addLineSeparator(evoTable);
+			tr.setId(count - 1); // set the row id to use for fam name retrieval later
+			tr.setOnClickListener(new View.OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+		            Intent intent = new Intent(activity, FamDetailActivity.class);
+		            intent.putExtra(MainActivity.FAM_NAME, famEvoNames[v.getId()]);
+		            activity.startActivity(intent);
+				}
+			});
+			count++;
+		}
+		
 	}
 }
