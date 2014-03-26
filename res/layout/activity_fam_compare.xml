@@ -96,7 +96,7 @@
 	            android:id="@+id/tableRow2"
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"
-	            android:background="#009E60"
+	            android:background="#00508E"
 	            android:gravity="center|center_vertical" >
 	
 	            <TextView
@@ -278,6 +278,86 @@
 		            android:layout_weight="1"
 		            android:background="@android:color/darker_gray" />
 	        </TableRow>
+	        
+			<TableRow
+	            android:id="@+id/tableRow_dummy2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+
+	            <TextView
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:gravity="center"
+	                android:textStyle="bold" />
+	        </TableRow>
+	        
+			<TableRow
+	            android:id="@+id/tableRow3"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:background="#6b0c00"
+	            android:gravity="center|center_vertical" >
+	
+	            <TextView
+	                android:id="@+id/skillLabel"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:gravity="center"
+	                android:text="Skill"
+	                android:textColor="#FFFFFF" />
+
+	        </TableRow>
+            
+            <TableRow
+                    android:id="@+id/TableRowSkill1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/skill1Left"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/skill1Right"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </TableRow>
+                
+                <TableRow
+                android:id="@+id/tableRow_dummy3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textStyle="bold" />
+                </TableRow>
+                
+                <TableRow
+                    android:id="@+id/TableRowSkill2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/skill2Left"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/skill2Right"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </TableRow>
 
 	    </TableLayout>
 
