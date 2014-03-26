@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.chin.bbdb.LayoutUtil;
 import com.chin.bbdb.R;
 import com.chin.bbdb.activity.FamDetailActivity;
 
@@ -54,9 +55,9 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
     	LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
     	layout.removeView(pgrBar);
 		
-		activity.addRowWithTwoTextView(detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
-		activity.addRowWithTwoTextView(detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);
-		activity.addRowWithTwoTextView(detailTable, "Tower tier", famTowerTier==null? "N/A" : famTowerTier, true);
+		LayoutUtil.addRowWithTwoTextView(activity, detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
+		LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);
+		LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Tower tier", famTowerTier==null? "N/A" : famTowerTier, true);
     }
     
 	/**

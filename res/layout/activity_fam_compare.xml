@@ -129,6 +129,14 @@
 	                android:layout_weight="1"
 	                android:text="HP: " />
 	        </TableRow>
+	        
+	        <TableRow>
+		        <View
+		            android:layout_width="fill_parent"
+		            android:layout_height="1dp"
+		            android:layout_weight="1"
+		            android:background="@android:color/darker_gray" />
+	        </TableRow>
 	
 	        <TableRow
 	            android:id="@+id/tableRow_ATK"
@@ -148,6 +156,14 @@
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
 	                android:text="ATK: " />
+	        </TableRow>
+	        
+	        <TableRow>
+		        <View
+		            android:layout_width="fill_parent"
+		            android:layout_height="1dp"
+		            android:layout_weight="1"
+		            android:background="@android:color/darker_gray" />
 	        </TableRow>
 	
 	        <TableRow
@@ -169,6 +185,14 @@
 	                android:layout_weight="1"
 	                android:text="DEF: " />
 	        </TableRow>
+	        
+	        <TableRow>
+		        <View
+		            android:layout_width="fill_parent"
+		            android:layout_height="1dp"
+		            android:layout_weight="1"
+		            android:background="@android:color/darker_gray" />
+	        </TableRow>
 	
 	        <TableRow
 	            android:id="@+id/tableRow_WIS"
@@ -188,6 +212,14 @@
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
 	                android:text="WIS: " />
+	        </TableRow>
+	        
+	        <TableRow>
+		        <View
+		            android:layout_width="fill_parent"
+		            android:layout_height="1dp"
+		            android:layout_weight="1"
+		            android:background="@android:color/darker_gray" />
 	        </TableRow>
 	
 	        <TableRow
@@ -210,6 +242,14 @@
 	                android:text="AGI: " />
 
 	        </TableRow>
+	        
+	        <TableRow>
+		        <View
+		            android:layout_width="fill_parent"
+		            android:layout_height="1dp"
+		            android:layout_weight="1"
+		            android:background="@android:color/darker_gray" />
+	        </TableRow>
 
 	        <TableRow
 	            android:id="@+id/tableRow_total"
@@ -229,6 +269,14 @@
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
 	                android:text="Total: " />
+	        </TableRow>
+	        
+	        <TableRow>
+		        <View
+		            android:layout_width="fill_parent"
+		            android:layout_height="1dp"
+		            android:layout_weight="1"
+		            android:background="@android:color/darker_gray" />
 	        </TableRow>
 
 	    </TableLayout>

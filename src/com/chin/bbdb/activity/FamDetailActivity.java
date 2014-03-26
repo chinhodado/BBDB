@@ -10,18 +10,12 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -100,14 +94,7 @@ public class FamDetailActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	public void addLineSeparator(ViewGroup view) {
-		View tmpView = new View(this);
-		tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
-		tmpView.setBackgroundColor(0xff444444);//dark grey
-		view.addView(tmpView);
-	}
-	
+		
 	/**
 	 * Some one-time initialization will be done here
 	 */
@@ -132,38 +119,6 @@ public class FamDetailActivity extends ActionBarActivity {
 			evolutionMap.put("3of4", R.drawable.star34);
 			evolutionMap.put("4of4", R.drawable.star44);
 		}
-	}
-	
-	/**
-	 * Add a row with 2 TextView (e.g. Title/Description) to a table.
-	 * @param table The table to add the row to
-	 * @param textView1String The text of the first Textview
-	 * @param textView2String The text of the second TextView
-	 * @param showLineSeparator true if a line separator is added after the new row
-	 */
-	public void addRowWithTwoTextView(TableLayout table, String textView1String, String textView2String, boolean showLineSeparator) {
-		TableRow tr = new TableRow(this);
-		TextView tv1 = new TextView(this); tv1.setText(textView1String); tr.addView(tv1);
-		TextView tv2 = new TextView(this); tv2.setText(textView2String); tr.addView(tv2);
-		table.addView(tr);
-		if (showLineSeparator) addLineSeparator(table);
-	}
-	
-	/**
-	 * Add a row with 2 TextView (e.g. Title/Description) to a table.
-	 * @param table The table to add the row to
-	 * @param textView1String The text of the first Textview
-	 * @param textView2String The text of the second TextView
-	 * @param typeface The typeface for the two TextView
-	 * @param showLineSeparator true if a line separator is added after the new row
-	 */
-	public void addRowWithTwoTextView(TableLayout table, String textView1String, String textView2String, boolean showLineSeparator, Typeface typeface) {
-		TableRow tr = new TableRow(this);
-		TextView tv1 = new TextView(this); tv1.setText(textView1String); tr.addView(tv1);
-		TextView tv2 = new TextView(this); tv2.setText(textView2String); tr.addView(tv2);
-		table.addView(tr);
-		if (showLineSeparator) addLineSeparator(table);
-		tv1.setTypeface(typeface); tv2.setTypeface(typeface);
 	}
 	
 	public void onStart() {
