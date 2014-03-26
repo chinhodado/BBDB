@@ -5,6 +5,10 @@ import java.text.DecimalFormat;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.chin.bbdb.FamStore;
@@ -41,10 +45,10 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
     }
 	
 	public void addFamImage() {
-    	// remove the spinner
-//    	ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar1);
-//    	LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
-//    	layout.removeView(pgrBar);
+    	// remove the spinner row
+    	TableLayout compareTable = (TableLayout) activity.findViewById(R.id.compareTable);
+    	TableRow row = (TableRow) activity.findViewById(R.id.tableRow_waiting);
+    	compareTable.removeView(row);
     	
     	// set the image
     	ImageView bmImage = (ImageView) activity.findViewById(R.id.imageView_leftFam);

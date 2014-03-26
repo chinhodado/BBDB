@@ -37,6 +37,25 @@
 	        </TableRow>
 
 	        <TableRow
+	            android:id="@+id/tableRow_waiting"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+
+	            <ProgressBar
+	                android:id="@+id/progressBar_left"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1" />
+
+	            <ProgressBar
+	                android:id="@+id/progressBar_right"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1" />
+
+	        </TableRow>
+
+	        <TableRow
 	            android:id="@+id/tableRowName"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
