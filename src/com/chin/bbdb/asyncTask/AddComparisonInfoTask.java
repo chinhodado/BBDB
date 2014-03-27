@@ -8,18 +8,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.text.Html;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.chin.bbdb.FamStore;
-import com.chin.bbdb.LayoutUtil;
 import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
 import com.chin.bbdb.activity.FamCompareActivity;
@@ -142,26 +138,27 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 	public void addFamSkill() {
 	    String[] skillHTMLLeft = famStore.getSkillHTMLString(famNameLeft);
 	    String[] skillHTMLRight = famStore.getSkillHTMLString(famNameRight);
-        TableLayout compareTable = (TableLayout) activity.findViewById(R.id.compareTable);
+	    
+	    // help with looping
+	    String[] skillHTMLs = {skillHTMLLeft[0], skillHTMLLeft[1], skillHTMLRight[0], skillHTMLRight[1]};
         
-//        // remove the spinner
-//        ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar2);
-//        LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
-//        layout.removeView(pgrBar);
-        
-        for (int i = 0; i < skillHTMLLeft.length; i++) {
+        for (int i = 0; i < skillHTMLs.length; i++) {
+                        
+            if (skillHTMLs[i] == null) continue;
             
-            if (skillHTMLLeft[i] == null) continue;
-            
-            Document skillDOM = Jsoup.parse(skillHTMLLeft[i]);
+            Document skillDOM = Jsoup.parse(skillHTMLs[i]);
             Element infoBox = skillDOM.getElementsByClass("infobox").first();
             Elements skRows = infoBox.getElementsByTag("tbody").first().getElementsByTag("tr");
             
             TextView tvtmp = null;
             if (i == 0) {
                 tvtmp = (TextView) activity.findViewById(R.id.skill1Left);
-            } else {
+            } else if (i == 1) {
+                tvtmp = (TextView) activity.findViewById(R.id.skill2Left);
+            } else if (i == 2) {
                 tvtmp = (TextView) activity.findViewById(R.id.skill1Right);
+            } else {
+                tvtmp = (TextView) activity.findViewById(R.id.skill2Right);
             }
             
             int count = 0;
@@ -171,50 +168,6 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
                 if (count == 0) {
                     // get the skill name
                     String skillName = row.getElementsByTag("th").text().trim();
-                    skillName = "<b>" + skillName + "</b> "; 
-                    str += (skillName + "<br/>");
-                    count++;
-                }
-                else {
-                    Elements cells = row.getElementsByTag("td");
-                    String st1 = "", st2 = "";
-                    try {
-                        st1 = cells.get(0).text().trim();
-                        st2 = cells.get(1).text().trim();
-                    } catch (Exception e) {}
-    
-                    if (!st1.equals("") || !st2.equals("")) {
-                        st1 = "<b>" + st1 + "</b> "; 
-                        str += (st1 + ": " + st2 + "<br/>");
-                    }
-                    count++;
-                }
-            }
-            tvtmp.setText(Html.fromHtml(str));
-        }
-        
-        for (int i = 0; i < skillHTMLRight.length; i++) {
-            
-            if (skillHTMLRight[i] == null) continue;
-            
-            Document skillDOM = Jsoup.parse(skillHTMLRight[i]);
-            Element infoBox = skillDOM.getElementsByClass("infobox").first();
-            Elements skRows = infoBox.getElementsByTag("tbody").first().getElementsByTag("tr");
-            
-            TextView tvtmp = null;
-            if (i == 0) {
-                tvtmp = (TextView) activity.findViewById(R.id.skill2Left);
-            } else {
-                tvtmp = (TextView) activity.findViewById(R.id.skill2Right);
-            }
-
-            int count = 0;
-            String str = "";
-
-            for (Element row : skRows) {
-                if (count == 0) {
-                    // get the skill name
-                    String skillName = row.getElementsByTag("th").text().trim();                
                     skillName = "<b>" + skillName + "</b> "; 
                     str += (skillName + "<br/>");
                     count++;
