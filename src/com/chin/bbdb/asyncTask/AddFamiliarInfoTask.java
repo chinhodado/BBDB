@@ -47,21 +47,21 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
     @Override
 	protected Void doInBackground(String... params) {
     	this.famName = params[0];
-    	famStore.getStats(this.famName);
-    	famStore.getImage(this.famName);
-    	famStore.getSkillHTMLString(this.famName);
+    	try { famStore.getStats(this.famName);           } catch (Exception e) {e.printStackTrace();}
+    	try { famStore.getImage(this.famName);           } catch (Exception e) {e.printStackTrace();}
+    	try { famStore.getSkillHTMLString(this.famName); } catch (Exception e) {e.printStackTrace();}
 		return null;
     }
 
 	@Override
     protected void onPostExecute(Void params) {
 		// all of these should be fast
-		addFamImage();
-		addFamSkill();
-		addFamStat();
-		addFamDetail();		
-		addFamSpecialInformation();
-		addFamEvolutionLine();
+	    try { addFamImage();               } catch (Exception e) {e.printStackTrace();}
+	    try { addFamSkill();               } catch (Exception e) {e.printStackTrace();}
+	    try { addFamStat();                } catch (Exception e) {e.printStackTrace();}
+	    try { addFamDetail();	           } catch (Exception e) {e.printStackTrace();}	
+	    try { addFamSpecialInformation();  } catch (Exception e) {e.printStackTrace();}
+	    try { addFamEvolutionLine();       } catch (Exception e) {e.printStackTrace();}
     }
 	
 	public void addFamImage() {

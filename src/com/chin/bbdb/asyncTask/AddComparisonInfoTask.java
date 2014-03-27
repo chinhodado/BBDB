@@ -35,20 +35,22 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 	protected Void doInBackground(String... params) {
     	this.famNameLeft = params[0];
     	this.famNameRight = params[1];
-    	famStore.getStats(this.famNameLeft);
-    	famStore.getImage(this.famNameLeft);
-    	famStore.getStats(this.famNameRight);
-    	famStore.getImage(this.famNameRight);
-    	famStore.getSkillHTMLString(this.famNameLeft);
-    	famStore.getSkillHTMLString(this.famNameRight);
+    	
+    	// each of these can fail independently (?)
+    	try { famStore.getStats(this.famNameLeft);            } catch (Exception e) {e.printStackTrace();}
+    	try { famStore.getImage(this.famNameLeft);            } catch (Exception e) {e.printStackTrace();}
+    	try { famStore.getStats(this.famNameRight);           } catch (Exception e) {e.printStackTrace();}
+    	try { famStore.getImage(this.famNameRight);           } catch (Exception e) {e.printStackTrace();}
+    	try { famStore.getSkillHTMLString(this.famNameLeft);  } catch (Exception e) {e.printStackTrace();}
+    	try { famStore.getSkillHTMLString(this.famNameRight); } catch (Exception e) {e.printStackTrace();}
 		return null;
     }
     
     protected void onPostExecute(Void params) {
 		// all of these should be fast
-		try { addFamImage(); } catch (Exception e) {}
-		try { addFamStat();  } catch (Exception e) {}
-		try { addFamSkill(); } catch (Exception e) {}
+		try { addFamImage(); } catch (Exception e) {e.printStackTrace();}
+		try { addFamStat();  } catch (Exception e) {e.printStackTrace();}
+		try { addFamSkill(); } catch (Exception e) {e.printStackTrace();}
     }
 	
 	public void addFamImage() {

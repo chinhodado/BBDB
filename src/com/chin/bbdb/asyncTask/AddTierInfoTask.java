@@ -45,6 +45,11 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
     protected void onPostExecute(Void param) {
+	    
+	    //just in case...
+	    if (FamDetailActivity.pvpTierMap == null || FamDetailActivity.raidTierMap == null || FamDetailActivity.towerTierMap == null)
+	        return;
+	    
 		String famPVPTier = null, famRaidTier = null, famTowerTier = null;
 		famPVPTier   = FamDetailActivity.pvpTierMap.get(famName);
 		famRaidTier  = FamDetailActivity.raidTierMap.get(famName);
