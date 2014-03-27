@@ -80,7 +80,12 @@ public final class FamStore {
     
 	// maps a fam name to its image. Remove the last inserted image when the capacity is exceeded
     @SuppressWarnings("serial")
-    LinkedHashMap<String, Bitmap> imageStore = new LinkedHashMap<String, Bitmap>(MAX_CACHED_IMAGE + 1) {
+    LinkedHashMap<String, Bitmap> imageStore 
+                = new LinkedHashMap<String, Bitmap>(MAX_CACHED_IMAGE + 1, // initial capacity, make it 1 more than 
+                                                                          //the max num of cached coz of paranoia
+                                                    0.75f,                // default load factor
+                                                    true)                 // true for access-order
+     {
         protected boolean removeEldestEntry(Map.Entry<String, Bitmap> eldest) {
            return size() > MAX_CACHED_IMAGE;
         }
