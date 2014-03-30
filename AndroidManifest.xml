@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.chin.bbdb"
-    android:versionCode="9"
-    android:versionName="1.2.5" >
+    android:versionCode="11"
+    android:versionName="1.2.7" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -27,24 +27,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/AppTheme"
             android:name="com.chin.bbdb.activity.FamDetailActivity"
             android:label="@string/title_activity_fam_detail"
             android:parentActivityName="com.chin.bbdb.activity.MainActivity"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chin.bbdb.activity.MainActivity" />
         </activity>
         <activity
-            android:theme="@style/AppTheme"
             android:name="com.chin.bbdb.activity.FamCompareActivity"
             android:label="@string/title_activity_fam_compare"
             android:parentActivityName="com.chin.bbdb.activity.FamDetailActivity"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chin.bbdb.activity.FamDetailActivity" />
+        </activity>
+        <activity
+            android:name="com.chin.bbdb.activity.HelpActivity"
+            android:label="@string/title_activity_help" >
         </activity>
     </application>
 
