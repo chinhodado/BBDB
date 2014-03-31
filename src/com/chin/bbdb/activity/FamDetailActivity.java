@@ -5,6 +5,8 @@ import java.util.HashMap;
 import com.chin.bbdb.R;
 import com.chin.bbdb.asyncTask.AddFamiliarInfoTask;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -37,6 +39,11 @@ public class FamDetailActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fam_detail);
+		
+	    // Look up the AdView as a resource and load a request.
+        AdView adView = (AdView)this.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 		
 		Intent intent = getIntent(); // careful, this intent may not be the intent from MainActivity...
 		String tmpName = intent.getStringExtra(MainActivity.FAM_NAME);

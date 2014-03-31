@@ -3,6 +3,8 @@ package com.chin.bbdb.activity;
 import com.chin.bbdb.R;
 import com.chin.bbdb.asyncTask.AddComparisonInfoTask;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
@@ -16,6 +18,11 @@ public class FamCompareActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fam_compare);
+		
+	    // Look up the AdView as a resource and load a request.
+        AdView adView = (AdView)this.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
 		Intent intent = getIntent();
 		new AddComparisonInfoTask(this).execute(intent.getStringExtra("FAM_NAME_LEFT"),
