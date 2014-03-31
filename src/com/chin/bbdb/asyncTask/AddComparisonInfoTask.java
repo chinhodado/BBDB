@@ -19,6 +19,7 @@ import com.chin.bbdb.FamStore;
 import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
 import com.chin.bbdb.activity.FamCompareActivity;
+import com.chin.bbdb.activity.FamDetailActivity;
 
 public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 	
@@ -135,6 +136,19 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 		// add the name label
 		((TextView) activity.findViewById(R.id.textView_name_left)).setText(famNameLeft);
 		((TextView) activity.findViewById(R.id.textView_name_right)).setText(famNameRight);
+		
+		// add star and rarity images
+		ImageView img_star_left = (ImageView) activity.findViewById(R.id.imageView_leftFam_star);
+		img_star_left.setImageResource(FamDetailActivity.evolutionMap.get(famStore.getStarLevel(famNameLeft)));
+		
+	    ImageView img_rarity_left = (ImageView) activity.findViewById(R.id.imageView_leftFam_rarity);
+	    img_rarity_left.setImageResource(FamDetailActivity.evolutionMap.get(famStore.getRarity(famNameLeft)));
+		
+	    ImageView img_star_right = (ImageView) activity.findViewById(R.id.imageView_rightFam_star);
+	    img_star_right.setImageResource(FamDetailActivity.evolutionMap.get(famStore.getStarLevel(famNameRight)));
+	    
+        ImageView img_rarity_right = (ImageView) activity.findViewById(R.id.imageView_rightFam_rarity);
+        img_rarity_right.setImageResource(FamDetailActivity.evolutionMap.get(famStore.getRarity(famNameRight)));
 	}
 
 	public void addFamSkill() {

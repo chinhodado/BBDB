@@ -40,6 +40,7 @@ public final class FamStore {
 		String name = null;
 		FamStats stats = null;
 		String starLevel = null;
+		String rarity = null;
 		Document famDOM;
 		
 		boolean isFinalEvolution = false;
@@ -212,17 +213,27 @@ public final class FamStore {
 				
 		} catch (Exception e) {
 			Log.i("FamDetail", "Error parsing number, probably N/A");
-		}
-		
-		if (currentFam.isWarlord || currentFam.isFinalEvolution) {
+		}		
 	    	
-	    	// the link to the star level image
-	    	String starLevelLink = famDOM.getElementsByClass("infobox").first() // the detail box
-	    						.getElementsByTag("tbody").first().getElementsByTag("tr").get(4) // the evolution row
-	    						.getElementsByTag("td").get(1) // the second cell (star image)
-	    						.getElementsByTag("a").last().attr("href"); // link to the image
-	    	String starLevel =	starLevelLink.substring(starLevelLink.length() - 8, starLevelLink.length() - 4); // will be of form "AofB"
-	    	currentFam.starLevel = starLevel;
+    	// get fam star level
+    	String starLevelLink = famDOM.getElementsByClass("infobox").first() // the detail box
+    						.getElementsByTag("tbody").first().getElementsByTag("tr").get(4) // the evolution row
+    						.getElementsByTag("td").get(1) // the second cell (star image)
+    						.getElementsByTag("a").last().attr("href"); // link to the image
+    	String starLevel =	starLevelLink.substring(starLevelLink.length() - 8, starLevelLink.length() - 4); // will be of form "AofB"
+    	currentFam.starLevel = starLevel;
+    	
+    	// get fam rarity
+    	// TODO: move this to a separate info parsing function
+    	String[] tmpArr = famDOM.getElementsByClass("infobox").first() // the detail box
+                .getElementsByTag("tbody").first().getElementsByTag("tr").get(4) // the evolution row
+                .getElementsByTag("td").get(1) // the second cell (star image)
+                .getElementsByTag("a").first().attr("href") // link to the image
+    	        .split("\\."); // split by .
+    	currentFam.rarity = tmpArr[tmpArr.length - 2]; // get the second last token
+    	
+        if (currentFam.isWarlord || currentFam.isFinalEvolution) {
+
 	    	int toAdd = 0;
 
 	    	if (currentFam.isWarlord || starLevel.startsWith("1")) toAdd = 500;      // 1 star
@@ -381,6 +392,15 @@ public final class FamStore {
 	public String getStarLevel(String famName) {
 		return famStore.get(famName).starLevel;
 	}
+	
+	/**
+     * No check for null right now. Always remember to call only after the info is available
+     * @param famName The name of the familiar
+     * @return The rarity of the familiar
+     */
+    public String getRarity(String famName) {
+        return famStore.get(famName).rarity;
+    }
 	
 	/**
 	 * No check for null right now. Always remember to call only after the info is available

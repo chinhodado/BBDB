@@ -77,6 +77,50 @@
 	                android:textStyle="bold" />
 
 	        </TableRow>
+            
+	        <TableRow
+	            android:id="@+id/tableRow_evo"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:gravity="center_vertical" >
+                
+                <!-- manual and hackish - don't attemp to reproduce this!! -->
+                <!-- ...on second though, this is a nice way to do it. The image is sized relatively to the text size (14dp/sp something)
+                     it's just the layout_weight that I'm not sure about. And also the adjustViewBounds -->
+
+	            <ImageView
+	                android:id="@+id/imageView_leftFam_rarity"
+	                android:layout_height="14dp"
+                    android:scaleType="fitEnd"
+                    android:adjustViewBounds="true"
+                    android:layout_weight="0.2"
+	                android:contentDescription="leftFam"/>
+	
+	            <ImageView
+	                android:id="@+id/imageView_leftFam_star"
+	                android:layout_height="10dp"
+                    android:scaleType="fitStart"
+                    android:adjustViewBounds="true"
+                    android:layout_weight="0.3"
+	                android:contentDescription="leftFam"/>
+                
+	            <ImageView
+	                android:id="@+id/imageView_rightFam_rarity"
+	                android:layout_height="14dp"
+                    android:scaleType="fitEnd"
+                    android:adjustViewBounds="true"
+                    android:layout_weight="0.2"
+	                android:contentDescription="leftFam"/>
+	
+	            <ImageView
+	                android:id="@+id/imageView_rightFam_star"
+	                android:layout_height="10dp"
+                    android:scaleType="fitStart"
+                    android:adjustViewBounds="true"
+                    android:layout_weight="0.3"
+	                android:contentDescription="rightFam" />
+
+	        </TableRow>
 
 	        <TableRow
 	            android:id="@+id/tableRow_dummy"
