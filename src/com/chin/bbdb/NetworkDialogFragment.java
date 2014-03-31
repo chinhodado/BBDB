@@ -15,8 +15,9 @@ public class NetworkDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Error getting familiar list. Make sure you're connected to the internet and try again.")
                .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                	   System.exit(0);
+                   @Override
+                public void onClick(DialogInterface dialog, int id) {
+                     System.exit(0);
                    }
                });
         // Create the AlertDialog object and return it

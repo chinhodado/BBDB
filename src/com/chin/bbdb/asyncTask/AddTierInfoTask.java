@@ -19,11 +19,11 @@ import android.widget.ProgressBar;
 import android.widget.TableLayout;
 
 class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
-	TableLayout detailTable;
-	FamDetailActivity activity;
-	String famName;
-	String pvpTierHTML = null, raidTierHTML = null, towerTierHTML = null;
-    
+    TableLayout detailTable;
+    FamDetailActivity activity;
+    String famName;
+    String pvpTierHTML = null, raidTierHTML = null, towerTierHTML = null;
+
     public AddTierInfoTask(TableLayout detailTable, FamDetailActivity activity, String famName) {
         this.detailTable = detailTable;
         this.activity = activity;
@@ -31,97 +31,97 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-	protected Void doInBackground(Void... params) {
-    	if (FamDetailActivity.pvpTierMap == null || FamDetailActivity.raidTierMap == null || FamDetailActivity.towerTierMap == null) {
-			try {
-				fetchTierMaps();
-			} catch (Exception e) {
-				Log.e("FamDetail", "Error fetching the tier HTML pages");
-				cancel(true);
-			}
-    	}
-		return null;
+    protected Void doInBackground(Void... params) {
+        if (FamDetailActivity.pvpTierMap == null || FamDetailActivity.raidTierMap == null || FamDetailActivity.towerTierMap == null) {
+            try {
+                fetchTierMaps();
+            } catch (Exception e) {
+                Log.e("FamDetail", "Error fetching the tier HTML pages");
+                cancel(true);
+            }
+        }
+        return null;
     }
 
-	@Override
+    @Override
     protected void onPostExecute(Void param) {
-	    
-	    //just in case...
-	    if (FamDetailActivity.pvpTierMap == null || FamDetailActivity.raidTierMap == null || FamDetailActivity.towerTierMap == null)
-	        return;
-	    
-		String famPVPTier = null, famRaidTier = null, famTowerTier = null;
-		famPVPTier   = FamDetailActivity.pvpTierMap.get(famName);
-		famRaidTier  = FamDetailActivity.raidTierMap.get(famName);
-		famTowerTier = FamDetailActivity.towerTierMap.get(famName);
-		
-    	// remove the spinner
-    	ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar3);
-    	LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
-    	layout.removeView(pgrBar);
-		
-		LayoutUtil.addRowWithTwoTextView(activity, detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
-		LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);
-		LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Tower tier", famTowerTier==null? "N/A" : famTowerTier, true);
+
+        //just in case...
+        if (FamDetailActivity.pvpTierMap == null || FamDetailActivity.raidTierMap == null || FamDetailActivity.towerTierMap == null)
+            return;
+
+        String famPVPTier = null, famRaidTier = null, famTowerTier = null;
+        famPVPTier   = FamDetailActivity.pvpTierMap.get(famName);
+        famRaidTier  = FamDetailActivity.raidTierMap.get(famName);
+        famTowerTier = FamDetailActivity.towerTierMap.get(famName);
+
+        // remove the spinner
+        ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar3);
+        LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
+        layout.removeView(pgrBar);
+
+        LayoutUtil.addRowWithTwoTextView(activity, detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
+        LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);
+        LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Tower tier", famTowerTier==null? "N/A" : famTowerTier, true);
     }
-    
-	/**
-	 * Initialize pvpTierMap, raidTierMap and towerTierMap 
-	 * @throws IOException 
-	 */
-	public void fetchTierMaps() throws IOException {
-		
-		pvpTierHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/PvP&action=render").ignoreContentType(true).execute().body();
-		raidTierHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/Raid&action=render").ignoreContentType(true).execute().body();
-		towerTierHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/Tower&action=render").ignoreContentType(true).execute().body();
 
-		Document pvpDOM   = Jsoup.parse(pvpTierHTML);
-		Document raidDOM  = Jsoup.parse(raidTierHTML);
-		Document towerDOM = Jsoup.parse(towerTierHTML);
+    /**
+     * Initialize pvpTierMap, raidTierMap and towerTierMap
+     * @throws IOException
+     */
+    public void fetchTierMaps() throws IOException {
 
-		Elements pvpTables   = pvpDOM.getElementsByClass("wikitable");
-		Elements raidTables  = raidDOM.getElementsByClass("wikitable");
-		Elements towerTables = towerDOM.getElementsByClass("wikitable");
+        pvpTierHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/PvP&action=render").ignoreContentType(true).execute().body();
+        raidTierHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/Raid&action=render").ignoreContentType(true).execute().body();
+        towerTierHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/index.php?title=Familiar_Tier_List/Tower&action=render").ignoreContentType(true).execute().body();
 
-		String[] tiers = {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"};
+        Document pvpDOM   = Jsoup.parse(pvpTierHTML);
+        Document raidDOM  = Jsoup.parse(raidTierHTML);
+        Document towerDOM = Jsoup.parse(towerTierHTML);
 
-		FamDetailActivity.pvpTierMap = new HashMap<String, String>();
-		FamDetailActivity.raidTierMap = new HashMap<String, String>();
-		FamDetailActivity.towerTierMap = new HashMap<String, String>();
+        Elements pvpTables   = pvpDOM.getElementsByClass("wikitable");
+        Elements raidTables  = raidDOM.getElementsByClass("wikitable");
+        Elements towerTables = towerDOM.getElementsByClass("wikitable");
 
-		for (int i = 0; i < 9; i++){ // 9 tables		
-			Elements pvpRows = pvpTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
-			int countRow = 0;
-			for (Element pvpRow : pvpRows) {
-				countRow++;
-				if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+        String[] tiers = {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"};
 
-				// second cell, bold text, a, text
-				String famName = pvpRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
-				FamDetailActivity.pvpTierMap.put(famName, tiers[i]);
-			}
+        FamDetailActivity.pvpTierMap = new HashMap<String, String>();
+        FamDetailActivity.raidTierMap = new HashMap<String, String>();
+        FamDetailActivity.towerTierMap = new HashMap<String, String>();
 
-			Elements raidRows = raidTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
-			countRow = 0;
-			for (Element raidRow : raidRows) {
-				countRow++;
-				if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+        for (int i = 0; i < 9; i++){ // 9 tables
+            Elements pvpRows = pvpTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
+            int countRow = 0;
+            for (Element pvpRow : pvpRows) {
+                countRow++;
+                if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
 
-				// second cell, bold text, a, text
-				String famName = raidRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
-				FamDetailActivity.raidTierMap.put(famName, tiers[i]);
-			}
+                // second cell, bold text, a, text
+                String famName = pvpRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
+                FamDetailActivity.pvpTierMap.put(famName, tiers[i]);
+            }
 
-			Elements towerRows = towerTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
-			countRow = 0;
-			for (Element towerRow : towerRows) {
-				countRow++;
-				if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+            Elements raidRows = raidTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
+            countRow = 0;
+            for (Element raidRow : raidRows) {
+                countRow++;
+                if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
 
-				// second cell, bold text, a, text
-				String famName = towerRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
-				FamDetailActivity.towerTierMap.put(famName, tiers[i]);
-			}
-		}
-	}
+                // second cell, bold text, a, text
+                String famName = raidRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
+                FamDetailActivity.raidTierMap.put(famName, tiers[i]);
+            }
+
+            Elements towerRows = towerTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
+            countRow = 0;
+            for (Element towerRow : towerRows) {
+                countRow++;
+                if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+
+                // second cell, bold text, a, text
+                String famName = towerRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
+                FamDetailActivity.towerTierMap.put(famName, tiers[i]);
+            }
+        }
+    }
 }

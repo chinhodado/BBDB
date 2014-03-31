@@ -4,17 +4,20 @@
     <string name="app_name">Blood Brothers Database</string>
     <string name="action_settings">Settings</string>
     <string name="action_help">Help</string>
-    <string name="title_activity_fam_detail">FamDetailActivity</string>
+    <string name="title_activity_fam_detail">Familiar detail</string>
     <string name="title_activity_fam_compare">Familiar comparison</string>
     <string name="title_activity_help">Help</string>
     <string name="help_text">
       <![CDATA[
         <b>Q: What are the different stats type (Base, Max, PE, POPE)?</b> <br/>
         A: <br/> 
-        Base is the stats of a familiar at capture or from a pact.   <br/><br/>
-        Max is the stats of a familiar fully leveled up, without evolution or adding crystals. <br/><br/>
+        Base is the stats of a familiar at capture or from a pact (at LV1). 
+            It is the lowest stats that you can see of a familiar  <br/><br/>
+        Max is the stats of a familiar fully leveled up (i.e. LV 70 for a Rare, 
+            or LV 99 for an Epic), without evolution or adding crystals. <br/><br/>
         PE (Perfect Evolution) is the highest stats of a familiar that can be achieved by 
-            leveling up and evolving, and without adding crystals. <br/><br/>
+            leveling up and evolving, AND without adding crystals. For example, to make a 
+            PE Epic 4 familiar you need 8 Rare 1 familiars<br/><br/>
         POPE (Perfect Over Perfect Evolution) is similar to PE, but with the maximum number of crystals added. 
             This is generally 400 crystals for 8-card evolutions and 100 for 2-card evolutions.<br/><br/>
             
@@ -24,7 +27,7 @@
         <b>Q: I like this app!</b> <br/>
         A: I\'m glad to hear it. Please rate it on the Play Store :)<br/><br/>
         
-        <b>Q: This app sucks!/I found a bug/This is not useful/...</b> <br/>
+        <b>Q: This app sucks!/I found a bug/This is not useful/I have a suggestion...</b> <br/>
         A: Please drop me a line at chinho.dev@gmail.com and let me know how I can improve it. Thank you :)<br/><br/>
       ]]>
     </string>

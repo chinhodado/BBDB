@@ -15,7 +15,7 @@ public class HelpActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
         TextView tv = (TextView) findViewById(R.id.textView_help);
-        tv.setText(Html.fromHtml(getString(R.string.help_text))); 
+        tv.setText(Html.fromHtml(getString(R.string.help_text)));
     }
 
     @Override

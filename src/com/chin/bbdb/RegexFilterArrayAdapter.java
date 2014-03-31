@@ -333,6 +333,7 @@ public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getCount() {
         return mObjects.size();
     }
@@ -340,6 +341,7 @@ public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public T getItem(int position) {
         return mObjects.get(position);
     }
@@ -358,6 +360,7 @@ public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public long getItemId(int position) {
         return position;
     }
@@ -365,6 +368,7 @@ public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         return createViewFromResource(position, convertView, parent, mResource);
     }
@@ -441,6 +445,7 @@ public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public Filter getFilter() {
         if (mFilter == null) {
             mFilter = new ArrayFilter();
@@ -455,7 +460,7 @@ public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterabl
      */
     private class ArrayFilter extends Filter {
         @SuppressLint("DefaultLocale")
-		@Override
+        @Override
         protected FilterResults performFiltering(CharSequence prefix) {
             FilterResults results = new FilterResults();
 
@@ -491,7 +496,7 @@ public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterabl
                     Pattern r = Pattern.compile(filterString);
                     Matcher m = r.matcher(valueText);
                     if (m.find()) {
-                    	newValues.add(value);
+                        newValues.add(value);
                     }
                 }
 
@@ -503,7 +508,7 @@ public class RegexFilterArrayAdapter<T> extends BaseAdapter implements Filterabl
         }
 
         @SuppressWarnings("unchecked")
-		@Override
+        @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             //noinspection unchecked
             mObjects = (List<T>) results.values;
