@@ -9,6 +9,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,10 +20,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 
-public class FamDetailActivity extends ActionBarActivity {
+public class FamDetailActivity extends Activity {
 
     public final Activity activity = this;
 
@@ -59,7 +58,7 @@ public class FamDetailActivity extends ActionBarActivity {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflator.inflate(R.layout.actionbar_layout, null);
 
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setCustomView(v);
 

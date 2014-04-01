@@ -15,7 +15,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import android.os.Bundle;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -43,7 +42,6 @@ public class MainActivity extends Activity {
     public static Hashtable<String, String> famLinkTable = null;
     public static RegexFilterArrayAdapter<String> adapter = null;
 
-    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,13 +69,10 @@ public class MainActivity extends Activity {
                     famLinkTable.put(famName, myArray.getJSONObject(i).getString("url"));
                 }
             } catch (Exception e) {
-                if (android.os.Build.VERSION.SDK_INT >= 11)
-                {
                     DialogFragment newFragment = new NetworkDialogFragment();
                     newFragment.setCancelable(false);
                     newFragment.show(getFragmentManager(), "no net");
                     e.printStackTrace();
-                }
                 return;
             }
         }

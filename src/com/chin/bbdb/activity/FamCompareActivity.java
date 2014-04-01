@@ -6,13 +6,13 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class FamCompareActivity extends ActionBarActivity {
+public class FamCompareActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
