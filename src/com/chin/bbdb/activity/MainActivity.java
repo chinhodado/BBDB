@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.chin.bbdb.FamStore;
 import com.chin.bbdb.NetworkDialogFragment;
 import com.chin.bbdb.R;
 import com.chin.bbdb.RegexFilterArrayAdapter;
@@ -42,8 +43,7 @@ public class MainActivity extends FragmentActivity {
     public static Activity activity = null;
     public final static String FAM_LINK = "com.chin.BBDB.LINK";
     public final static String FAM_NAME = "com.chin.BBDB.NAME";
-    public static ArrayList<String> famList = null;
-    public static Hashtable<String, String> famLinkTable = null;
+
     public static RegexFilterArrayAdapter<String> adapter = null;
 
     @Override
@@ -54,20 +54,20 @@ public class MainActivity extends FragmentActivity {
         MainActivity.activity = this;
 
         // get the familiar list and their wiki url
-        if (famList == null) {
+        if (FamStore.famList == null) {
             try {
                 String url = "http://bloodbrothersgame.wikia.com/api/v1/Articles/List?category=Familiars&limit=5000&namespaces=0";
                 String jsonString = new NetworkTask().execute(url).get();
                 JSONObject myJSON = new JSONObject(jsonString);
 
-                famList = new ArrayList<String>();
-                famLinkTable = new Hashtable<String, String>();
+                FamStore.famList = new ArrayList<String>();
+                FamStore.famLinkTable = new Hashtable<String, String>();
 
                 JSONArray myArray = myJSON.getJSONArray("items");
                 for (int i = 0; i < myArray.length(); i++) {
                     String famName = myArray.getJSONObject(i).getString("title");
-                    famList.add(famName);
-                    famLinkTable.put(famName, myArray.getJSONObject(i).getString("url"));
+                    FamStore.famList.add(famName);
+                    FamStore.famLinkTable.put(famName, myArray.getJSONObject(i).getString("url"));
                 }
             } catch (Exception e) {
                     DialogFragment newFragment = new NetworkDialogFragment();
@@ -152,7 +152,7 @@ public class MainActivity extends FragmentActivity {
             Activity activity = MainActivity.activity;
 
             try {
-                if (adapter == null) adapter = new RegexFilterArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, famList);
+                if (adapter == null) adapter = new RegexFilterArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, FamStore.famList);
 
                 EditText famEditText = (EditText) view.findViewById(R.id.famEditText);
 
@@ -179,7 +179,7 @@ public class MainActivity extends FragmentActivity {
                             String famName = (String)arg0.getItemAtPosition(position);
                             Intent intent = new Intent(MainActivity.activity, FamDetailActivity.class);
                             intent.putExtra(FAM_NAME, famName);
-                            intent.putExtra(FAM_LINK, MainActivity.famLinkTable.get(famName));
+                            intent.putExtra(FAM_LINK, FamStore.famLinkTable.get(famName));
                             startActivity(intent);
                       }
                 });
