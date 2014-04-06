@@ -15,29 +15,33 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import android.os.Bundle;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
-    public final Activity activity = this;
+    public static Activity activity = null;
     public final static String FAM_LINK = "com.chin.BBDB.LINK";
     public final static String FAM_NAME = "com.chin.BBDB.NAME";
-    private EditText famEditText;
-    private ListView famListView;
-    public static String jsonString = null;
     public static ArrayList<String> famList = null;
     public static Hashtable<String, String> famLinkTable = null;
     public static RegexFilterArrayAdapter<String> adapter = null;
@@ -47,16 +51,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Look up the AdView as a resource and load a request.
-        AdView adView = (AdView)this.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        MainActivity.activity = this;
 
         // get the familiar list and their wiki url
         if (famList == null) {
             try {
                 String url = "http://bloodbrothersgame.wikia.com/api/v1/Articles/List?category=Familiars&limit=5000&namespaces=0";
-                jsonString = new NetworkTask().execute(url).get();
+                String jsonString = new NetworkTask().execute(url).get();
                 JSONObject myJSON = new JSONObject(jsonString);
 
                 famList = new ArrayList<String>();
@@ -77,42 +78,20 @@ public class MainActivity extends Activity {
             }
         }
 
-        try {
-            if (adapter == null) adapter = new RegexFilterArrayAdapter<String>(this, android.R.layout.simple_list_item_1, famList);
+        // add the tabs
+        ActionBar bar = getActionBar();
+        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-            famEditText = (EditText) findViewById(R.id.famEditText);
+        bar.addTab(bar.newTab().setText("All familiars")
+                .setTabListener(new TabListener<SearchFamFragment>(this, "all fam", SearchFamFragment.class)));
+        bar.addTab(bar.newTab().setText("New familiars")
+                .setTabListener(new TabListener<NewFamFragment>(this, "new fam", NewFamFragment.class)));
 
-            famEditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    //adapter.getFilter().filter(s);
-                }
+        // Look up the AdView as a resource and load a request.
+        AdView adView = (AdView)this.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                @Override
-                public void afterTextChanged(Editable s) {
-                    adapter.getFilter().filter(s);
-                }
-            });
-
-            famListView = (ListView) findViewById(R.id.famListView);
-            famListView.setAdapter(adapter);
-            famListView.setOnItemClickListener(new OnItemClickListener(){
-                @Override
-                public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3)
-                  {
-                        String famName = (String)arg0.getItemAtPosition(position);
-                        Intent intent = new Intent(activity, FamDetailActivity.class);
-                        intent.putExtra(FAM_NAME, famName);
-                        intent.putExtra(FAM_LINK, MainActivity.famLinkTable.get(famName));
-                        startActivity(intent);
-                  }
-            });
-        } catch (Exception e) {
-            Log.e("MainActivity", "Error setting up the fam list");
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -154,5 +133,109 @@ public class MainActivity extends Activity {
         super.onStop();
         // Google Analytics
         EasyTracker.getInstance(this).activityStop(this);
+    }
+
+    public static class NewFamFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            // Inflate the layout for this fragment
+            return inflater.inflate(R.layout.fragment_newfam, container, false);
+        }
+    }
+
+    public static class SearchFamFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            // Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.fragment_searchfam, container, false);
+
+            Activity activity = MainActivity.activity;
+
+            try {
+                if (adapter == null) adapter = new RegexFilterArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, famList);
+
+                EditText famEditText = (EditText) view.findViewById(R.id.famEditText);
+
+                famEditText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        //adapter.getFilter().filter(s);
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        adapter.getFilter().filter(s);
+                    }
+                });
+
+                ListView famListView = (ListView) view.findViewById(R.id.famListView);
+                famListView.setAdapter(adapter);
+                famListView.setOnItemClickListener(new OnItemClickListener(){
+                    @Override
+                    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3)
+                      {
+                            String famName = (String)arg0.getItemAtPosition(position);
+                            Intent intent = new Intent(MainActivity.activity, FamDetailActivity.class);
+                            intent.putExtra(FAM_NAME, famName);
+                            intent.putExtra(FAM_LINK, MainActivity.famLinkTable.get(famName));
+                            startActivity(intent);
+                      }
+                });
+
+            } catch (Exception e) {
+                Log.e("MainActivity", "Error setting up the fam list");
+                e.printStackTrace();
+            }
+
+            return view;
+        }
+    }
+
+    public static class TabListener<T extends Fragment> implements ActionBar.TabListener {
+        private Fragment mFragment;
+        private final Activity mActivity;
+        private final String mTag;
+        private final Class<T> mClass;
+
+        /** Constructor used each time a new tab is created.
+          * @param activity  The host Activity, used to instantiate the fragment
+          * @param tag  The identifier tag for the fragment
+          * @param clz  The fragment's Class, used to instantiate the fragment
+          */
+        public TabListener(Activity activity, String tag, Class<T> clz) {
+            mActivity = activity;
+            mTag = tag;
+            mClass = clz;
+        }
+
+        /* The following are each of the ActionBar.TabListener callbacks */
+
+        @Override
+        public void onTabSelected(Tab tab, FragmentTransaction ft) {
+            // Check if the fragment is already initialized
+            if (mFragment == null) {
+                // If not, instantiate and add it to the activity
+                mFragment = Fragment.instantiate(mActivity, mClass.getName());
+                ft.add(R.id.tab_viewgroup, mFragment, mTag);
+            } else {
+                // If it exists, simply attach it in order to show it
+                ft.attach(mFragment);
+            }
+        }
+
+        @Override
+        public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+            if (mFragment != null) {
+                // Detach the fragment, because another one is being attached
+                ft.detach(mFragment);
+            }
+        }
+
+        @Override
+        public void onTabReselected(Tab tab, FragmentTransaction ft) {
+            // User selected the already selected tab. Usually do nothing.
+        }
     }
 }
