@@ -2,6 +2,7 @@ package com.chin.bbdb;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -72,11 +73,16 @@ public final class FamStore {
         }
     }
 
-    // a list of all fam available
+    // a list of all fam available, initialized in MainActivity's onCreate()
     public static ArrayList<String> famList = null;
 
-    // map a fam name to its wiki page url
+    // map a fam name to its wiki page url, initialized in MainActivity's onCreate()
     public static Hashtable<String, String> famLinkTable = null;
+
+    // map a fam name to its tiers, initialized in AddTierInfoTask
+    public static HashMap<String, String> pvpTierMap    = null;
+    public static HashMap<String, String> raidTierMap   = null;
+    public static HashMap<String, String> towerTierMap  = null;
 
     // the heart of this class, a storage for familiars' detail
     private static Hashtable<String, FamDetail> famStore = new Hashtable<String, FamDetail>();
@@ -415,6 +421,31 @@ public final class FamStore {
      */
     public Document getFamDOM(String famName) {
         return famStore.get(famName).famDOM;
+    }
+
+    /**
+     * No check for null right now. Always remember to call only after the info is available
+     * @param famName The name of the familiar
+     * @param category One of "PVP", "RAID" or "TOWER"
+     * @return
+     */
+    public String getFamTier(String famName, String category) {
+        String tier = null;
+        if (category.equals("PVP")) {
+            tier = pvpTierMap.get(famName);
+        }
+        else if (category.equals("RAID")) {
+            tier = raidTierMap.get(famName);
+        }
+        else if (category.equals("TOWER")) {
+            tier = towerTierMap.get(famName);
+        }
+
+        if (tier == null) {
+            tier = "N/A";
+        }
+
+        return tier;
     }
 }
 

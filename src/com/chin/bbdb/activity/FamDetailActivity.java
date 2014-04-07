@@ -29,9 +29,6 @@ public class FamDetailActivity extends Activity {
     // the image for that evolution level
     public static HashMap<String, Integer> evolutionMap = null;
 
-    public static HashMap<String, String> pvpTierMap    = null;
-    public static HashMap<String, String> raidTierMap   = null;
-    public static HashMap<String, String> towerTierMap  = null;
     public static String famName = null;
 
     @Override

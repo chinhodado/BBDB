@@ -53,6 +53,7 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
         try { addFamImage(); } catch (Exception e) {e.printStackTrace();}
         try { addFamStat();  } catch (Exception e) {e.printStackTrace();}
         try { addFamSkill(); } catch (Exception e) {e.printStackTrace();}
+        try { addFamTier(); }  catch (Exception e) {e.printStackTrace();}
     }
 
     public void addFamImage() {
@@ -206,5 +207,18 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
             }
             tvtmp.setText(Html.fromHtml(str));
         }
+    }
+
+    public void addFamTier() {
+        // set the texts
+        TextView tvTierLeft = (TextView) activity.findViewById(R.id.tierLeft);
+        tvTierLeft.setText("PvP: " + famStore.getFamTier(famNameLeft, "PVP") + "\n"
+                        + "Raid: " + famStore.getFamTier(famNameLeft, "RAID") + "\n"
+                        + "Tower: " + famStore.getFamTier(famNameLeft, "TOWER"));
+
+        TextView tvTierRight = (TextView) activity.findViewById(R.id.tierRight);
+        tvTierRight.setText("PvP: " + famStore.getFamTier(famNameRight, "PVP") + "\n"
+                        + "Raid: " + famStore.getFamTier(famNameRight, "RAID") + "\n"
+                        + "Tower: " + famStore.getFamTier(famNameRight, "TOWER"));
     }
 }

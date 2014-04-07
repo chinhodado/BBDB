@@ -411,6 +411,42 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
                 </TableRow>
+                
+            <TableRow
+                android:id="@+id/tableRow4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#009E60"
+                android:gravity="center|center_vertical" >
+
+                <TextView
+                    android:id="@+id/tierLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Tiers"
+                    android:textColor="#FFFFFF" />
+
+            </TableRow>
+            
+            <TableRow
+                    android:id="@+id/TableRowTier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/tierLeft"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tierRight"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+            </TableRow>
 
         </TableLayout>
 

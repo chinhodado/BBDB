@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.chin.bbdb.FamStore;
 import com.chin.bbdb.LayoutUtil;
 import com.chin.bbdb.R;
 import com.chin.bbdb.activity.FamDetailActivity;
@@ -32,7 +33,7 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        if (FamDetailActivity.pvpTierMap == null || FamDetailActivity.raidTierMap == null || FamDetailActivity.towerTierMap == null) {
+        if (FamStore.pvpTierMap == null || FamStore.raidTierMap == null || FamStore.towerTierMap == null) {
             try {
                 fetchTierMaps();
             } catch (Exception e) {
@@ -47,13 +48,13 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void param) {
 
         //just in case...
-        if (FamDetailActivity.pvpTierMap == null || FamDetailActivity.raidTierMap == null || FamDetailActivity.towerTierMap == null)
+        if (FamStore.pvpTierMap == null || FamStore.raidTierMap == null || FamStore.towerTierMap == null)
             return;
 
         String famPVPTier = null, famRaidTier = null, famTowerTier = null;
-        famPVPTier   = FamDetailActivity.pvpTierMap.get(famName);
-        famRaidTier  = FamDetailActivity.raidTierMap.get(famName);
-        famTowerTier = FamDetailActivity.towerTierMap.get(famName);
+        famPVPTier   = FamStore.pvpTierMap.get(famName);
+        famRaidTier  = FamStore.raidTierMap.get(famName);
+        famTowerTier = FamStore.towerTierMap.get(famName);
 
         // remove the spinner
         ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar3);
@@ -85,9 +86,9 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
 
         String[] tiers = {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"};
 
-        FamDetailActivity.pvpTierMap = new HashMap<String, String>();
-        FamDetailActivity.raidTierMap = new HashMap<String, String>();
-        FamDetailActivity.towerTierMap = new HashMap<String, String>();
+        FamStore.pvpTierMap = new HashMap<String, String>();
+        FamStore.raidTierMap = new HashMap<String, String>();
+        FamStore.towerTierMap = new HashMap<String, String>();
 
         for (int i = 0; i < 9; i++){ // 9 tables
             Elements pvpRows = pvpTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
@@ -98,7 +99,7 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
 
                 // second cell, bold text, a, text
                 String famName = pvpRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
-                FamDetailActivity.pvpTierMap.put(famName, tiers[i]);
+                FamStore.pvpTierMap.put(famName, tiers[i]);
             }
 
             Elements raidRows = raidTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
@@ -109,7 +110,7 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
 
                 // second cell, bold text, a, text
                 String famName = raidRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
-                FamDetailActivity.raidTierMap.put(famName, tiers[i]);
+                FamStore.raidTierMap.put(famName, tiers[i]);
             }
 
             Elements towerRows = towerTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
@@ -120,7 +121,7 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
 
                 // second cell, bold text, a, text
                 String famName = towerRow.getElementsByTag("td").get(1).getElementsByTag("b").first().getElementsByTag("a").first().childNode(0).toString();
-                FamDetailActivity.towerTierMap.put(famName, tiers[i]);
+                FamStore.towerTierMap.put(famName, tiers[i]);
             }
         }
     }
