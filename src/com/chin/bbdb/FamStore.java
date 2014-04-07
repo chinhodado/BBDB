@@ -1,6 +1,7 @@
 package com.chin.bbdb;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,8 +10,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import com.chin.bbdb.activity.MainActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -73,6 +72,12 @@ public final class FamStore {
         }
     }
 
+    // a list of all fam available
+    public static ArrayList<String> famList = null;
+
+    // map a fam name to its wiki page url
+    public static Hashtable<String, String> famLinkTable = null;
+
     // the heart of this class, a storage for familiars' detail
     private static Hashtable<String, FamDetail> famStore = new Hashtable<String, FamDetail>();
 
@@ -134,7 +139,7 @@ public final class FamStore {
             famStore.put(famName, currentFam);
         }
 
-        String famURL = "http://bloodbrothersgame.wikia.com" + MainActivity.famLinkTable.get(famName);
+        String famURL = "http://bloodbrothersgame.wikia.com" + FamStore.famLinkTable.get(famName);
 
         String famHTML = null;
         try {
