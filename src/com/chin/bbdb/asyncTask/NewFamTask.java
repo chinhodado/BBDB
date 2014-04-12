@@ -18,7 +18,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.AsyncTask;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -109,7 +111,7 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
                             ImageView imgView = new ImageView(activity);
                             imgView.setTag(name); // set the tag of this ImageView to be the fam name
                             tmpLayout.addView(imgView);
-                            new DownloadImageTask(imgView).execute(imgSrc);
+                            new DownloadImageTask(imgView, activity).execute(imgSrc);
 
                             // set listener for the image view
                             imgView.setOnClickListener(new View.OnClickListener() {
@@ -134,8 +136,10 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
 
     public static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
+        Activity activity;
         ImageView imgView;
-        public DownloadImageTask(ImageView imgView) {
+        public DownloadImageTask(ImageView imgView, Activity activity) {
+            this.activity = activity;
             this.imgView = imgView;
         }
 
@@ -158,8 +162,17 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
 
         @Override
         protected void onPostExecute(Bitmap result) {
+            //scale the image
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int screenWidth = size.x;
+
+            int scaleWidth = screenWidth / 10;
+            double scaleHeight = (scaleWidth / ((double) result.getWidth() / result.getHeight()));
+
             // set the image
-            imgView.setImageBitmap(result);
+            imgView.setImageBitmap(Bitmap.createScaledBitmap(result, scaleWidth, (int) scaleHeight, false));
         }
     }
 }
