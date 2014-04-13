@@ -154,18 +154,18 @@ public class TierTableActivity extends Activity {
 
             for (int i = 0; i < 9; i++){ // 9 tables
                 TableLayout table = new TableLayout(activity);
-                Elements pvpRows = tierTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
+                Elements rows = tierTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
                 int countRow = 0;
-                for (Element pvpRow : pvpRows) {
+                for (Element row : rows) {
                     countRow++;
                     if (countRow == 1) { // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
-                        LayoutUtil.addRowWithOneTextView(activity, table, pvpRow.text(), true);
+                        LayoutUtil.addRowWithOneTextView(activity, table, row.text(), true);
                     }
                     else if (countRow == 2) {
                         continue; // column headers. Since we only show the image and fam name, there's no need for header
                     }
                     else {
-                        Elements cells = pvpRow.getElementsByTag("td");
+                        Elements cells = row.getElementsByTag("td");
                         TableRow tr = new TableRow(activity);
                         ImageView imgView = new ImageView(activity); tr.addView(imgView);
 
@@ -176,10 +176,21 @@ public class TierTableActivity extends Activity {
 
                         ImageLoader.getInstance().displayImage(imgSrc, imgView);
 
+                        String famName = cells.get(1).text();
                         TextView tv = new TextView(activity);
-                        tv.setText(cells.get(1).text()); //the fam name
+                        tv.setText(famName);
                         tr.addView(tv);
                         table.addView(tr);
+
+                        tr.setTag(famName);
+                        tr.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(activity, FamDetailActivity.class);
+                                intent.putExtra(MainActivity.FAM_NAME, (String) v.getTag());
+                                activity.startActivity(intent);
+                            }
+                        });
                     }
                 }
                 layout.addView(table);
