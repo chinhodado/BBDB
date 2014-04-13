@@ -1,8 +1,5 @@
 package com.chin.bbdb.activity;
 
-import java.io.InputStream;
-import java.util.HashMap;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,19 +9,15 @@ import com.chin.bbdb.LayoutUtil;
 import com.chin.bbdb.R;
 import com.chin.bbdb.TabListener;
 import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.Log;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -144,8 +137,7 @@ public class TierTableActivity extends Activity {
                         LayoutUtil.addRowWithOneTextView(activity, table, pvpRow.text(), true);
                     }
                     else if (countRow == 2) {
-                        String[] labels = {"Image", "Familiar"};
-                        LayoutUtil.addRowWithNTextView(activity, table, 2, labels, true);
+                        continue; // column headers. Since we only show the image and fam name, there's no need for header
                     }
                     else {
                         Elements cells = pvpRow.getElementsByTag("td");
@@ -156,7 +148,8 @@ public class TierTableActivity extends Activity {
                         Element link = cells.get(0).getElementsByTag("a").first();
                         String imgSrc = link.getElementsByTag("img").first().attr("data-src");
                         if (imgSrc == null || imgSrc.equals("")) imgSrc = link.getElementsByTag("img").first().attr("src");
-                        new DownloadImageTask(imgView, activity).execute(imgSrc);
+
+                        ImageLoader.getInstance().displayImage(imgSrc, imgView);
 
                         TextView tv = new TextView(activity);
                         tv.setText(cells.get(1).text()); //the fam name
@@ -166,44 +159,6 @@ public class TierTableActivity extends Activity {
                 }
                 layout.addView(table);
             }
-        }
-    }
-
-    public static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-
-        // store cached thumnail images of fams. There's no limit to the amount of images
-        // that can be stored here since the thumnails are quite small, and the maximum number
-        // of them are also limited (shown on the front page)
-        static HashMap<String, Bitmap> thumbnails = new HashMap<String, Bitmap>();
-
-        Activity activity;
-        ImageView imgView;
-        public DownloadImageTask(ImageView imgView, Activity activity) {
-            this.activity = activity;
-            this.imgView = imgView;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap img = thumbnails.get(urldisplay);
-            if (img == null) { // only fetch the image if it's not already cached
-                try {
-                    InputStream in = new java.net.URL(urldisplay).openStream();
-                    img = BitmapFactory.decodeStream(in);
-                    thumbnails.put(urldisplay, img); // cache the image
-                } catch (Exception e) {
-                    Log.i(urldisplay);
-                    e.printStackTrace();
-                }
-            }
-            return img;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            // set the image
-            imgView.setImageBitmap(result);
         }
     }
 }

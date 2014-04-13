@@ -13,14 +13,16 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
-    <LinearLayout 
-        android:id="@+id/tab_viewgroup"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </LinearLayout>
+        <LinearLayout 
+            android:id="@+id/tab_viewgroup"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </LinearLayout>
+        
     </ScrollView>
     
     <com.google.android.gms.ads.AdView android:id="@+id/adView"

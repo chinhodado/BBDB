@@ -1,8 +1,5 @@
 package com.chin.bbdb.asyncTask;
 
-import java.io.InputStream;
-import java.util.HashMap;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,12 +8,10 @@ import org.jsoup.select.Elements;
 import com.chin.bbdb.FamStore;
 import com.chin.bbdb.activity.FamDetailActivity;
 import com.chin.bbdb.activity.MainActivity;
-import com.google.analytics.tracking.android.Log;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.AsyncTask;
@@ -28,11 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class NewFamTask extends AsyncTask<Void, Void, String> {
-
-    // store cached thumnail images of new fams. There's no limit to the amount of images
-    // that can be stored here since the thumnails are quite small, and the maximum number
-    // of them are also limited (shown on the front page)
-    static HashMap<String, Bitmap> thumbnails = new HashMap<String, Bitmap>();
 
     static String mainHTML = null;
 
@@ -66,6 +56,14 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
                     .getElementsByTag("table").first() // first table is the new fam box
                     .getElementsByTag("tbody").first()
                     .getElementsByTag("tr");
+
+            // calculate the width of the images to be displayed later on
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int screenWidth = size.x;
+            int scaleWidth = screenWidth / 10; // set it to be 1/10 of the screen width
+
             int count = 0;
             for (Element row : newFamRows) {
                 if (count == 0) { // first row is just the header
@@ -111,7 +109,10 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
                             ImageView imgView = new ImageView(activity);
                             imgView.setTag(name); // set the tag of this ImageView to be the fam name
                             tmpLayout.addView(imgView);
-                            new DownloadImageTask(imgView, activity).execute(imgSrc);
+
+                            imgView.getLayoutParams().width = scaleWidth;
+                            imgView.requestLayout();
+                            ImageLoader.getInstance().displayImage(imgSrc, imgView);
 
                             // set listener for the image view
                             imgView.setOnClickListener(new View.OnClickListener() {
@@ -131,48 +132,6 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
         }
         catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-
-        Activity activity;
-        ImageView imgView;
-        public DownloadImageTask(ImageView imgView, Activity activity) {
-            this.activity = activity;
-            this.imgView = imgView;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap img = thumbnails.get(urldisplay);
-            if (img == null) { // only fetch the image if it's not already cached
-                try {
-                    InputStream in = new java.net.URL(urldisplay).openStream();
-                    img = BitmapFactory.decodeStream(in);
-                    thumbnails.put(urldisplay, img); // cache the image
-                } catch (Exception e) {
-                    Log.i(urldisplay);
-                    e.printStackTrace();
-                }
-            }
-            return img;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            //scale the image
-            Display display = activity.getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int screenWidth = size.x;
-
-            int scaleWidth = screenWidth / 10;
-            double scaleHeight = (scaleWidth / ((double) result.getWidth() / result.getHeight()));
-
-            // set the image
-            imgView.setImageBitmap(Bitmap.createScaledBitmap(result, scaleWidth, (int) scaleHeight, false));
         }
     }
 }
