@@ -1,5 +1,7 @@
 package com.chin.bbdb.activity;
 
+import java.util.HashMap;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,16 +12,21 @@ import com.chin.bbdb.LayoutUtil;
 import com.chin.bbdb.R;
 import com.chin.bbdb.TabListener;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.Log;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTabHost;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +38,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class TierTableActivity extends Activity {
+public class TierTableActivity extends FragmentActivity {
 
     public static Activity activity = null;
 
@@ -46,12 +53,20 @@ public class TierTableActivity extends Activity {
         ActionBar bar = getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
+        Bundle bundlePVP = new Bundle();
+        bundlePVP.putString("category", "PVP");
         bar.addTab(bar.newTab().setText("PVP Tier")
-                .setTabListener(new TabListener<PVPFragment>(this, "pvp", PVPFragment.class)));
+                .setTabListener(new TabListener<TierFragment>(this, "pvp", TierFragment.class, bundlePVP)));
+
+        Bundle bundleRAID = new Bundle();
+        bundleRAID.putString("category", "RAID");
         bar.addTab(bar.newTab().setText("Raid Tier")
-                .setTabListener(new TabListener<RaidFragment>(this, "raid", RaidFragment.class)));
+                .setTabListener(new TabListener<TierFragment>(this, "raid", TierFragment.class, bundleRAID)));
+
+        Bundle bundleTOWER = new Bundle();
+        bundleTOWER.putString("category", "TOWER");
         bar.addTab(bar.newTab().setText("Tower Tier")
-                .setTabListener(new TabListener<TowerFragment>(this, "tower", TowerFragment.class)));
+                .setTabListener(new TabListener<TierFragment>(this, "tower", TierFragment.class, bundleTOWER)));
 
         // Look up the AdView as a resource and load a request.
         AdView adView = (AdView)this.findViewById(R.id.adView);
@@ -95,32 +110,90 @@ public class TierTableActivity extends Activity {
         EasyTracker.getInstance(this).activityStop(this);
     }
 
-    public static class PVPFragment extends Fragment {
+    public static class TierFragment extends Fragment {
+        private FragmentTabHost mTabHost;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_tier_list, container, false);
-            LinearLayout layout = (LinearLayout) view.findViewById(R.id.tier_layout);
-            new PopulateTierTableAsyncTask(TierTableActivity.activity, layout).execute("PVP");
-            return view;
+            Bundle args = getArguments();
+            String category = args.getString("category");
+
+            mTabHost = new FragmentTabHost(getActivity());
+            mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.tab_viewgroup);
+
+            Bundle bundle = new Bundle();
+            bundle.putString("category", category);
+            bundle.putString("tier", "X");
+            mTabHost.addTab(mTabHost.newTabSpec("X").setIndicator("X"),
+                    TierTableFragment.class, bundle);
+
+            bundle = new Bundle();
+            bundle.putString("category", category);
+            bundle.putString("tier", "S+");
+            mTabHost.addTab(mTabHost.newTabSpec("S+").setIndicator("S+"),
+                    TierTableFragment.class, bundle);
+
+            bundle = new Bundle();
+            bundle.putString("category", category);
+            bundle.putString("tier", "S");
+            mTabHost.addTab(mTabHost.newTabSpec("S").setIndicator("S"),
+                    TierTableFragment.class, bundle);
+
+            bundle = new Bundle();
+            bundle.putString("category", category);
+            bundle.putString("tier", "A+");
+            mTabHost.addTab(mTabHost.newTabSpec("A+").setIndicator("A+"),
+                    TierTableFragment.class, bundle);
+
+            bundle = new Bundle();
+            bundle.putString("category", category);
+            bundle.putString("tier", "A");
+            mTabHost.addTab(mTabHost.newTabSpec("A").setIndicator("A"),
+                    TierTableFragment.class, bundle);
+
+            bundle = new Bundle();
+            bundle.putString("category", category);
+            bundle.putString("tier", "B");
+            mTabHost.addTab(mTabHost.newTabSpec("B").setIndicator("B"),
+                    TierTableFragment.class, bundle);
+
+            bundle = new Bundle();
+            bundle.putString("category", category);
+            bundle.putString("tier", "C");
+            mTabHost.addTab(mTabHost.newTabSpec("C").setIndicator("C"),
+                    TierTableFragment.class, bundle);
+
+            bundle = new Bundle();
+            bundle.putString("category", category);
+            bundle.putString("tier", "D");
+            mTabHost.addTab(mTabHost.newTabSpec("D").setIndicator("D"),
+                    TierTableFragment.class, bundle);
+
+            bundle = new Bundle();
+            bundle.putString("category", category);
+            bundle.putString("tier", "E");
+            mTabHost.addTab(mTabHost.newTabSpec("E").setIndicator("E"),
+                    TierTableFragment.class, bundle);
+
+            return mTabHost;
+        }
+
+        @Override
+        public void onDestroyView() {
+            super.onDestroyView();
+            mTabHost = null;
         }
     }
 
-    public static class RaidFragment extends Fragment {
+    public static class TierTableFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            Bundle args = getArguments();
+            String category = args.getString("category");
+            String tier = args.getString("tier");
+            // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_tier_list, container, false);
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.tier_layout);
-            new PopulateTierTableAsyncTask(TierTableActivity.activity, layout).execute("RAID");
-            return view;
-        }
-    }
-
-    public static class TowerFragment extends Fragment {
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_tier_list, container, false);
-            LinearLayout layout = (LinearLayout) view.findViewById(R.id.tier_layout);
-            new PopulateTierTableAsyncTask(TierTableActivity.activity, layout).execute("TOWER");
+            new PopulateTierTableAsyncTask(TierTableActivity.activity, layout).execute(category, tier);
             return view;
         }
     }
@@ -130,6 +203,23 @@ public class TierTableActivity extends Activity {
         String mainHTML;
         Activity activity;
         LinearLayout layout;
+        String tier;
+
+        // map a tier string to an int (the table number)
+        private static final HashMap<String, Integer> tierMap;
+        static
+        {
+            tierMap = new HashMap<String, Integer>();
+            tierMap.put("X", 0);
+            tierMap.put("S+", 1);
+            tierMap.put("S", 2);
+            tierMap.put("A+", 3);
+            tierMap.put("A", 4);
+            tierMap.put("B", 5);
+            tierMap.put("C", 6);
+            tierMap.put("D", 7);
+            tierMap.put("E", 8);
+        }
 
         public PopulateTierTableAsyncTask(Activity activity, LinearLayout layout) {
             this.activity = activity;
@@ -143,6 +233,8 @@ public class TierTableActivity extends Activity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            tier = params[1];
+            Log.i("Creating fragment: " + params[0] + " " + params[1]);
             return mainHTML;
         }
 
@@ -152,49 +244,60 @@ public class TierTableActivity extends Activity {
 
             Elements tierTables   = pageDOM.getElementsByClass("wikitable");
 
-            for (int i = 0; i < 9; i++){ // 9 tables
-                TableLayout table = new TableLayout(activity);
-                Elements rows = tierTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
-                int countRow = 0;
-                for (Element row : rows) {
-                    countRow++;
-                    if (countRow == 1) { // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
-                        LayoutUtil.addRowWithOneTextView(activity, table, row.text(), true);
-                    }
-                    else if (countRow == 2) {
-                        continue; // column headers. Since we only show the image and fam name, there's no need for header
-                    }
-                    else {
-                        Elements cells = row.getElementsByTag("td");
-                        TableRow tr = new TableRow(activity);
-                        ImageView imgView = new ImageView(activity); tr.addView(imgView);
+            // calculate the width of the images to be displayed later on
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int screenWidth = size.x;
+            int scaleWidth = screenWidth / 12; // set it to be 1/12 of the screen width
 
-                        // get the thubnail image src
-                        Element link = cells.get(0).getElementsByTag("a").first();
-                        String imgSrc = link.getElementsByTag("img").first().attr("data-src");
-                        if (imgSrc == null || imgSrc.equals("")) imgSrc = link.getElementsByTag("img").first().attr("src");
+            int tableIndex = tierMap.get(tier);
+            Element tierTable = tierTables.get(tableIndex);
 
-                        ImageLoader.getInstance().displayImage(imgSrc, imgView);
-
-                        String famName = cells.get(1).text();
-                        TextView tv = new TextView(activity);
-                        tv.setText(famName);
-                        tr.addView(tv);
-                        table.addView(tr);
-
-                        tr.setTag(famName);
-                        tr.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(activity, FamDetailActivity.class);
-                                intent.putExtra(MainActivity.FAM_NAME, (String) v.getTag());
-                                activity.startActivity(intent);
-                            }
-                        });
-                    }
+            TableLayout table = new TableLayout(activity);
+            Elements rows = tierTable.getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
+            int countRow = 0;
+            for (Element row : rows) {
+                countRow++;
+                if (countRow == 1) { // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+                    LayoutUtil.addRowWithOneTextView(activity, table, row.text(), true);
                 }
-                layout.addView(table);
+                else if (countRow == 2) {
+                    continue; // column headers. Since we only show the image and fam name, there's no need for header
+                }
+                else {
+                    Elements cells = row.getElementsByTag("td");
+                    TableRow tr = new TableRow(activity);
+                    ImageView imgView = new ImageView(activity); tr.addView(imgView);
+
+                    // get the thubnail image src
+                    Element link = cells.get(0).getElementsByTag("a").first();
+                    String imgSrc = link.getElementsByTag("img").first().attr("data-src");
+                    if (imgSrc == null || imgSrc.equals("")) imgSrc = link.getElementsByTag("img").first().attr("src");
+
+                    imgView.setLayoutParams(new TableRow.LayoutParams(scaleWidth, (int) (scaleWidth*1.5))); // the height's not exact
+                    imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    ImageLoader.getInstance().displayImage(imgSrc, imgView);
+
+                    String famName = cells.get(1).text();
+                    TextView tv = new TextView(activity);
+                    tv.setText(famName);
+                    tr.addView(tv);
+                    tr.setGravity(0x10); //center vertical
+                    table.addView(tr);
+
+                    tr.setTag(famName);
+                    tr.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(activity, FamDetailActivity.class);
+                            intent.putExtra(MainActivity.FAM_NAME, (String) v.getTag());
+                            activity.startActivity(intent);
+                        }
+                    });
+                }
             }
+            layout.addView(table);
         }
     }
 }

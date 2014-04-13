@@ -21,7 +21,7 @@ import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -141,9 +141,9 @@ public class MainActivity extends FragmentActivity {
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         bar.addTab(bar.newTab().setText("All familiars")
-                .setTabListener(new TabListener<SearchFamFragment>(this, "all fam", SearchFamFragment.class)));
+                .setTabListener(new TabListener<SearchFamFragment>(this, "all fam", SearchFamFragment.class, null)));
         bar.addTab(bar.newTab().setText("New familiars")
-                .setTabListener(new TabListener<NewFamFragment>(this, "new fam", NewFamFragment.class)));
+                .setTabListener(new TabListener<NewFamFragment>(this, "new fam", NewFamFragment.class, null)));
 
         // Look up the AdView as a resource and load a request.
         AdView adView = (AdView)this.findViewById(R.id.adView);
