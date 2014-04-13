@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.chin.bbdb.FamStore;
 import com.chin.bbdb.LayoutUtil;
 import com.chin.bbdb.R;
 import com.chin.bbdb.TabListener;
@@ -16,6 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,6 +48,10 @@ public class TierTableActivity extends Activity {
 
         bar.addTab(bar.newTab().setText("PVP Tier")
                 .setTabListener(new TabListener<PVPFragment>(this, "pvp", PVPFragment.class)));
+        bar.addTab(bar.newTab().setText("Raid Tier")
+                .setTabListener(new TabListener<RaidFragment>(this, "raid", RaidFragment.class)));
+        bar.addTab(bar.newTab().setText("Tower Tier")
+                .setTabListener(new TabListener<TowerFragment>(this, "tower", TowerFragment.class)));
 
         // Look up the AdView as a resource and load a request.
         AdView adView = (AdView)this.findViewById(R.id.adView);
@@ -57,7 +63,7 @@ public class TierTableActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.tier_table, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -67,9 +73,11 @@ public class TierTableActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        if (id == R.id.action_help) {
+            Intent intent = new Intent(activity, HelpActivity.class);
+            startActivity(intent);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -90,16 +98,36 @@ public class TierTableActivity extends Activity {
     public static class PVPFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_tier_pvp, container, false);
+            View view = inflater.inflate(R.layout.fragment_tier_list, container, false);
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.tier_layout);
-            new PopulateTierTableAsyncTask(TierTableActivity.activity, layout).execute();
+            new PopulateTierTableAsyncTask(TierTableActivity.activity, layout).execute("PVP");
             return view;
         }
     }
-    public static class PopulateTierTableAsyncTask extends AsyncTask<Void, Void, String> {
 
-        static String mainHTML = null;
+    public static class RaidFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.fragment_tier_list, container, false);
+            LinearLayout layout = (LinearLayout) view.findViewById(R.id.tier_layout);
+            new PopulateTierTableAsyncTask(TierTableActivity.activity, layout).execute("RAID");
+            return view;
+        }
+    }
 
+    public static class TowerFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.fragment_tier_list, container, false);
+            LinearLayout layout = (LinearLayout) view.findViewById(R.id.tier_layout);
+            new PopulateTierTableAsyncTask(TierTableActivity.activity, layout).execute("TOWER");
+            return view;
+        }
+    }
+
+    public static class PopulateTierTableAsyncTask extends AsyncTask<String, Void, String> {
+
+        String mainHTML;
         Activity activity;
         LinearLayout layout;
 
@@ -109,27 +137,24 @@ public class TierTableActivity extends Activity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
-            if (mainHTML == null) {
-                try {
-                    mainHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/wiki/Familiar_Tier_List/PvP")
-                            .ignoreContentType(true).execute().body();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        protected String doInBackground(String... params) {
+            try {
+                mainHTML = FamStore.getInstance().getTierHTML(params[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             return mainHTML;
         }
 
         @Override
         protected void onPostExecute(String param) {
-            Document pvpDOM   = Jsoup.parse(mainHTML);
+            Document pageDOM   = Jsoup.parse(mainHTML);
 
-            Elements pvpTables   = pvpDOM.getElementsByClass("wikitable");
+            Elements tierTables   = pageDOM.getElementsByClass("wikitable");
 
             for (int i = 0; i < 9; i++){ // 9 tables
                 TableLayout table = new TableLayout(activity);
-                Elements pvpRows = pvpTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
+                Elements pvpRows = tierTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
                 int countRow = 0;
                 for (Element pvpRow : pvpRows) {
                     countRow++;
