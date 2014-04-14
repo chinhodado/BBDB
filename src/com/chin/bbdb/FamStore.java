@@ -1,5 +1,6 @@
 package com.chin.bbdb;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,6 +84,10 @@ public final class FamStore {
     public static HashMap<String, String> pvpTierMap    = null;
     public static HashMap<String, String> raidTierMap   = null;
     public static HashMap<String, String> towerTierMap  = null;
+
+    private static String pvpHTML;
+    private static String raidHTML;
+    private static String towerHTML;
 
     // the heart of this class, a storage for familiars' detail
     private static Hashtable<String, FamDetail> famStore = new Hashtable<String, FamDetail>();
@@ -446,6 +451,83 @@ public final class FamStore {
         }
 
         return tier;
+    }
+
+    /**
+     * Initialize the tier map of a category
+     * @param category Either PVP, RAID or TOWER
+     * @throws IOException
+     */
+    public void initializeTierMap(String category) throws IOException {
+
+        String tierHTML = FamStore.getInstance().getTierHTML(category);
+        Document tierDOM   = Jsoup.parse(tierHTML);
+        Elements tierTables   = tierDOM.getElementsByClass("wikitable");
+
+        String[] tiers = {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"};
+
+        HashMap<String, String> tierMap = new HashMap<String, String>();
+
+        for (int i = 0; i < 9; i++){ // 9 tables
+            Elements rows = tierTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
+            int countRow = 0;
+            for (Element row : rows) {
+                countRow++;
+                if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+
+                // second cell's text
+                String famName = row.getElementsByTag("td").get(1).text();
+                tierMap.put(famName, tiers[i]);
+            }
+        }
+
+        if (category.equals("PVP")) {
+            FamStore.pvpTierMap = tierMap;
+        }
+        else if (category.equals("RAID")) {
+            FamStore.raidTierMap = tierMap;
+        }
+        else if (category.equals("TOWER")) {
+            FamStore.towerTierMap = tierMap;
+        }
+
+    }
+
+    /**
+     * Get the HTML of a tier page. If it is already fetched before it will be returned
+     * immediately. Otherwise it will be fetched from the internet.
+     *
+     * Be careful as this may block, and may raise an exception if you call it on the main thread
+     *
+     * @param category Either PVP, RAID or TOWER
+     * @return The HTML of the tier page of the specified category
+     * @throws IOException Something's probably wrong with the network
+     */
+    public String getTierHTML(String category) throws IOException {
+        String HTML = null;
+        if (category.equals("PVP")) {
+            if (FamStore.pvpHTML == null) {
+                pvpHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/wiki/Familiar_Tier_List/PvP")
+                        .ignoreContentType(true).execute().body();
+            }
+            HTML = FamStore.pvpHTML;
+        }
+        else if (category.equals("RAID")) {
+            if (FamStore.raidHTML == null) {
+                raidHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/wiki/Familiar_Tier_List/Raid")
+                        .ignoreContentType(true).execute().body();
+            }
+            HTML = FamStore.raidHTML;
+        }
+        else if (category.equals("TOWER")) {
+            if (FamStore.towerHTML == null) {
+                towerHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/wiki/Familiar_Tier_List/Tower")
+                        .ignoreContentType(true).execute().body();
+            }
+            HTML = FamStore.towerHTML;
+        }
+
+        return HTML;
     }
 }
 

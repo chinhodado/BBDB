@@ -55,4 +55,37 @@ public class LayoutUtil {
         if (showLineSeparator) addLineSeparator(activity, table);
         tv1.setTypeface(typeface); tv2.setTypeface(typeface);
     }
+
+    /**
+     * Add a row with 1 TextView to a table.
+     * @param table The table to add the row to
+     * @param textViewString The text of the first Textview
+     * @param showLineSeparator true if a line separator is added after the new row
+     */
+    public static void addRowWithOneTextView(Activity activity,
+            TableLayout table, String textViewString, boolean showLineSeparator) {
+        TableRow tr = new TableRow(activity);
+        TextView tv1 = new TextView(activity); tv1.setText(textViewString); tr.addView(tv1);
+        table.addView(tr);
+        if (showLineSeparator) addLineSeparator(activity, table);
+    }
+
+    /**
+     * Add a row with n TextView to a table.
+     * @param table The table to add the row to
+     * @param numTextView The number of TextView to add
+     * @param textViewString The text of the Textviews
+     * @param showLineSeparator true if a line separator is added after the new row
+     */
+    public static void addRowWithNTextView(Activity activity,
+            TableLayout table, int numTextView, String[] textViewString, boolean showLineSeparator) {
+        TableRow tr = new TableRow(activity);
+        for (int i = 0; i<numTextView; i++) {
+            TextView tv = new TextView(activity);
+            tv.setText(textViewString[i]);
+            tr.addView(tv);
+        }
+        table.addView(tr);
+        if (showLineSeparator) addLineSeparator(activity, table);
+    }
 }
