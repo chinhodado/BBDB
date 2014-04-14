@@ -42,14 +42,10 @@ import android.widget.TextView;
 
 public class TierTableActivity extends FragmentActivity {
 
-    public static Activity activity = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tier_table);
-
-        TierTableActivity.activity = this;
 
         // add the tabs
         ActionBar bar = getActionBar();
@@ -91,7 +87,7 @@ public class TierTableActivity extends FragmentActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_help) {
-            Intent intent = new Intent(activity, HelpActivity.class);
+            Intent intent = new Intent(this, HelpActivity.class);
             startActivity(intent);
             return true;
         }
@@ -206,7 +202,7 @@ public class TierTableActivity extends FragmentActivity {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_tier_list, container, false);
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.tier_layout);
-            new PopulateTierTableAsyncTask(TierTableActivity.activity, layout).execute(category, tier);
+            new PopulateTierTableAsyncTask(getActivity(), layout).execute(category, tier);
             return view;
         }
     }

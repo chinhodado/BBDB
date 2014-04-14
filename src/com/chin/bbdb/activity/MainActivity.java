@@ -19,7 +19,6 @@ import com.google.android.gms.ads.AdView;
 
 import android.os.Bundle;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
@@ -45,7 +44,6 @@ import android.widget.ListView;
 
 public class MainActivity extends FragmentActivity {
 
-    public static Activity activity = null;
     public final static String FAM_LINK = "com.chin.BBDB.LINK";
     public final static String FAM_NAME = "com.chin.BBDB.NAME";
 
@@ -58,8 +56,6 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MainActivity.activity = this;
-
         // create navigation drawer
         String[] mPlanetTitles = {"Familiar", "Tier lists"};
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -70,13 +66,13 @@ public class MainActivity extends FragmentActivity {
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new OnItemClickListener(){
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+            public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
                 Intent intent = null;
                 if (position == 0) { // Familiar
                     return; // do nothing since we are already in main, but should close the drawer later
                 }
                 else if (position == 1) {
-                    intent = new Intent(MainActivity.activity, TierTableActivity.class);
+                    intent = new Intent(v.getContext(), TierTableActivity.class);
                     startActivity(intent);
                 }
             }
@@ -179,7 +175,7 @@ public class MainActivity extends FragmentActivity {
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.action_help:
-                Intent intent = new Intent(activity, HelpActivity.class);
+                Intent intent = new Intent(this, HelpActivity.class);
                 startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -218,7 +214,7 @@ public class MainActivity extends FragmentActivity {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_newfam, container, false);
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.newfam_layout);
-            new NewFamTask(MainActivity.activity, layout).execute();
+            new NewFamTask(getActivity(), layout).execute();
             return view;
         }
     }
@@ -229,10 +225,8 @@ public class MainActivity extends FragmentActivity {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_searchfam, container, false);
 
-            Activity activity = MainActivity.activity;
-
             try {
-                if (adapter == null) adapter = new RegexFilterArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, FamStore.famList);
+                if (adapter == null) adapter = new RegexFilterArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, FamStore.famList);
 
                 EditText famEditText = (EditText) view.findViewById(R.id.famEditText);
 
@@ -254,10 +248,10 @@ public class MainActivity extends FragmentActivity {
                 famListView.setAdapter(adapter);
                 famListView.setOnItemClickListener(new OnItemClickListener(){
                     @Override
-                    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3)
+                    public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3)
                       {
                             String famName = (String)arg0.getItemAtPosition(position);
-                            Intent intent = new Intent(MainActivity.activity, FamDetailActivity.class);
+                            Intent intent = new Intent(v.getContext(), FamDetailActivity.class);
                             intent.putExtra(FAM_NAME, famName);
                             intent.putExtra(FAM_LINK, FamStore.famLinkTable.get(famName));
                             startActivity(intent);

@@ -23,8 +23,6 @@ import android.support.v4.app.NavUtils;
 
 public class FamDetailActivity extends Activity {
 
-    public final Activity activity = this;
-
     // map a string (the evolution level) to a number that represents
     // the image for that evolution level
     public static HashMap<String, Integer> evolutionMap = null;
@@ -65,7 +63,7 @@ public class FamDetailActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String famName = (String)parent.getItemAtPosition(position);
-                Intent intent = new Intent(activity, FamCompareActivity.class);
+                Intent intent = new Intent(view.getContext(), FamCompareActivity.class);
                 intent.putExtra("FAM_NAME_RIGHT", famName);
                 intent.putExtra("FAM_NAME_LEFT", FamDetailActivity.famName);
                 startActivity(intent);
@@ -94,7 +92,7 @@ public class FamDetailActivity extends Activity {
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.action_help:
-                Intent intent = new Intent(activity, HelpActivity.class);
+                Intent intent = new Intent(this, HelpActivity.class);
                 startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

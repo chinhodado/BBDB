@@ -110,8 +110,11 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
                             imgView.setTag(name); // set the tag of this ImageView to be the fam name
                             tmpLayout.addView(imgView);
 
+                            // set the image view's dimensions
                             imgView.getLayoutParams().width = scaleWidth;
+                            imgView.getLayoutParams().height = (int) (scaleWidth*1.5);
                             imgView.requestLayout();
+                            imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                             ImageLoader.getInstance().displayImage(imgSrc, imgView);
 
                             // set listener for the image view
