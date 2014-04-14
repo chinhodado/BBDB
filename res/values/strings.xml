@@ -24,10 +24,6 @@
             PE Epic 4 familiar you need 8 Rare 1 familiars<br/><br/>
         POPE (Perfect Over Perfect Evolution) is similar to PE, but with the maximum number of crystals added. 
             This is generally 400 crystals for 8-card evolutions and 100 for 2-card evolutions. <br/><br/>
-        
-        The POPE stats are obtained by adding 665.5 to the corresponding PE stats. In the game, most of the time this is rounded up to 666, 
-            but sometimes it is rounded down to 665. This app use 666 to calculate POPE, so some familiars\' POPE stats maybe off by 1
-            (i.e. All-Seeing Keeper II\'s POPE AGI should be 17133, not 17134)<br/><br/>
             
         <b>Q: How often is this app\'s data updated?</b> <br/>
         A: This app pulls all data from the Blood Brothers Wikia in real time, so the data is always up-to-date. <br/><br/>
