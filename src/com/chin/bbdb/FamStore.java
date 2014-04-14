@@ -81,7 +81,6 @@ public final class FamStore {
     public static Hashtable<String, String> famLinkTable = null;
 
     // map a fam name to its tiers, initialized in AddTierInfoTask
-    // TODO: initialize it right here lazily
     public static HashMap<String, String> pvpTierMap    = null;
     public static HashMap<String, String> raidTierMap   = null;
     public static HashMap<String, String> towerTierMap  = null;

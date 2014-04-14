@@ -8,7 +8,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.chin.bbdb.FamStore;
-import com.chin.bbdb.LayoutUtil;
 import com.chin.bbdb.R;
 import com.chin.bbdb.TabListener;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -32,8 +31,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TabWidget;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -123,56 +125,67 @@ public class TierTableActivity extends FragmentActivity {
             Bundle bundle = new Bundle();
             bundle.putString("category", category);
             bundle.putString("tier", "X");
-            mTabHost.addTab(mTabHost.newTabSpec("X").setIndicator("X"),
+            mTabHost.addTab(mTabHost.newTabSpec("X").setIndicator("Tier X"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
             bundle.putString("category", category);
             bundle.putString("tier", "S+");
-            mTabHost.addTab(mTabHost.newTabSpec("S+").setIndicator("S+"),
+            mTabHost.addTab(mTabHost.newTabSpec("S+").setIndicator("Tier S+"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
             bundle.putString("category", category);
             bundle.putString("tier", "S");
-            mTabHost.addTab(mTabHost.newTabSpec("S").setIndicator("S"),
+            mTabHost.addTab(mTabHost.newTabSpec("S").setIndicator("Tier S"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
             bundle.putString("category", category);
             bundle.putString("tier", "A+");
-            mTabHost.addTab(mTabHost.newTabSpec("A+").setIndicator("A+"),
+            mTabHost.addTab(mTabHost.newTabSpec("A+").setIndicator("Tier A+"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
             bundle.putString("category", category);
             bundle.putString("tier", "A");
-            mTabHost.addTab(mTabHost.newTabSpec("A").setIndicator("A"),
+            mTabHost.addTab(mTabHost.newTabSpec("A").setIndicator("Tier A"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
             bundle.putString("category", category);
             bundle.putString("tier", "B");
-            mTabHost.addTab(mTabHost.newTabSpec("B").setIndicator("B"),
+            mTabHost.addTab(mTabHost.newTabSpec("B").setIndicator("Tier B"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
             bundle.putString("category", category);
             bundle.putString("tier", "C");
-            mTabHost.addTab(mTabHost.newTabSpec("C").setIndicator("C"),
+            mTabHost.addTab(mTabHost.newTabSpec("C").setIndicator("Tier C"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
             bundle.putString("category", category);
             bundle.putString("tier", "D");
-            mTabHost.addTab(mTabHost.newTabSpec("D").setIndicator("D"),
+            mTabHost.addTab(mTabHost.newTabSpec("D").setIndicator("Tier D"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
             bundle.putString("category", category);
             bundle.putString("tier", "E");
-            mTabHost.addTab(mTabHost.newTabSpec("E").setIndicator("E"),
+            mTabHost.addTab(mTabHost.newTabSpec("E").setIndicator("Tier E"),
                     TierTableFragment.class, bundle);
+
+            TabWidget tw = (TabWidget) mTabHost.findViewById(android.R.id.tabs);
+            LinearLayout ll = (LinearLayout) tw.getParent();
+            HorizontalScrollView hs = new HorizontalScrollView(getActivity());
+            hs.setLayoutParams(new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT));
+            ll.addView(hs, 0);
+            ll.removeView(tw);
+            hs.addView(tw);
+            hs.setHorizontalScrollBarEnabled(false);
 
             return mTabHost;
         }
@@ -259,11 +272,9 @@ public class TierTableActivity extends FragmentActivity {
             int countRow = 0;
             for (Element row : rows) {
                 countRow++;
-                if (countRow == 1) { // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
-                    LayoutUtil.addRowWithOneTextView(activity, table, row.text(), true);
-                }
-                else if (countRow == 2) {
-                    continue; // column headers. Since we only show the image and fam name, there's no need for header
+                if (countRow == 1 || countRow == 2) {
+                    // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+                    continue;
                 }
                 else {
                     Elements cells = row.getElementsByTag("td");
