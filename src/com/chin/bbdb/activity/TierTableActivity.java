@@ -202,7 +202,13 @@ public class TierTableActivity extends FragmentActivity {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_tier_list, container, false);
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.tier_layout);
-            new PopulateTierTableAsyncTask(getActivity(), layout).execute(category, tier);
+
+            try {//TODO: see if we can be more error-tolerance
+                new PopulateTierTableAsyncTask(getActivity(), layout).execute(category, tier);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return view;
         }
     }

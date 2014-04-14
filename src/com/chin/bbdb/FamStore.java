@@ -52,6 +52,11 @@ public final class FamStore {
         }
     }
 
+    /**
+     * A struct holding a fam's stat. All stats are initialized to 0
+     * @author Chin
+     *
+     */
     public static class FamStats {
         // all initialized to 0
         public int[] baseStats = new int[6];
@@ -85,9 +90,17 @@ public final class FamStore {
     public static HashMap<String, String> raidTierMap   = null;
     public static HashMap<String, String> towerTierMap  = null;
 
+    // the raw tier HTML pages for anyone interested in parsing them
     private static String pvpHTML;
     private static String raidHTML;
     private static String towerHTML;
+
+    // a simple struct for holding 5 integers, used for holding the POPE stats
+    static class IntPOPE {
+        int hpPOPE, atkPOPE, defPOPE, wisPOPE, agiPOPE;
+    }
+    // the POPE stats table
+    static HashMap<String, IntPOPE> popeTable = null;
 
     // the heart of this class, a storage for familiars' detail
     private static Hashtable<String, FamDetail> famStore = new Hashtable<String, FamDetail>();
@@ -132,23 +145,26 @@ public final class FamStore {
     }
 
     /**
-     * Get all stats of a familiar. Careful, this can block!
-     * Although the name is getStats(), it also fetches the following:
+     * Get some general info about a familiar. Careful, this can block!
+     * This function fetches the following and make them available for query later:
+     * - stats
      * - starLevel
      * - isFinalEvolution
      * - isWarlord
      * so if you want to use those make sure to call this function first
+     *
+     * @param famName The familiar name
      */
-    public FamStats getStats(String famName) {
+    public void getGeneralInfo(String famName) {
 
         FamDetail currentFam = famStore.get(famName);
 
-        if (currentFam != null && currentFam.stats != null) return currentFam.stats;
-
-        if (currentFam == null) {
-            currentFam = new FamDetail(famName);
-            famStore.put(famName, currentFam);
+        if (currentFam != null) {
+            return; // already initialized, just return
         }
+
+        currentFam = new FamDetail(famName);
+        famStore.put(famName, currentFam);
 
         String famURL = "http://bloodbrothersgame.wikia.com" + FamStore.famLinkTable.get(famName);
 
@@ -250,26 +266,84 @@ public final class FamStore {
         currentFam.rarity = tmpArr[tmpArr.length - 2]; // get the second last token
 
         if (currentFam.isWarlord || currentFam.isFinalEvolution) {
-
-            int toAdd = 0;
-
-            if (currentFam.isWarlord || starLevel.startsWith("1")) toAdd = 500;      // 1 star
-            else if (starLevel.startsWith("2")) toAdd = 550; // 2 star
-            else if (starLevel.startsWith("3")) toAdd = 605; // 3 star
-            else if (starLevel.startsWith("4")) toAdd = 666; // 4 star
-
-            for (int i = 0; i < 6; i++) {
-                if (i <= 4) { // the individual stats
-                    if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd;
-                    else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd;
-                }
-                else if (i == 5) { // the total
-                    if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd*5;
-                    else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd*5;
-                }
+            // POPE stats
+            initializePOPETable();
+            if (popeTable.containsKey(famName)) {
+                IntPOPE popeStats = popeTable.get(famName);
+                currentFam.stats.POPEStats[0] = popeStats.hpPOPE;
+                currentFam.stats.POPEStats[1] = popeStats.atkPOPE;
+                currentFam.stats.POPEStats[2] = popeStats.defPOPE;
+                currentFam.stats.POPEStats[3] = popeStats.wisPOPE;
+                currentFam.stats.POPEStats[4] = popeStats.agiPOPE;
+                currentFam.stats.POPEStats[5] = popeStats.hpPOPE + popeStats.atkPOPE + popeStats.defPOPE +
+                                                    popeStats.wisPOPE + popeStats.agiPOPE;
             }
         }
+    }
 
+    /**
+     * Get the POPE stats table of all fams
+     */
+    public void initializePOPETable() {
+
+        if (popeTable != null) {
+            // already initialized, return
+            return;
+        }
+
+        popeTable = new HashMap<String, IntPOPE>();
+        String url = "http://bloodbrothersgame.wikia.com/wiki/POPE_Stats_Table";
+
+        String popeHTML = null;
+        try {
+            popeHTML = Jsoup.connect(url).ignoreContentType(true).execute().body();
+        } catch (Exception e) {
+            Log.e("FamDetail", "Error fetching the POPE HTML page");
+            e.printStackTrace();
+        }
+        Document doc = Jsoup.parse(popeHTML);
+
+        Element table = doc.getElementsByClass("wikitable").first();
+        Elements rows = table.getElementsByTag("tbody").first().getElementsByTag("tr");
+
+        for (int i = rows.size() - 1; i >= 2; i--) { // first two rows are headers and such
+            try {
+                Elements cells = rows.get(i).getElementsByTag("td");
+                String cellFam = cells.get(1).text().trim();
+
+                IntPOPE popeStats = new IntPOPE();
+
+                popeStats.hpPOPE  = Integer.parseInt(cells.get(3).text().replace(",", "").replace(" ", ""));
+                popeStats.atkPOPE = Integer.parseInt(cells.get(4).text().replace(",", "").replace(" ", ""));
+                popeStats.defPOPE = Integer.parseInt(cells.get(5).text().replace(",", "").replace(" ", ""));
+                popeStats.wisPOPE = Integer.parseInt(cells.get(6).text().replace(",", "").replace(" ", ""));
+                popeStats.agiPOPE = Integer.parseInt(cells.get(7).text().replace(",", "").replace(" ", ""));
+
+                popeTable.put(cellFam, popeStats);
+
+            } catch (Exception e) {
+                Log.i("FamStore", "There's an error in parsing the POPE table, probably the tier section dividers");
+            }
+        }
+    }
+
+    /**
+     *
+     * Get the stats of a familiar. Careful, it can block.
+     *
+     * @param famName The name of the familiar
+     * @return The stats of that familiar
+     */
+    public FamStats getStats(String famName) {
+        FamDetail currentFam = famStore.get(famName);
+
+        if (currentFam != null && currentFam.stats != null) {
+            return currentFam.stats;
+        }
+
+        if (currentFam == null) {
+            getGeneralInfo(famName);
+        }
         return currentFam.stats;
     }
 
@@ -290,8 +364,8 @@ public final class FamStore {
             famStore.put(famName, currentFam);
         }
 
-        // if the famDOM is not available yet, call getStats(). Or maybe just fetch it directly?
-        if (currentFam.famDOM == null) getStats(famName);
+        // if the famDOM is not available yet, call getGeneralInfo(). Or maybe just fetch it directly?
+        if (currentFam.famDOM == null) getGeneralInfo(famName);
 
         Element infoBoxFam = null;
         try {
@@ -322,8 +396,8 @@ public final class FamStore {
             famStore.put(famName, currentFam);
         }
 
-        // if the famDOM is not available yet, call getStats(). Or maybe just fetch it directly?
-        if (currentFam.famDOM == null) getStats(famName);
+        // if the famDOM is not available yet, call getGeneralInfo(). Or maybe just fetch it directly?
+        if (currentFam.famDOM == null) getGeneralInfo(famName);
 
         // get the skill(s) name
         Elements skillList = null;

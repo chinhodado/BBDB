@@ -38,9 +38,9 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
         this.famNameRight = params[1];
 
         // each of these can fail independently (?)
-        try { famStore.getStats(this.famNameLeft);            } catch (Exception e) {e.printStackTrace();}
+        try { famStore.getGeneralInfo(this.famNameLeft);      } catch (Exception e) {e.printStackTrace();}
         try { famStore.getImage(this.famNameLeft);            } catch (Exception e) {e.printStackTrace();}
-        try { famStore.getStats(this.famNameRight);           } catch (Exception e) {e.printStackTrace();}
+        try { famStore.getGeneralInfo(this.famNameRight);     } catch (Exception e) {e.printStackTrace();}
         try { famStore.getImage(this.famNameRight);           } catch (Exception e) {e.printStackTrace();}
         try { famStore.getSkillHTMLString(this.famNameLeft);  } catch (Exception e) {e.printStackTrace();}
         try { famStore.getSkillHTMLString(this.famNameRight); } catch (Exception e) {e.printStackTrace();}

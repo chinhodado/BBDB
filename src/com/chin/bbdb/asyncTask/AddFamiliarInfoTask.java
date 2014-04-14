@@ -47,7 +47,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... params) {
         this.famName = params[0];
-        try { famStore.getStats(this.famName);           } catch (Exception e) {e.printStackTrace();}
+        try { famStore.getGeneralInfo(this.famName);           } catch (Exception e) {e.printStackTrace();}
         try { famStore.getImage(this.famName);           } catch (Exception e) {e.printStackTrace();}
         try { famStore.getSkillHTMLString(this.famName); } catch (Exception e) {e.printStackTrace();}
         return null;
