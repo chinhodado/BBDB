@@ -10,6 +10,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+/**
+ * Activity to show the help texts
+ */
 public class HelpActivity extends Activity {
 
     @Override

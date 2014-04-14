@@ -4,6 +4,9 @@ import org.jsoup.Jsoup;
 
 import android.os.AsyncTask;
 
+/**
+ * An AsyncTask that performs a network request in the backgound
+ */
 public class NetworkTask extends AsyncTask<String, Void, String> {
 
     @Override

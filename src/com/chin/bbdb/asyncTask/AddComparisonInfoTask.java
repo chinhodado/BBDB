@@ -21,6 +21,10 @@ import com.chin.bbdb.FamStore.FamStats;
 import com.chin.bbdb.activity.FamCompareActivity;
 import com.chin.bbdb.activity.FamDetailActivity;
 
+/**
+ * The async task that populate the information in FamCompareActivity
+ * It is put into a separate file since it is too long
+ */
 public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 
     FamCompareActivity activity;

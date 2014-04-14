@@ -42,6 +42,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+/**
+ * The main activity, entry point of the app. It consists of two main view, the familiar search
+ * list and the new famliars list
+ */
 public class MainActivity extends FragmentActivity {
 
     public final static String FAM_LINK = "com.chin.BBDB.LINK";
@@ -56,20 +60,21 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // create navigation drawer
-        String[] mPlanetTitles = {"Familiar", "Tier lists"};
+        // create the navigation drawer
+        String[] mListTitles = {"Familiar", "Tier lists"};
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, // set the adapter for the list view
-                android.R.layout.simple_list_item_1, mPlanetTitles));
+                android.R.layout.simple_list_item_1, mListTitles));
+
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
                 Intent intent = null;
                 if (position == 0) { // Familiar
-                    return; // do nothing since we are already in main, but should close the drawer later
+                    return; // TODO: do nothing since we are already in main, but should close the drawer later
                 }
                 else if (position == 1) {
                     intent = new Intent(v.getContext(), TierTableActivity.class);
@@ -110,6 +115,8 @@ public class MainActivity extends FragmentActivity {
         // get the familiar list and their wiki url
         if (FamStore.famList == null) {
             try {
+                // this will return up to 5000 articles in the Familiar category. Note that this is not always up-to-date,
+                // as newly added articles may take a day or two before showing up in here
                 String url = "http://bloodbrothersgame.wikia.com/api/v1/Articles/List?category=Familiars&limit=5000&namespaces=0";
                 String jsonString = new NetworkTask().execute(url).get();
                 JSONObject myJSON = new JSONObject(jsonString);
@@ -124,10 +131,10 @@ public class MainActivity extends FragmentActivity {
                     FamStore.famLinkTable.put(famName, myArray.getJSONObject(i).getString("url"));
                 }
             } catch (Exception e) {
-                    DialogFragment newFragment = new NetworkDialogFragment();
-                    newFragment.setCancelable(false);
-                    newFragment.show(getFragmentManager(), "no net");
-                    e.printStackTrace();
+                DialogFragment newFragment = new NetworkDialogFragment();
+                newFragment.setCancelable(false);
+                newFragment.show(getFragmentManager(), "no net");
+                e.printStackTrace();
                 return;
             }
         }
@@ -145,7 +152,6 @@ public class MainActivity extends FragmentActivity {
         AdView adView = (AdView)this.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
-
     }
 
     @Override
@@ -208,6 +214,9 @@ public class MainActivity extends FragmentActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * Fragment for the new familiar view
+     */
     public static class NewFamFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -219,6 +228,9 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    /**
+     * Fragment for the search familiar view
+     */
     public static class SearchFamFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

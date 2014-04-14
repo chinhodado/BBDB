@@ -22,6 +22,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+/**
+ * An AsyncTask that populates the information in the NewFamFragment
+ */
 public class NewFamTask extends AsyncTask<Void, Void, String> {
 
     static String mainHTML = null;

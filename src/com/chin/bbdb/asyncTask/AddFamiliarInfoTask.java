@@ -27,6 +27,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+/**
+ * The async task that populate the information in FamDetailActivity
+ * It is put into a separate file since it is too long
+ */
 public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 
     FamDetailActivity activity;

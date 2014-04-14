@@ -11,6 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 
+/**
+ * The async task that populate the tier information in FamDetailActivity
+ * 
+ */
 class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
     TableLayout detailTable;
     FamDetailActivity activity;

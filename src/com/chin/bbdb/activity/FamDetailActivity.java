@@ -21,6 +21,9 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.support.v4.app.NavUtils;
 
+/**
+ * Activity to show all details about a familiar
+ */
 public class FamDetailActivity extends Activity {
 
     // map a string (the evolution level) to a number that represents
@@ -47,8 +50,10 @@ public class FamDetailActivity extends Activity {
 
         setTitle("");
         initialize();
+
         new AddFamiliarInfoTask(this).execute(famName);
 
+        // add the AutoCompleteTextView to the ActionBar
         LayoutInflater inflator = (LayoutInflater) this
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflator.inflate(R.layout.actionbar_layout, null);

@@ -40,6 +40,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+/**
+ * An activity that displays the PVP, Raid and Tower tier tables
+ */
 public class TierTableActivity extends FragmentActivity {
 
     @Override
@@ -74,7 +77,6 @@ public class TierTableActivity extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -108,6 +110,10 @@ public class TierTableActivity extends FragmentActivity {
         EasyTracker.getInstance(this).activityStop(this);
     }
 
+    /**
+     * A fragment for a tier category (PVP, raid or tower)
+     * There will be many TierTableFragment nested inside it
+     */
     public static class TierFragment extends Fragment {
         private FragmentTabHost mTabHost;
         @Override
@@ -172,6 +178,7 @@ public class TierTableActivity extends FragmentActivity {
             mTabHost.addTab(mTabHost.newTabSpec("E").setIndicator("Tier E"),
                     TierTableFragment.class, bundle);
 
+            // make the tabs scrollable
             TabWidget tw = (TabWidget) mTabHost.findViewById(android.R.id.tabs);
             LinearLayout ll = (LinearLayout) tw.getParent();
             HorizontalScrollView hs = new HorizontalScrollView(getActivity());
@@ -193,6 +200,9 @@ public class TierTableActivity extends FragmentActivity {
         }
     }
 
+    /**
+     * A fragment for a specific category-tier pair that displays all fams in that tier and category
+     */
     public static class TierTableFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

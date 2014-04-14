@@ -1,5 +1,9 @@
 package com.chin.bbdb;
 
+/**
+ * A modified version of ArrayAdapter that support regex filtering
+ */
+
 /*
  * Copyright (C) 2006 The Android Open Source Project
  *

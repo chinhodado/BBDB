@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * Activity to compare two familiars
+ */
 public class FamCompareActivity extends Activity {
 
     @Override
