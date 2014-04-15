@@ -8,10 +8,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.chin.bbdb.FamStore;
+import com.chin.bbdb.FamStore.TierCategory;
 import com.chin.bbdb.R;
 import com.chin.bbdb.TabListener;
 import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.Log;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -56,17 +56,17 @@ public class TierTableActivity extends FragmentActivity {
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         Bundle bundlePVP = new Bundle();
-        bundlePVP.putString("category", "PVP");
+        bundlePVP.putSerializable("category", TierCategory.PVP);
         bar.addTab(bar.newTab().setText("PVP Tier")
                 .setTabListener(new TabListener<TierFragment>(this, "pvp", TierFragment.class, bundlePVP)));
 
         Bundle bundleRAID = new Bundle();
-        bundleRAID.putString("category", "RAID");
+        bundleRAID.putSerializable("category", TierCategory.RAID);
         bar.addTab(bar.newTab().setText("Raid Tier")
                 .setTabListener(new TabListener<TierFragment>(this, "raid", TierFragment.class, bundleRAID)));
 
         Bundle bundleTOWER = new Bundle();
-        bundleTOWER.putString("category", "TOWER");
+        bundleTOWER.putSerializable("category", TierCategory.RAID);
         bar.addTab(bar.newTab().setText("Tower Tier")
                 .setTabListener(new TabListener<TierFragment>(this, "tower", TierFragment.class, bundleTOWER)));
 
@@ -120,61 +120,61 @@ public class TierTableActivity extends FragmentActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Bundle args = getArguments();
-            String category = args.getString("category");
+            TierCategory category = (TierCategory) args.getSerializable("category");
 
             mTabHost = new FragmentTabHost(getActivity());
             mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.tab_viewgroup);
 
             Bundle bundle = new Bundle();
-            bundle.putString("category", category);
+            bundle.putSerializable("category", category);
             bundle.putString("tier", "X");
             mTabHost.addTab(mTabHost.newTabSpec("X").setIndicator("Tier X"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
-            bundle.putString("category", category);
+            bundle.putSerializable("category", category);
             bundle.putString("tier", "S+");
             mTabHost.addTab(mTabHost.newTabSpec("S+").setIndicator("Tier S+"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
-            bundle.putString("category", category);
+            bundle.putSerializable("category", category);
             bundle.putString("tier", "S");
             mTabHost.addTab(mTabHost.newTabSpec("S").setIndicator("Tier S"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
-            bundle.putString("category", category);
+            bundle.putSerializable("category", category);
             bundle.putString("tier", "A+");
             mTabHost.addTab(mTabHost.newTabSpec("A+").setIndicator("Tier A+"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
-            bundle.putString("category", category);
+            bundle.putSerializable("category", category);
             bundle.putString("tier", "A");
             mTabHost.addTab(mTabHost.newTabSpec("A").setIndicator("Tier A"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
-            bundle.putString("category", category);
+            bundle.putSerializable("category", category);
             bundle.putString("tier", "B");
             mTabHost.addTab(mTabHost.newTabSpec("B").setIndicator("Tier B"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
-            bundle.putString("category", category);
+            bundle.putSerializable("category", category);
             bundle.putString("tier", "C");
             mTabHost.addTab(mTabHost.newTabSpec("C").setIndicator("Tier C"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
-            bundle.putString("category", category);
+            bundle.putSerializable("category", category);
             bundle.putString("tier", "D");
             mTabHost.addTab(mTabHost.newTabSpec("D").setIndicator("Tier D"),
                     TierTableFragment.class, bundle);
 
             bundle = new Bundle();
-            bundle.putString("category", category);
+            bundle.putSerializable("category", category);
             bundle.putString("tier", "E");
             mTabHost.addTab(mTabHost.newTabSpec("E").setIndicator("Tier E"),
                     TierTableFragment.class, bundle);
@@ -205,22 +205,34 @@ public class TierTableActivity extends FragmentActivity {
      * A fragment for a specific category-tier pair that displays all fams in that tier and category
      */
     public static class TierTableFragment extends Fragment {
+        
+        @SuppressWarnings("rawtypes")
+        AsyncTask myTask;
+        
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Bundle args = getArguments();
-            String category = args.getString("category");
+            TierCategory category = (TierCategory) args.getSerializable("category");
             String tier = args.getString("tier");
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_tier_list, container, false);
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.tier_layout);
 
             try {//TODO: see if we can be more error-tolerance
-                new PopulateTierTableAsyncTask(getActivity(), layout).execute(category, tier);
+                myTask = new PopulateTierTableAsyncTask(getActivity(), layout, category).execute(tier);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             return view;
+        }
+        
+        @Override
+        public void onPause() {
+            if (myTask != null) {
+                myTask.cancel(true);
+            }
+            myTask = null;
         }
     }
 
@@ -235,6 +247,7 @@ public class TierTableActivity extends FragmentActivity {
         LinearLayout layout;
         String tier;
         Document pageDOM;
+        TierCategory category;
 
         // map a tier string to an int (the table number)
         private static final HashMap<String, Integer> tierMap;
@@ -252,18 +265,23 @@ public class TierTableActivity extends FragmentActivity {
             tierMap.put("E", 8);
         }
 
-        public PopulateTierTableAsyncTask(Activity activity, LinearLayout layout) {
+        public PopulateTierTableAsyncTask(Activity activity, LinearLayout layout, TierCategory category) {
             this.activity = activity;
             this.layout = layout;
+            this.category = category;
         }
 
         @Override
         protected Void doInBackground(String... params) {
             String mainHTML = null;
             try {
-                mainHTML = FamStore.getInstance().getTierHTML(params[0]);
-                tier = params[1];
-                Log.i("Creating fragment: " + params[0] + " " + params[1]);
+                mainHTML = FamStore.getInstance().getTierHTML(category);
+                
+                if (isCancelled()) {
+                    return null; // try to return early if possible 
+                }
+                
+                tier = params[0];
                 pageDOM  = Jsoup.parse(mainHTML);
             } catch (Exception e) {
                 e.printStackTrace();

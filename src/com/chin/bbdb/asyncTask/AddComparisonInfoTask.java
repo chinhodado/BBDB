@@ -16,6 +16,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.chin.bbdb.FamStore;
+import com.chin.bbdb.FamStore.TierCategory;
 import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
 import com.chin.bbdb.activity.FamCompareActivity;
@@ -216,13 +217,13 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
     public void addFamTier() {
         // set the texts
         TextView tvTierLeft = (TextView) activity.findViewById(R.id.tierLeft);
-        tvTierLeft.setText("PvP: " + famStore.getFamTier(famNameLeft, "PVP") + "\n"
-                        + "Raid: " + famStore.getFamTier(famNameLeft, "RAID") + "\n"
-                        + "Tower: " + famStore.getFamTier(famNameLeft, "TOWER"));
+        tvTierLeft.setText("PvP: " + famStore.getFamTier(famNameLeft, TierCategory.PVP) + "\n"
+                        + "Raid: " + famStore.getFamTier(famNameLeft, TierCategory.RAID) + "\n"
+                        + "Tower: " + famStore.getFamTier(famNameLeft, TierCategory.TOWER));
 
         TextView tvTierRight = (TextView) activity.findViewById(R.id.tierRight);
-        tvTierRight.setText("PvP: " + famStore.getFamTier(famNameRight, "PVP") + "\n"
-                        + "Raid: " + famStore.getFamTier(famNameRight, "RAID") + "\n"
-                        + "Tower: " + famStore.getFamTier(famNameRight, "TOWER"));
+        tvTierRight.setText("PvP: " + famStore.getFamTier(famNameRight, TierCategory.PVP) + "\n"
+                        + "Raid: " + famStore.getFamTier(famNameRight, TierCategory.RAID) + "\n"
+                        + "Tower: " + famStore.getFamTier(famNameRight, TierCategory.TOWER));
     }
 }

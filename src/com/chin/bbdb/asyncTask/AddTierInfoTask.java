@@ -3,6 +3,7 @@ package com.chin.bbdb.asyncTask;
 import com.chin.bbdb.FamStore;
 import com.chin.bbdb.LayoutUtil;
 import com.chin.bbdb.R;
+import com.chin.bbdb.FamStore.TierCategory;
 import com.chin.bbdb.activity.FamDetailActivity;
 
 import android.os.AsyncTask;
@@ -31,9 +32,9 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         if (FamStore.pvpTierMap == null || FamStore.raidTierMap == null || FamStore.towerTierMap == null) {
             try {
-                FamStore.getInstance().initializeTierMap("PVP");
-                FamStore.getInstance().initializeTierMap("RAID");
-                FamStore.getInstance().initializeTierMap("TOWER");
+                FamStore.getInstance().initializeTierMap(TierCategory.PVP);
+                FamStore.getInstance().initializeTierMap(TierCategory.RAID);
+                FamStore.getInstance().initializeTierMap(TierCategory.TOWER);
             } catch (Exception e) {
                 Log.e("FamDetail", "Error fetching the tier HTML pages");
                 cancel(true);

@@ -94,6 +94,13 @@ public final class FamStore {
     private static String pvpHTML;
     private static String raidHTML;
     private static String towerHTML;
+    
+    // an enum for the tier categories
+    public enum TierCategory {
+        PVP,
+        RAID,
+        TOWER
+    }
 
     // a simple struct for holding 5 integers, used for holding the POPE stats
     static class IntPOPE {
@@ -505,18 +512,18 @@ public final class FamStore {
     /**
      * No check for null right now. Always remember to call only after the info is available
      * @param famName The name of the familiar
-     * @param category One of "PVP", "RAID" or "TOWER"
+     * @param category One of PVP, RAID or TOWER
      * @return
      */
-    public String getFamTier(String famName, String category) {
+    public String getFamTier(String famName, TierCategory category) {
         String tier = null;
-        if (category.equals("PVP")) {
+        if (category == TierCategory.PVP) {
             tier = pvpTierMap.get(famName);
         }
-        else if (category.equals("RAID")) {
+        else if (category == TierCategory.RAID) {
             tier = raidTierMap.get(famName);
         }
-        else if (category.equals("TOWER")) {
+        else if (category == TierCategory.TOWER) {
             tier = towerTierMap.get(famName);
         }
 
@@ -532,7 +539,7 @@ public final class FamStore {
      * @param category Either PVP, RAID or TOWER
      * @throws IOException
      */
-    public void initializeTierMap(String category) throws IOException {
+    public void initializeTierMap(TierCategory category) throws IOException {
 
         String tierHTML = FamStore.getInstance().getTierHTML(category);
         Document tierDOM   = Jsoup.parse(tierHTML);
@@ -555,13 +562,13 @@ public final class FamStore {
             }
         }
 
-        if (category.equals("PVP")) {
+        if (category == TierCategory.PVP) {
             FamStore.pvpTierMap = tierMap;
         }
-        else if (category.equals("RAID")) {
+        else if (category == TierCategory.RAID) {
             FamStore.raidTierMap = tierMap;
         }
-        else if (category.equals("TOWER")) {
+        else if (category == TierCategory.TOWER) {
             FamStore.towerTierMap = tierMap;
         }
 
@@ -577,23 +584,23 @@ public final class FamStore {
      * @return The HTML of the tier page of the specified category
      * @throws IOException Something's probably wrong with the network
      */
-    public String getTierHTML(String category) throws IOException {
+    public String getTierHTML(TierCategory category) throws IOException {
         String HTML = null;
-        if (category.equals("PVP")) {
+        if (category == TierCategory.PVP) {
             if (FamStore.pvpHTML == null) {
                 pvpHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/wiki/Familiar_Tier_List/PvP")
                         .ignoreContentType(true).execute().body();
             }
             HTML = FamStore.pvpHTML;
         }
-        else if (category.equals("RAID")) {
+        else if (category == TierCategory.RAID) {
             if (FamStore.raidHTML == null) {
                 raidHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/wiki/Familiar_Tier_List/Raid")
                         .ignoreContentType(true).execute().body();
             }
             HTML = FamStore.raidHTML;
         }
-        else if (category.equals("TOWER")) {
+        else if (category == TierCategory.TOWER) {
             if (FamStore.towerHTML == null) {
                 towerHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/wiki/Familiar_Tier_List/Tower")
                         .ignoreContentType(true).execute().body();
