@@ -48,6 +48,7 @@ import android.widget.ListView;
  */
 public class MainActivity extends FragmentActivity {
 
+    static boolean hasJustBeenStarted = true; // flag to determine if the app has just been started
     public final static String FAM_LINK = "com.chin.BBDB.LINK";
     public final static String FAM_NAME = "com.chin.BBDB.NAME";
 
@@ -74,9 +75,11 @@ public class MainActivity extends FragmentActivity {
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
                 Intent intent = null;
                 if (position == 0) { // Familiar
-                    return; // TODO: do nothing since we are already in main, but should close the drawer later
+                    // since we're in this activity already, close the drawer
+                    DrawerLayout mDrawerLayout = (DrawerLayout) MainActivity.this.findViewById(R.id.drawer_layout);
+                    mDrawerLayout.closeDrawers();
                 }
-                else if (position == 1) {
+                else if (position == 1) { // Tier list
                     intent = new Intent(v.getContext(), TierTableActivity.class);
                     startActivity(intent);
                 }
@@ -108,6 +111,11 @@ public class MainActivity extends FragmentActivity {
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        // if the app has just been started, show the drawer
+        if (hasJustBeenStarted) {
+            mDrawerLayout.openDrawer(mDrawerList);
+        }
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         //getActionBar().setHomeButtonEnabled(true);
@@ -152,6 +160,9 @@ public class MainActivity extends FragmentActivity {
         AdView adView = (AdView)this.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+
+        // for our purposes, consider the app already opened at this point
+        hasJustBeenStarted = false;
     }
 
     @Override
