@@ -35,6 +35,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TabWidget;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -223,12 +224,17 @@ public class TierTableActivity extends FragmentActivity {
         }
     }
 
-    public static class PopulateTierTableAsyncTask extends AsyncTask<String, Void, String> {
+    /**
+     * An AsyncTask that populates a TierTableFragment
+     * @author Chin
+     *
+     */
+    public static class PopulateTierTableAsyncTask extends AsyncTask<String, Void, Void> {
 
-        String mainHTML;
         Activity activity;
         LinearLayout layout;
         String tier;
+        Document pageDOM;
 
         // map a tier string to an int (the table number)
         private static final HashMap<String, Integer> tierMap;
@@ -252,20 +258,25 @@ public class TierTableActivity extends FragmentActivity {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected Void doInBackground(String... params) {
+            String mainHTML = null;
             try {
                 mainHTML = FamStore.getInstance().getTierHTML(params[0]);
+                tier = params[1];
+                Log.i("Creating fragment: " + params[0] + " " + params[1]);
+                pageDOM  = Jsoup.parse(mainHTML);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            tier = params[1];
-            Log.i("Creating fragment: " + params[0] + " " + params[1]);
-            return mainHTML;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String param) {
-            Document pageDOM   = Jsoup.parse(mainHTML);
+        protected void onPostExecute(Void param) {
+
+            if (pageDOM == null) {
+                return; // instead of try-catch
+            }
 
             Elements tierTables   = pageDOM.getElementsByClass("wikitable");
 
@@ -321,6 +332,10 @@ public class TierTableActivity extends FragmentActivity {
                 }
             }
             layout.addView(table);
+
+            //remove the spinner
+            ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.progressBar_tierTable);
+            layout.removeView(progressBar);
         }
     }
 }

@@ -4,6 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/tier_layout"
-    android:orientation="vertical" > 
+    android:orientation="vertical" >
+    
+    <ProgressBar
+        android:id="@+id/progressBar_tierTable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
