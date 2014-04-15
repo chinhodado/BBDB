@@ -30,7 +30,10 @@ public class FamDetailActivity extends Activity {
     // the image for that evolution level
     public static HashMap<String, Integer> evolutionMap = null;
 
-    public static String famName = null;
+    public String famName = null;
+
+    // the last fam ever displayed in this activity (before going to comparison)
+    public static String lastFam = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +45,22 @@ public class FamDetailActivity extends Activity {
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        Intent intent = getIntent(); // careful, this intent may not be the intent from MainActivity...
-        String tmpName = intent.getStringExtra(MainActivity.FAM_NAME);
-        if (tmpName != null) {
-            famName = tmpName; // needed since we may come back from other activity, not just the main one
+        if (savedInstanceState != null) {
+            famName = savedInstanceState.getString("FAMNAME");
+            lastFam = famName;
+        }
+        else {
+            Intent intent = getIntent(); // careful, this intent may not be the intent from MainActivity...
+            String tmpName = intent.getStringExtra(MainActivity.FAM_NAME);
+            if (tmpName != null) {
+                famName = tmpName; // needed since we may come back from other activity, not just the main one
+                lastFam = famName;
+            }
+        }
+
+        // if at this point the famName is still null, we can assume that we're returning from FamCompareActivity
+        if (famName == null) {
+            famName = lastFam;
         }
 
         setTitle("");
@@ -70,10 +85,15 @@ public class FamDetailActivity extends Activity {
                 String famName = (String)parent.getItemAtPosition(position);
                 Intent intent = new Intent(view.getContext(), FamCompareActivity.class);
                 intent.putExtra("FAM_NAME_RIGHT", famName);
-                intent.putExtra("FAM_NAME_LEFT", FamDetailActivity.famName);
+                intent.putExtra("FAM_NAME_LEFT", FamDetailActivity.this.famName);
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        bundle.putString("FAMNAME", famName);
     }
 
     @Override
