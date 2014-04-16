@@ -561,6 +561,16 @@ public final class FamStore {
     }
 
     /**
+     * Initialize all tier maps
+     * @throws IOException
+     */
+    public void initializeAllTierMap() throws IOException {
+        initializeTierMap(TierCategory.PVP);
+        initializeTierMap(TierCategory.RAID);
+        initializeTierMap(TierCategory.TOWER);
+    }
+
+    /**
      * Initialize the tier map of a category
      * @param category Either PVP, RAID or TOWER
      * @throws IOException

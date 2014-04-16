@@ -49,6 +49,7 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
         try { famStore.getImage(this.famNameRight);           } catch (Exception e) {e.printStackTrace();}
         try { famStore.getSkillHTMLString(this.famNameLeft);  } catch (Exception e) {e.printStackTrace();}
         try { famStore.getSkillHTMLString(this.famNameRight); } catch (Exception e) {e.printStackTrace();}
+        try { famStore.initializeAllTierMap();                } catch (Exception e) {e.printStackTrace();}
         return null;
     }
 
@@ -58,7 +59,7 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
         try { addFamImage(); } catch (Exception e) {e.printStackTrace();}
         try { addFamStat();  } catch (Exception e) {e.printStackTrace();}
         try { addFamSkill(); } catch (Exception e) {e.printStackTrace();}
-        try { addFamTier(); }  catch (Exception e) {e.printStackTrace();}
+        try { addFamTier();  } catch (Exception e) {e.printStackTrace();}
     }
 
     public void addFamImage() {
