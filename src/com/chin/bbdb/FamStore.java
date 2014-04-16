@@ -94,7 +94,7 @@ public final class FamStore {
     private static String pvpHTML;
     private static String raidHTML;
     private static String towerHTML;
-    
+
     // an enum for the tier categories
     public enum TierCategory {
         PVP,
@@ -284,6 +284,25 @@ public final class FamStore {
                 currentFam.stats.POPEStats[4] = popeStats.agiPOPE;
                 currentFam.stats.POPEStats[5] = popeStats.hpPOPE + popeStats.atkPOPE + popeStats.defPOPE +
                                                     popeStats.wisPOPE + popeStats.agiPOPE;
+            }
+            else { // fam is not in POPE table, we calculate the POPE manually
+                int toAdd = 0;
+
+                if (currentFam.isWarlord || starLevel.startsWith("1")) toAdd = 500;      // 1 star
+                else if (starLevel.startsWith("2")) toAdd = 550; // 2 star
+                else if (starLevel.startsWith("3")) toAdd = 605; // 3 star
+                else if (starLevel.startsWith("4")) toAdd = 666; // 4 star
+
+                for (int i = 0; i < 6; i++) {
+                    if (i <= 4) { // the individual stats
+                        if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd;
+                        else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd;
+                    }
+                    else if (i == 5) { // the total
+                        if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd*5;
+                        else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd*5;
+                    }
+                }
             }
         }
     }
@@ -517,6 +536,13 @@ public final class FamStore {
      */
     public String getFamTier(String famName, TierCategory category) {
         String tier = null;
+
+        try {
+            initializeTierMap(category);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         if (category == TierCategory.PVP) {
             tier = pvpTierMap.get(famName);
         }
@@ -540,6 +566,17 @@ public final class FamStore {
      * @throws IOException
      */
     public void initializeTierMap(TierCategory category) throws IOException {
+
+        // if the tier map for this category has already been initialized, just return
+        if (category == TierCategory.PVP && FamStore.pvpTierMap != null) {
+            return;
+        }
+        else if (category == TierCategory.RAID && FamStore.raidTierMap != null) {
+            return;
+        }
+        else if (category == TierCategory.TOWER && FamStore.towerTierMap != null) {
+            return;
+        }
 
         String tierHTML = FamStore.getInstance().getTierHTML(category);
         Document tierDOM   = Jsoup.parse(tierHTML);

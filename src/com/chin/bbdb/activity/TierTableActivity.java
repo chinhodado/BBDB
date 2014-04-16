@@ -205,10 +205,10 @@ public class TierTableActivity extends FragmentActivity {
      * A fragment for a specific category-tier pair that displays all fams in that tier and category
      */
     public static class TierTableFragment extends Fragment {
-        
+
         @SuppressWarnings("rawtypes")
         AsyncTask myTask;
-        
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Bundle args = getArguments();
@@ -226,9 +226,10 @@ public class TierTableActivity extends FragmentActivity {
 
             return view;
         }
-        
+
         @Override
         public void onPause() {
+            super.onPause();
             if (myTask != null) {
                 myTask.cancel(true);
             }
@@ -276,11 +277,11 @@ public class TierTableActivity extends FragmentActivity {
             String mainHTML = null;
             try {
                 mainHTML = FamStore.getInstance().getTierHTML(category);
-                
+
                 if (isCancelled()) {
-                    return null; // try to return early if possible 
+                    return null; // try to return early if possible
                 }
-                
+
                 tier = params[0];
                 pageDOM  = Jsoup.parse(mainHTML);
             } catch (Exception e) {
@@ -350,7 +351,7 @@ public class TierTableActivity extends FragmentActivity {
                 }
             }
             layout.addView(table);
-
+            //TODO: center the spinner horizontally
             //remove the spinner
             ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.progressBar_tierTable);
             layout.removeView(progressBar);
