@@ -73,13 +73,17 @@ public class TierTableActivity extends FragmentActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
                 Intent intent = null;
+
+                // first just close the drawer
+                DrawerLayout mDrawerLayout = (DrawerLayout) TierTableActivity.this.findViewById(R.id.drawer_layout);
+                mDrawerLayout.closeDrawers();
+
                 if (position == 0) { // Familiar
                     intent = new Intent(v.getContext(), MainActivity.class);
                     startActivity(intent);
                 }
                 else if (position == 1) { // Tier list
-                    intent = new Intent(v.getContext(), TierTableActivity.class);
-                    startActivity(intent);
+                    // since we're in this activity already, do nothing
                 }
             }
         });
