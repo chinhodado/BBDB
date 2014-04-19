@@ -27,9 +27,9 @@ import android.widget.TextView;
 /**
  * An AsyncTask that populates the information in the NewFamFragment
  */
-public class NewFamTask extends AsyncTask<Void, Void, String> {
+public class NewFamTask extends AsyncTask<Void, Void, Void> {
 
-    static String mainHTML = null;
+    static Document dom = null;
 
     Activity activity;
     LinearLayout layout;
@@ -40,22 +40,28 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void... params) {
-        if (mainHTML == null) {
+    protected Void doInBackground(Void... params) {
+        if (dom == null) {
             try {
-                mainHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/wiki/Blood_Brothers_Wiki")
+                String mainHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/wiki/Blood_Brothers_Wiki")
                         .ignoreContentType(true).execute().body();
+
+                // attempt to return early (though not really useful in this situation)
+                if (isCancelled()) {
+                    return null;
+                }
+
+                dom = Jsoup.parse(mainHTML);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return mainHTML;
+        return null;
     }
 
     @Override
-    protected void onPostExecute(String param) {
+    protected void onPostExecute(Void param) {
         try {
-            Document dom = Jsoup.parse(param);
             Elements newFamRows = dom.getElementsByClass("lcs-container").first()
                     .getElementsByTag("table").first() // first table is the new fam box
                     .getElementsByTag("tbody").first()

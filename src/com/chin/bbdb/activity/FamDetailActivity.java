@@ -299,6 +299,7 @@ public class FamDetailActivity extends FragmentActivity {
      * Fragment for the familiar comment view
      */
     public static class FamCommentFragment extends Fragment {
+        PopulateCommentAsyncTask myTask;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Bundle bundle = getArguments();
@@ -307,8 +308,18 @@ public class FamDetailActivity extends FragmentActivity {
             View view = inflater.inflate(R.layout.fragment_general_linear, container, false);
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.fragment_layout);
             layout.setGravity(Gravity.RIGHT);
-            new PopulateCommentAsyncTask(layout, (FamDetailActivity) getActivity()).execute(famName);
+            myTask = (PopulateCommentAsyncTask) new PopulateCommentAsyncTask(layout, (FamDetailActivity) getActivity())
+                            .execute(famName);
             return view;
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            if (myTask != null) {
+                myTask.cancel(true);
+                myTask = null;
+            }
         }
     }
 
@@ -331,6 +342,11 @@ public class FamDetailActivity extends FragmentActivity {
                 html = Jsoup.connect("http://bloodbrothersgame.wikia.com/wikia.php?controller=ArticleComments&method=Content&articleId="
                         + FamStore.famLinkTable.get(params[0])[1])
                         .ignoreContentType(true).execute().body();
+
+                if (isCancelled()) {
+                    return null;
+                }
+
                 dom = Jsoup.parse(html);
             } catch (IOException e) {
                 e.printStackTrace();

@@ -26,6 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class FamCompareActivity extends Activity {
 
     ActionBarDrawerToggle mDrawerToggle;
+    AddComparisonInfoTask myTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +91,9 @@ public class FamCompareActivity extends Activity {
         adView.loadAd(adRequest);
 
         Intent intent = getIntent();
-        new AddComparisonInfoTask(this).execute(intent.getStringExtra("FAM_NAME_LEFT"),
-                                                intent.getStringExtra("FAM_NAME_RIGHT"));
+        myTask = (AddComparisonInfoTask) new AddComparisonInfoTask(this)
+            .execute(intent.getStringExtra("FAM_NAME_LEFT"),
+                     intent.getStringExtra("FAM_NAME_RIGHT"));
     }
 
     @Override
@@ -144,5 +146,14 @@ public class FamCompareActivity extends Activity {
         super.onStop();
         // Google Analytics
         EasyTracker.getInstance(this).activityStop(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (myTask != null) {
+            myTask.cancel(true);
+            myTask = null;
+        }
     }
 }

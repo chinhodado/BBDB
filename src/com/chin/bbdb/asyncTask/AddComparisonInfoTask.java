@@ -44,11 +44,23 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 
         // each of these can fail independently (?)
         try { famStore.getGeneralInfo(this.famNameLeft);      } catch (Exception e) {e.printStackTrace();}
+        if (isCancelled()) {return null; };
+
         try { famStore.getImage(this.famNameLeft);            } catch (Exception e) {e.printStackTrace();}
+        if (isCancelled()) {return null; };
+
         try { famStore.getGeneralInfo(this.famNameRight);     } catch (Exception e) {e.printStackTrace();}
+        if (isCancelled()) {return null; };
+
         try { famStore.getImage(this.famNameRight);           } catch (Exception e) {e.printStackTrace();}
+        if (isCancelled()) {return null; };
+
         try { famStore.getSkillHTMLString(this.famNameLeft);  } catch (Exception e) {e.printStackTrace();}
+        if (isCancelled()) {return null; };
+
         try { famStore.getSkillHTMLString(this.famNameRight); } catch (Exception e) {e.printStackTrace();}
+        if (isCancelled()) {return null; };
+
         try { famStore.initializeAllTierMap();                } catch (Exception e) {e.printStackTrace();}
         return null;
     }
