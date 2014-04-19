@@ -308,8 +308,11 @@ public class FamDetailActivity extends FragmentActivity {
             View view = inflater.inflate(R.layout.fragment_general_linear, container, false);
             LinearLayout layout = (LinearLayout) view.findViewById(R.id.fragment_layout);
             layout.setGravity(Gravity.RIGHT);
-            myTask = (PopulateCommentAsyncTask) new PopulateCommentAsyncTask(layout, (FamDetailActivity) getActivity())
-                            .execute(famName);
+
+            String commentUrl = "http://bloodbrothersgame.wikia.com/wikia.php?controller=ArticleComments&method=Content&articleId="
+                    + FamStore.famLinkTable.get(famName)[1];
+            myTask = (PopulateCommentAsyncTask) new PopulateCommentAsyncTask(layout, (FamDetailActivity) getActivity(), 1)
+                            .execute(commentUrl);
             return view;
         }
 
@@ -328,10 +331,13 @@ public class FamDetailActivity extends FragmentActivity {
         LinearLayout layout;
         FamDetailActivity activity;
         Document dom;
+        int page;
+        String baseUrl;
 
-        public PopulateCommentAsyncTask(LinearLayout layout, FamDetailActivity activity) {
+        public PopulateCommentAsyncTask(LinearLayout layout, FamDetailActivity activity, int page) {
             this.layout = layout;
             this.activity = activity;
+            this.page = page;
         }
 
         @Override
@@ -339,9 +345,8 @@ public class FamDetailActivity extends FragmentActivity {
             String html;
             try {
                 FamStore.getInstance();
-                html = Jsoup.connect("http://bloodbrothersgame.wikia.com/wikia.php?controller=ArticleComments&method=Content&articleId="
-                        + FamStore.famLinkTable.get(params[0])[1])
-                        .ignoreContentType(true).execute().body();
+                baseUrl = params[0];
+                html = Jsoup.connect(baseUrl).ignoreContentType(true).execute().body();
 
                 if (isCancelled()) {
                     return null;
@@ -371,7 +376,7 @@ public class FamDetailActivity extends FragmentActivity {
 
                 for (Element comment : comments) {
                     if (comment.tagName().equals("li")) { // the main comments
-                        if (!isFirstComment) {
+                        if (!isFirstComment || page != 1) { // so skip if isFirstComment && page == 1
                             LayoutUtil.addLineSeparator(activity, layout);
                         }
                         String commentText = comment.getElementsByClass("speech-bubble-message").first()
@@ -397,6 +402,13 @@ public class FamDetailActivity extends FragmentActivity {
                 // remove the spinner
                 ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar_fragment_general);
                 layout.removeView(pgrBar);
+
+                // if there's more comment, load them recursively
+                Element next = dom.getElementById("article-comments-pagination-link-next");
+                if (next != null) {
+                    String nextLink = baseUrl + "&page=" + (page + 1);
+                    new PopulateCommentAsyncTask(layout, activity, page + 1).execute(nextLink);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
