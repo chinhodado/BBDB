@@ -83,7 +83,7 @@ public final class FamStore {
     public static ArrayList<String> famList = null;
 
     // map a fam name to its wiki page url, initialized in MainActivity's onCreate()
-    public static Hashtable<String, String> famLinkTable = null;
+    public static Hashtable<String, String[]> famLinkTable = null;
 
     // map a fam name to its tiers, initialized in AddTierInfoTask
     public static HashMap<String, String> pvpTierMap    = null;
@@ -173,7 +173,7 @@ public final class FamStore {
         currentFam = new FamDetail(famName);
         famStore.put(famName, currentFam);
 
-        String famURL = "http://bloodbrothersgame.wikia.com" + FamStore.famLinkTable.get(famName);
+        String famURL = "http://bloodbrothersgame.wikia.com" + FamStore.famLinkTable.get(famName)[0];
 
         String famHTML = null;
         try {
@@ -623,7 +623,7 @@ public final class FamStore {
 
     /**
      * Get the HTML of a tier page. If it is already fetched before it will be returned
-     * immediately. Otherwise it will be fetched from the internet.
+     * immediately, otherwise it will be fetched from the internet.
      *
      * Be careful as this may block, and may raise an exception if you call it on the main thread
      *

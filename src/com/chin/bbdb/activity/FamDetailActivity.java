@@ -1,36 +1,55 @@
 package com.chin.bbdb.activity;
 
+import java.io.IOException;
 import java.util.HashMap;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import com.chin.bbdb.FamStore;
+import com.chin.bbdb.LayoutUtil;
 import com.chin.bbdb.R;
+import com.chin.bbdb.TabListener;
 import com.chin.bbdb.asyncTask.AddFamiliarInfoTask;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Point;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 
 /**
  * Activity to show all details about a familiar
  */
-public class FamDetailActivity extends Activity {
+public class FamDetailActivity extends FragmentActivity {
 
     // map a string (the evolution level) to a number that represents
     // the image for that evolution level
@@ -125,8 +144,6 @@ public class FamDetailActivity extends Activity {
         setTitle("");
         initialize();
 
-        new AddFamiliarInfoTask(this).execute(famName);
-
         // add the AutoCompleteTextView to the ActionBar
         LayoutInflater inflator = (LayoutInflater) this
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -148,6 +165,17 @@ public class FamDetailActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        // add the tabs
+        ActionBar bar = getActionBar();
+        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("FAMNAME", famName);
+        bar.addTab(bar.newTab().setText("Information")
+                .setTabListener(new TabListener<FamInfoFragment>(this, "fam info", FamInfoFragment.class, bundle)));
+        bar.addTab(bar.newTab().setText("Comment")
+                .setTabListener(new TabListener<FamCommentFragment>(this, "fam comment", FamCommentFragment.class, bundle)));
     }
 
     @Override
@@ -238,5 +266,125 @@ public class FamDetailActivity extends Activity {
         super.onStop();
         // Google Analytics
         EasyTracker.getInstance(this).activityStop(this);
+    }
+
+    /**
+     * Fragment for the familiar info view
+     */
+    public static class FamInfoFragment extends Fragment {
+
+        AsyncTask<?, ?, ?> myTask = null;
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            Bundle bundle = getArguments();
+            String famName = bundle.getString("FAMNAME");
+            // Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.fragment_fam_info, container, false);
+            myTask = new AddFamiliarInfoTask((FamDetailActivity) getActivity()).execute(famName);
+            return view;
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            if (myTask != null) {
+                myTask.cancel(true);
+                myTask = null;
+            }
+        }
+    }
+
+    /**
+     * Fragment for the familiar comment view
+     */
+    public static class FamCommentFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            Bundle bundle = getArguments();
+            String famName = bundle.getString("FAMNAME");
+            // Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.fragment_general_linear, container, false);
+            LinearLayout layout = (LinearLayout) view.findViewById(R.id.fragment_layout);
+            layout.setGravity(Gravity.RIGHT);
+            new PopulateCommentAsyncTask(layout, (FamDetailActivity) getActivity()).execute(famName);
+            return view;
+        }
+    }
+
+    public static class PopulateCommentAsyncTask extends AsyncTask<String, Void, Void> {
+
+        LinearLayout layout;
+        FamDetailActivity activity;
+        Document dom;
+
+        public PopulateCommentAsyncTask(LinearLayout layout, FamDetailActivity activity) {
+            this.layout = layout;
+            this.activity = activity;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String html;
+            try {
+                FamStore.getInstance();
+                html = Jsoup.connect("http://bloodbrothersgame.wikia.com/wikia.php?controller=ArticleComments&method=Content&articleId="
+                        + FamStore.famLinkTable.get(params[0])[1])
+                        .ignoreContentType(true).execute().body();
+                dom = Jsoup.parse(html);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param) {
+
+            try {
+                // calculate the width of the textviews for subcomments to be displayed later on
+                Display display = activity.getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int screenWidth = size.x;
+                int scaleWidth = (int) (screenWidth * 0.75); // set it to be 3/4 of the screen width
+
+                Elements comments = dom.getElementById("article-comments-ul")
+                                       .children();
+                boolean isFirstComment = true; // used for not showing the line separator above the first comment
+
+                for (Element comment : comments) {
+                    if (comment.tagName().equals("li")) { // the main comments
+                        if (!isFirstComment) {
+                            LayoutUtil.addLineSeparator(activity, layout);
+                        }
+                        String commentText = comment.getElementsByClass("speech-bubble-message").first()
+                                                    .getElementsByClass("article-comm-text").first().text();
+                        TextView tv = new TextView(activity);
+                        layout.addView(tv);
+                        tv.setText("\n" + commentText + "\n");
+                        isFirstComment = false;
+                    }
+                    else if (comment.tagName().equals("ul")) { // the sub comments
+                        Elements subcomments = comment.children();
+                        for (Element subcomment : subcomments) {
+                            String commentText = subcomment.getElementsByClass("speech-bubble-message").first()
+                                                           .getElementsByClass("article-comm-text").first().text();
+                            TextView tv = new TextView(activity);
+                            tv.setLayoutParams(new LayoutParams(scaleWidth, LayoutParams.WRAP_CONTENT));
+                            layout.addView(tv);
+                            tv.setText(commentText + "\n");
+                        }
+                    }
+                }
+
+                // remove the spinner
+                ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar_fragment_general);
+                layout.removeView(pgrBar);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

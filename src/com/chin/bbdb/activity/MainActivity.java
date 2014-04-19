@@ -130,13 +130,15 @@ public class MainActivity extends FragmentActivity {
                 JSONObject myJSON = new JSONObject(jsonString);
 
                 FamStore.famList = new ArrayList<String>();
-                FamStore.famLinkTable = new Hashtable<String, String>();
+                FamStore.famLinkTable = new Hashtable<String, String[]>();
 
                 JSONArray myArray = myJSON.getJSONArray("items");
                 for (int i = 0; i < myArray.length(); i++) {
                     String famName = myArray.getJSONObject(i).getString("title");
                     FamStore.famList.add(famName);
-                    FamStore.famLinkTable.put(famName, myArray.getJSONObject(i).getString("url"));
+                    String[] tmp = {myArray.getJSONObject(i).getString("url"),
+                                    myArray.getJSONObject(i).getString("id")};
+                    FamStore.famLinkTable.put(famName, tmp);
                 }
             } catch (Exception e) {
                 DialogFragment newFragment = new NetworkDialogFragment();
@@ -232,8 +234,8 @@ public class MainActivity extends FragmentActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             // Inflate the layout for this fragment
-            View view = inflater.inflate(R.layout.fragment_newfam, container, false);
-            LinearLayout layout = (LinearLayout) view.findViewById(R.id.newfam_layout);
+            View view = inflater.inflate(R.layout.fragment_general_linear, container, false);
+            LinearLayout layout = (LinearLayout) view.findViewById(R.id.fragment_layout);
             new NewFamTask(getActivity(), layout).execute();
             return view;
         }

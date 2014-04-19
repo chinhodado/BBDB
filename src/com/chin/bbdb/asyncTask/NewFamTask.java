@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.chin.bbdb.FamStore;
+import com.chin.bbdb.R;
 import com.chin.bbdb.activity.FamDetailActivity;
 import com.chin.bbdb.activity.MainActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
@@ -39,7 +41,6 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
-
         if (mainHTML == null) {
             try {
                 mainHTML = Jsoup.connect("http://bloodbrothersgame.wikia.com/wiki/Blood_Brothers_Wiki")
@@ -101,7 +102,9 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
                                 FamStore.famList.add(name);
                             }
                             if (FamStore.famLinkTable.get(name) == null) {
-                                FamStore.famLinkTable.put(name, famUrl);
+                                // TODO: see if we can find the id for new fams
+                                String[] tmpStr = {famUrl, null};
+                                FamStore.famLinkTable.put(name, tmpStr);
                             }
 
                             // get the thubnail image src
@@ -135,6 +138,10 @@ public class NewFamTask extends AsyncTask<Void, Void, String> {
                 }
                 count++;
             }
+
+            // remove the spinner
+            ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar_fragment_general);
+            layout.removeView(pgrBar);
         }
         catch (Exception e) {
             e.printStackTrace();

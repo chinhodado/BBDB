@@ -42,23 +42,22 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void param) {
+        try {
+            String famPVPTier = null, famRaidTier = null, famTowerTier = null;
+            famPVPTier   = FamStore.pvpTierMap.get(famName);
+            famRaidTier  = FamStore.raidTierMap.get(famName);
+            famTowerTier = FamStore.towerTierMap.get(famName);
 
-        //just in case...
-        if (FamStore.pvpTierMap == null || FamStore.raidTierMap == null || FamStore.towerTierMap == null)
-            return;
+            // remove the spinner
+            ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar3);
+            LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
+            layout.removeView(pgrBar);
 
-        String famPVPTier = null, famRaidTier = null, famTowerTier = null;
-        famPVPTier   = FamStore.pvpTierMap.get(famName);
-        famRaidTier  = FamStore.raidTierMap.get(famName);
-        famTowerTier = FamStore.towerTierMap.get(famName);
-
-        // remove the spinner
-        ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar3);
-        LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
-        layout.removeView(pgrBar);
-
-        LayoutUtil.addRowWithTwoTextView(activity, detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
-        LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);
-        LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Tower tier", famTowerTier==null? "N/A" : famTowerTier, true);
+            LayoutUtil.addRowWithTwoTextView(activity, detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
+            LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);
+            LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Tower tier", famTowerTier==null? "N/A" : famTowerTier, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
