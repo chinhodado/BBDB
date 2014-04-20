@@ -135,10 +135,24 @@ public class TierTableActivity extends FragmentActivity {
         bar.addTab(bar.newTab().setText("Tower Tier")
                 .setTabListener(new TabListener<TierFragment>(this, "tower", TierFragment.class, bundleTOWER)));
 
+        // if we're resuming the activity, re-select the tab that was selected before
+        if (savedInstanceState != null) {
+            // Select the tab that was selected before orientation change
+            int index = savedInstanceState.getInt("TAB_INDEX");
+            bar.setSelectedNavigationItem(index);
+        }
+
         // Look up the AdView as a resource and load a request.
         AdView adView = (AdView)this.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        // Save the index of the currently selected tab
+        bundle.putInt("TAB_INDEX", getActionBar().getSelectedTab().getPosition());
     }
 
     @Override

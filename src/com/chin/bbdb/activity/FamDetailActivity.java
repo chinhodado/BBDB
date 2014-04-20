@@ -176,11 +176,22 @@ public class FamDetailActivity extends FragmentActivity {
                 .setTabListener(new TabListener<FamInfoFragment>(this, "fam info", FamInfoFragment.class, bundle)));
         bar.addTab(bar.newTab().setText("Comment")
                 .setTabListener(new TabListener<FamCommentFragment>(this, "fam comment", FamCommentFragment.class, bundle)));
+
+        // if we're resuming the activity, re-select the tab that was selected before
+        if (savedInstanceState != null) {
+            // Select the tab that was selected before orientation change
+            int index = savedInstanceState.getInt("TAB_INDEX");
+            bar.setSelectedNavigationItem(index);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
         bundle.putString("FAMNAME", famName);
+
+        // Save the index of the currently selected tab
+        bundle.putInt("TAB_INDEX", getActionBar().getSelectedTab().getPosition());
     }
 
     @Override

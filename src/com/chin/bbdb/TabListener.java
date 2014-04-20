@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
 
@@ -33,7 +34,11 @@ public class TabListener<T extends Fragment> implements ActionBar.TabListener {
     @Override
     public void onTabSelected(Tab tab, FragmentTransaction ft) {
         // use our own v4 version of FragmentTransaction instead of the one passed in
-        android.support.v4.app.FragmentTransaction fft = mActivity.getSupportFragmentManager().beginTransaction();
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fft = fm.beginTransaction();
+
+        // previous fragment
+        mFragment = fm.findFragmentByTag(mTag);
 
         // Check if the fragment is already initialized
         if (mFragment == null) {
@@ -51,9 +56,17 @@ public class TabListener<T extends Fragment> implements ActionBar.TabListener {
     @Override
     public void onTabUnselected(Tab tab, FragmentTransaction ft) {
         // use our own v4 version of FragmentTransaction instead of the one passed in
-        android.support.v4.app.FragmentTransaction fft = mActivity.getSupportFragmentManager().beginTransaction();
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fft = fm.beginTransaction();
 
-        if (mFragment != null) {
+        Fragment currentlyShowing = fm.findFragmentByTag(mTag);
+
+        if (currentlyShowing != null) {
+            // Detach the fragment, another tab has been selected
+            fft.detach(currentlyShowing);
+            fft.commit();
+        }
+        else if (mFragment != null) {
             // Detach the fragment, because another one is being attached
             fft.detach(mFragment);
             fft.commit();
