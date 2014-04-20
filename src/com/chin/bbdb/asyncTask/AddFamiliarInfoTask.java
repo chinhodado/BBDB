@@ -13,6 +13,7 @@ import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
 import com.chin.bbdb.activity.FamDetailActivity;
 import com.chin.bbdb.activity.MainActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -55,8 +56,8 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
         try { famStore.getGeneralInfo(this.famName);     } catch (Exception e) {e.printStackTrace();}
         if (isCancelled()) {return null; }; // attempt to return early
 
-        try { famStore.getImage(this.famName);           } catch (Exception e) {e.printStackTrace();}
-        if (isCancelled()) {return null; }; // attempt to return early
+        //try { famStore.getImage(this.famName);           } catch (Exception e) {e.printStackTrace();}
+        //if (isCancelled()) {return null; }; // attempt to return early
 
         try { famStore.getSkillHTMLString(this.famName); } catch (Exception e) {e.printStackTrace();}
         return null;
@@ -80,8 +81,8 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
         layout.removeView(pgrBar);
 
         // set the image
-        ImageView bmImage = (ImageView) activity.findViewById(R.id.imageView_detail_fam);
-        bmImage.setImageBitmap(famStore.getImage(famName));
+        ImageView imgView = (ImageView) activity.findViewById(R.id.imageView_detail_fam);
+        ImageLoader.getInstance().displayImage(famStore.getImageLink(famName), imgView);
     }
 
     public void addFamSkill() {

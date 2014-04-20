@@ -1,20 +1,14 @@
 package com.chin.bbdb;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 /**
@@ -111,23 +105,6 @@ public final class FamStore {
 
     // the heart of this class, a storage for familiars' detail
     private static Hashtable<String, FamDetail> famStore = new Hashtable<String, FamDetail>();
-
-    // maximum number of image to be cached. Don't set it too high, or you'll run short on memory
-    static final int MAX_CACHED_IMAGE = 5;
-
-    // maps a fam name to its image. Remove the last inserted image when the capacity is exceeded
-    @SuppressWarnings("serial")
-    LinkedHashMap<String, Bitmap> imageStore
-                = new LinkedHashMap<String, Bitmap>(MAX_CACHED_IMAGE + 1, // initial capacity, make it 1 more than
-                                                                          //the max num of cached coz of paranoia
-                                                    0.75f,                // default load factor
-                                                    true)                 // true for access-order
-     {
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<String, Bitmap> eldest) {
-           return size() > MAX_CACHED_IMAGE;
-        }
-     };
 
     // maps a skill name to its DOM
     private static Hashtable<String, String> skillStore = new Hashtable<String, String>();
@@ -374,15 +351,12 @@ public final class FamStore {
     }
 
     /**
-     * Get the image of a familiar. If that image is in the last 5 loaded images, a cached version of it will
-     * be returned. Otherwise it will be fetched from the net. Careful, it may block.
+     * Get the image link of a familiar.
      *
      * @param famName The name of the familiar
-     * @return The image of that familiar
+     * @return The image link of that familiar
      */
-    public Bitmap getImage(String famName) {
-        Bitmap famImage = imageStore.get(famName);
-        if (famImage != null) return famImage;
+    public String getImageLink(String famName) {
 
         FamDetail currentFam = famStore.get(famName);
         if (currentFam == null) {
@@ -394,17 +368,9 @@ public final class FamStore {
         if (currentFam.famDOM == null) getGeneralInfo(famName);
 
         Element infoBoxFam = null;
-        try {
-            infoBoxFam = currentFam.famDOM.getElementsByClass("infobox").first();
-            String imageUrl = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr").get(1).getElementsByTag("th").first().getElementsByTag("a").first().attr("href");
-            InputStream in = new java.net.URL(imageUrl).openStream();
-            famImage = BitmapFactory.decodeStream(in);
-        } catch (Exception e) {
-            Log.e("FamDetail", "Error displaying the fam image");
-            e.printStackTrace();
-        }
-        imageStore.put(famName, famImage);
-        return famImage;
+        infoBoxFam = currentFam.famDOM.getElementsByClass("infobox").first();
+        String imageUrl = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr").get(1).getElementsByTag("th").first().getElementsByTag("a").first().attr("href");
+        return imageUrl;
     }
 
     /**

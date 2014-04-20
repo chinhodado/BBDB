@@ -21,6 +21,7 @@ import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
 import com.chin.bbdb.activity.FamCompareActivity;
 import com.chin.bbdb.activity.FamDetailActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * The async task that populate the information in FamCompareActivity
@@ -46,13 +47,7 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
         try { famStore.getGeneralInfo(this.famNameLeft);      } catch (Exception e) {e.printStackTrace();}
         if (isCancelled()) {return null; };
 
-        try { famStore.getImage(this.famNameLeft);            } catch (Exception e) {e.printStackTrace();}
-        if (isCancelled()) {return null; };
-
         try { famStore.getGeneralInfo(this.famNameRight);     } catch (Exception e) {e.printStackTrace();}
-        if (isCancelled()) {return null; };
-
-        try { famStore.getImage(this.famNameRight);           } catch (Exception e) {e.printStackTrace();}
         if (isCancelled()) {return null; };
 
         try { famStore.getSkillHTMLString(this.famNameLeft);  } catch (Exception e) {e.printStackTrace();}
@@ -81,11 +76,11 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
         compareTable.removeView(row);
 
         // set the image
-        ImageView bmImage = (ImageView) activity.findViewById(R.id.imageView_leftFam);
-        bmImage.setImageBitmap(famStore.getImage(famNameLeft));
+        ImageView imgView = (ImageView) activity.findViewById(R.id.imageView_leftFam);
+        ImageLoader.getInstance().displayImage(famStore.getImageLink(famNameLeft), imgView);
 
-        bmImage = (ImageView) activity.findViewById(R.id.imageView_rightFam);
-        bmImage.setImageBitmap(famStore.getImage(famNameRight));
+        imgView = (ImageView) activity.findViewById(R.id.imageView_rightFam);
+        ImageLoader.getInstance().displayImage(famStore.getImageLink(famNameRight), imgView);
     }
 
     public void addFamStat() {
