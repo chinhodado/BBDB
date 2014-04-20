@@ -232,7 +232,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
                 // do nothing
                 count++;
             }
-            else if (count == 4) {
+            else if (count == 4) { // evolution star and rarity
                 Elements cells = detailRow.getElementsByTag("td");
                 String st1 = "", st2 = "";
                 try {
@@ -290,8 +290,38 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
                     st2 = cells.get(1).text().trim();
                 } catch (Exception e) {}
 
+                if (st1.equals("Elite")){ // if this is the elite row, we need to add the elite seal image
+                    // add the word "Elite"
+                    TableRow tr = new TableRow(activity);
+                    TextView tv1 = new TextView(activity); tv1.setText(st1);
+                    tr.addView(tv1);
+
+                    // create a layout for the elite image + event name
+                    LinearLayout tmpViewGroup = new LinearLayout(activity);
+                    tmpViewGroup.setLayoutParams(new TableRow.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                            ViewGroup.LayoutParams.MATCH_PARENT));
+                    // set the elite image
+                    ImageView imvElite = new ImageView(activity);
+                    imvElite.setScaleType(ImageView.ScaleType.FIT_START);
+                    imvElite.setLayoutParams(new TableRow.LayoutParams (ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                        ViewGroup.LayoutParams.MATCH_PARENT));
+                    imvElite.setImageResource(R.drawable.elite);
+                    tmpViewGroup.addView(imvElite);
+
+                    // add the event name
+                    TextView tv2 = new TextView(activity); tv2.setText(st2);
+                    tmpViewGroup.addView(tv2);
+
+                    // add viewgroup to row and row to table
+                    tr.addView(tmpViewGroup);
+                    detailTable.addView(tr);
+
+                    // add the line separator
+                    Util.addLineSeparator(activity, detailTable);
+                }
+
                 // this is important since there are empty filler rows like <tr></tr>, we skip those
-                if (!st1.equals("") || !st2.equals("")) {
+                else if (!st1.equals("") || !st2.equals("")) {
                     Util.addRowWithTwoTextView(activity, detailTable, st1, st2, true);
                 }
                 count++;
