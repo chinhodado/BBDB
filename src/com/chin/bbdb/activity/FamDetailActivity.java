@@ -9,7 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.chin.bbdb.FamStore;
-import com.chin.bbdb.LayoutUtil;
+import com.chin.bbdb.Util;
 import com.chin.bbdb.R;
 import com.chin.bbdb.TabListener;
 import com.chin.bbdb.asyncTask.AddFamiliarInfoTask;
@@ -388,7 +388,7 @@ public class FamDetailActivity extends FragmentActivity {
                 for (Element comment : comments) {
                     if (comment.tagName().equals("li")) { // the main comments
                         if (!isFirstComment || page != 1) { // so skip if isFirstComment && page == 1
-                            LayoutUtil.addLineSeparator(activity, layout);
+                            Util.addLineSeparator(activity, layout);
                         }
                         String commentText = comment.getElementsByClass("speech-bubble-message").first()
                                                     .getElementsByClass("article-comm-text").first().text();

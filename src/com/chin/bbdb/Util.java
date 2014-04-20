@@ -9,11 +9,11 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 /**
- * Some utility functions to help with doing the layout
+ * Some utility functions
  * @author Chin
  *
  */
-public class LayoutUtil {
+public class Util {
     public static void addLineSeparator(Activity activity, ViewGroup view) {
         View tmpView = new View(activity);
         tmpView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
@@ -87,5 +87,31 @@ public class LayoutUtil {
         }
         table.addView(tr);
         if (showLineSeparator) addLineSeparator(activity, table);
+    }
+
+    /**
+     * Given a link to a (already scaled) wikia image, return a new scaled version with the specified width
+     * @param link The link to the original scaled wikia image
+     * @param newWidth The width of the new image
+     * @return The link to the new scaled image
+     */
+    public static String getScaledWikiaImageLink (String link, int newWidth) {
+        // TODO: maybe we should use regex...
+        int lastSlash = link.lastIndexOf("/");
+        String scaledName = link.substring(lastSlash + 1); // the original scaled image name
+
+        // get the original image name
+        int firstOriginalImageNamePosition = scaledName.indexOf("px-") + 3;
+        String originalName = scaledName.substring(firstOriginalImageNamePosition);
+
+        // the new scaled image new
+        String newScaledName = newWidth + "px-" + originalName;
+
+        // original image link with the slash
+        String originalLink = link.substring(0, lastSlash + 1);
+
+        // complete new link
+        String newScaledLink = originalLink + newScaledName;
+        return newScaledLink;
     }
 }

@@ -8,7 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.chin.bbdb.FamStore;
-import com.chin.bbdb.LayoutUtil;
+import com.chin.bbdb.Util;
 import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
 import com.chin.bbdb.activity.FamDetailActivity;
@@ -108,7 +108,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
                 if (count == 0) {
                     // get the skill name
                     String skillName = row.getElementsByTag("th").text().trim();
-                    LayoutUtil.addRowWithTwoTextView(activity, skillTable, "Skill name", skillName, true, Typeface.DEFAULT_BOLD);
+                    Util.addRowWithTwoTextView(activity, skillTable, "Skill name", skillName, true, Typeface.DEFAULT_BOLD);
                     count++;
                 }
                 else {
@@ -120,7 +120,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
                     } catch (Exception e) {}
 
                     if (!st1.equals("") || !st2.equals("")) {
-                        LayoutUtil.addRowWithTwoTextView(activity, skillTable, st1, st2, true);
+                        Util.addRowWithTwoTextView(activity, skillTable, st1, st2, true);
                     }
                     count++;
                 }
@@ -201,7 +201,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
         // POPE row
         if (famStore.isFinalEvolution(famName) || isWarlord) {
 
-            LayoutUtil.addLineSeparator(activity, statTableLayout);
+            Util.addLineSeparator(activity, statTableLayout);
             TableRow popeRow = new TableRow(activity); statTableLayout.addView(popeRow);
             TextView tmpTv1 = new TextView(activity); tmpTv1.setText("POPE"); popeRow.addView(tmpTv1);
 
@@ -275,7 +275,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
                 count++;
 
                 // add the line separator
-                LayoutUtil.addLineSeparator(activity, detailTable);
+                Util.addLineSeparator(activity, detailTable);
             }
             else {
                 if (count == 2 && !famStore.isWarlord(famName)) {
@@ -291,7 +291,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 
                 // this is important since there are empty filler rows like <tr></tr>, we skip those
                 if (!st1.equals("") || !st2.equals("")) {
-                    LayoutUtil.addRowWithTwoTextView(activity, detailTable, st1, st2, true);
+                    Util.addRowWithTwoTextView(activity, detailTable, st1, st2, true);
                 }
                 count++;
             }
@@ -360,7 +360,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
             TableRow tr = new TableRow(activity);
             TextView tv1 = new TextView(activity); tv1.setText(count + ". " + text); tr.addView(tv1);
             evoTable.addView(tr);
-            LayoutUtil.addLineSeparator(activity, evoTable);
+            Util.addLineSeparator(activity, evoTable);
             tr.setId(count - 1); // set the row id to use for fam name retrieval later
             tr.setOnClickListener(new View.OnClickListener() {
                 @Override

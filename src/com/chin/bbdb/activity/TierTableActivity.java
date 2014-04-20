@@ -11,6 +11,7 @@ import com.chin.bbdb.FamStore;
 import com.chin.bbdb.FamStore.TierCategory;
 import com.chin.bbdb.R;
 import com.chin.bbdb.TabListener;
+import com.chin.bbdb.Util;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -401,7 +402,7 @@ public class TierTableActivity extends FragmentActivity {
             Point size = new Point();
             display.getSize(size);
             int screenWidth = size.x;
-            int scaleWidth = screenWidth / 12; // set it to be 1/12 of the screen width
+            int scaleWidth = screenWidth / 10; // set it to be 1/10 of the screen width
 
             int tableIndex = tierMap.get(tier);
             Element tierTable = tierTables.get(tableIndex);
@@ -427,7 +428,10 @@ public class TierTableActivity extends FragmentActivity {
 
                     imgView.setLayoutParams(new TableRow.LayoutParams(scaleWidth, (int) (scaleWidth*1.5))); // the height's not exact
                     imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    ImageLoader.getInstance().displayImage(imgSrc, imgView);
+
+                    // get the scaled image link and display it
+                    String newScaledLink = Util.getScaledWikiaImageLink(imgSrc, scaleWidth);
+                    ImageLoader.getInstance().displayImage(newScaledLink, imgView);
 
                     String famName = cells.get(1).text();
                     TextView tv = new TextView(activity);

@@ -1,7 +1,7 @@
 package com.chin.bbdb.asyncTask;
 
 import com.chin.bbdb.FamStore;
-import com.chin.bbdb.LayoutUtil;
+import com.chin.bbdb.Util;
 import com.chin.bbdb.R;
 import com.chin.bbdb.activity.FamDetailActivity;
 
@@ -53,9 +53,9 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
             LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
             layout.removeView(pgrBar);
 
-            LayoutUtil.addRowWithTwoTextView(activity, detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
-            LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);
-            LayoutUtil.addRowWithTwoTextView(activity, detailTable, "Tower tier", famTowerTier==null? "N/A" : famTowerTier, true);
+            Util.addRowWithTwoTextView(activity, detailTable, "PVP tier", famPVPTier==null? "N/A" : famPVPTier, true);
+            Util.addRowWithTwoTextView(activity, detailTable, "Raid tier", famRaidTier==null? "N/A" : famRaidTier, true);
+            Util.addRowWithTwoTextView(activity, detailTable, "Tower tier", famTowerTier==null? "N/A" : famTowerTier, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

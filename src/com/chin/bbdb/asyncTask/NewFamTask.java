@@ -7,6 +7,7 @@ import org.jsoup.select.Elements;
 
 import com.chin.bbdb.FamStore;
 import com.chin.bbdb.R;
+import com.chin.bbdb.Util;
 import com.chin.bbdb.activity.FamDetailActivity;
 import com.chin.bbdb.activity.MainActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -72,7 +73,7 @@ public class NewFamTask extends AsyncTask<Void, Void, Void> {
             Point size = new Point();
             display.getSize(size);
             int screenWidth = size.x;
-            int scaleWidth = screenWidth / 10; // set it to be 1/10 of the screen width
+            int scaleWidth = screenWidth / 7; // set it to be 1/7 of the screen width
 
             int count = 0;
             for (Element row : newFamRows) {
@@ -127,7 +128,10 @@ public class NewFamTask extends AsyncTask<Void, Void, Void> {
                             imgView.getLayoutParams().height = (int) (scaleWidth*1.5);
                             imgView.requestLayout();
                             imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                            ImageLoader.getInstance().displayImage(imgSrc, imgView);
+
+                            // get the scaled image link and display it
+                            String newScaledLink = Util.getScaledWikiaImageLink(imgSrc, scaleWidth);
+                            ImageLoader.getInstance().displayImage(newScaledLink, imgView);
 
                             // set listener for the image view
                             imgView.setOnClickListener(new View.OnClickListener() {
