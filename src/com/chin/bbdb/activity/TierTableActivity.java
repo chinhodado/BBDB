@@ -174,10 +174,21 @@ public class TierTableActivity extends FragmentActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_help) {
-            Intent intent = new Intent(this, HelpActivity.class);
-            startActivity(intent);
-            return true;
+        switch (id) {
+            case R.id.action_help:
+            {
+                Intent intent = new Intent(this, HelpAboutActivity.class);
+                intent.putExtra("INTENT", "help");
+                startActivity(intent);
+                break;
+            }
+            case R.id.action_about:
+            {
+                Intent intent = new Intent(this, HelpAboutActivity.class);
+                intent.putExtra("INTENT", "about");
+                startActivity(intent);
+                break;
+            }
         }
         return super.onOptionsItemSelected(item);
     }

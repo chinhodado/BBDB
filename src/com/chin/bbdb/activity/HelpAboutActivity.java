@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,7 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 /**
  * Activity to show the help texts
  */
-public class HelpActivity extends Activity {
+public class HelpAboutActivity extends Activity {
 
     ActionBarDrawerToggle mDrawerToggle;
 
@@ -86,9 +87,30 @@ public class HelpActivity extends Activity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // set the help text
+        // set the help text (default)
         TextView tv = (TextView) findViewById(R.id.textView_help);
-        tv.setText(Html.fromHtml(getString(R.string.help_text)));
+
+        // set the about text if specified in intent
+        Intent intent = getIntent();
+        if (intent != null) {
+            String intentStr = intent.getStringExtra("INTENT");
+            if (intentStr.equals("help")) {
+                tv.setText(Html.fromHtml(getString(R.string.help_text)));
+                setTitle("Help");
+            }
+            else if (intentStr.equals("about")) {
+                String aboutText = "";
+
+                try {
+                    String version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+                    aboutText = getString(R.string.about_text) + "\nVersion " + version + "\n\n" + getString(R.string.about_text_part2);
+                } catch (NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                tv.setText(aboutText);
+                setTitle("About");
+            }
+        }
 
         // Look up the AdView as a resource and load a request.
         AdView adView = (AdView)this.findViewById(R.id.adView);

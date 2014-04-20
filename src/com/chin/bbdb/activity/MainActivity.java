@@ -204,8 +204,19 @@ public class MainActivity extends FragmentActivity {
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.action_help:
-                Intent intent = new Intent(this, HelpActivity.class);
+            {
+                Intent intent = new Intent(this, HelpAboutActivity.class);
+                intent.putExtra("INTENT", "help");
                 startActivity(intent);
+                break;
+            }
+            case R.id.action_about:
+            {
+                Intent intent = new Intent(this, HelpAboutActivity.class);
+                intent.putExtra("INTENT", "about");
+                startActivity(intent);
+                break;
+            }
         }
         return super.onOptionsItemSelected(item);
     }

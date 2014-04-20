@@ -54,7 +54,7 @@
                 android:value="com.chin.bbdb.activity.FamDetailActivity" />
         </activity>
         <activity
-            android:name="com.chin.bbdb.activity.HelpActivity"
+            android:name="com.chin.bbdb.activity.HelpAboutActivity"
             android:label="@string/title_activity_help" >
         </activity>
         <activity
