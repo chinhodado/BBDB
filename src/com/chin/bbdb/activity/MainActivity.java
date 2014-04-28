@@ -62,7 +62,7 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         // create the navigation drawer
-        String[] mListTitles = {"Familiar", "Tier lists"};
+        String[] mListTitles = {"Familiar", "Tier lists", "Build brigade"};
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -84,6 +84,10 @@ public class MainActivity extends FragmentActivity {
                 }
                 else if (position == 1) { // Tier list
                     intent = new Intent(v.getContext(), TierTableActivity.class);
+                    startActivity(intent);
+                }
+                else if (position == 2) { // Build brigade
+                    intent = new Intent(v.getContext(), BuildBrigActivity.class);
                     startActivity(intent);
                 }
             }

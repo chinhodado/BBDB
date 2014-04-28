@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+    <issue id="ContentDescription">
+        <ignore path="res/layout/activity_build_brig.xml" />
+    </issue>
     <issue id="HardcodedText">
         <ignore path="res/layout/activity_fam_detail.xml" />
         <ignore path="res/layout/fragment_fam_info.xml" />

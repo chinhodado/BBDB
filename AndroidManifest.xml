@@ -58,6 +58,10 @@
             android:label="@string/title_activity_help" >
         </activity>
         <activity
+            android:name="com.chin.bbdb.activity.BuildBrigActivity"
+            android:label="@string/title_activity_build_brig" >
+        </activity>
+        <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
         <activity
