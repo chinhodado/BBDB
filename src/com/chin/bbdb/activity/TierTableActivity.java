@@ -12,110 +12,38 @@ import com.chin.bbdb.FamStore.TierCategory;
 import com.chin.bbdb.R;
 import com.chin.bbdb.TabListener;
 import com.chin.bbdb.Util;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
-import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TabWidget;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * An activity that displays the PVP, Raid and Tower tier tables
  */
-public class TierTableActivity extends FragmentActivity {
-
-    ActionBarDrawerToggle mDrawerToggle;
+public class TierTableActivity extends BaseFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tier_table);
-
-        // create the navigation drawer
-        String[] mListTitles = {"Familiar", "Tier lists"};
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, // set the adapter for the list view
-                android.R.layout.simple_list_item_1, mListTitles));
-
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-                Intent intent = null;
-
-                // first just close the drawer
-                DrawerLayout mDrawerLayout = (DrawerLayout) TierTableActivity.this.findViewById(R.id.drawer_layout);
-                mDrawerLayout.closeDrawers();
-
-                if (position == 0) { // Familiar
-                    intent = new Intent(v.getContext(), MainActivity.class);
-                    startActivity(intent);
-                }
-                else if (position == 1) { // Tier list
-                    // since we're in this activity already, do nothing
-                }
-            }
-        });
-
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
-                ) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            @Override
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                //getActionBar().setTitle(mTitle);
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                //getActionBar().setTitle(mDrawerTitle);
-            }
-        };
-
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         // add the tabs
         ActionBar bar = getActionBar();
@@ -142,11 +70,6 @@ public class TierTableActivity extends FragmentActivity {
             int index = savedInstanceState.getInt("TAB_INDEX");
             bar.setSelectedNavigationItem(index);
         }
-
-        // Look up the AdView as a resource and load a request.
-        AdView adView = (AdView)this.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
     }
 
     @Override
@@ -154,70 +77,6 @@ public class TierTableActivity extends FragmentActivity {
         super.onSaveInstanceState(bundle);
         // Save the index of the currently selected tab
         bundle.putInt("TAB_INDEX", getActionBar().getSelectedTab().getPosition());
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-          return true;
-        }
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_help:
-            {
-                Intent intent = new Intent(this, HelpAboutActivity.class);
-                intent.putExtra("INTENT", "help");
-                startActivity(intent);
-                break;
-            }
-            case R.id.action_about:
-            {
-                Intent intent = new Intent(this, HelpAboutActivity.class);
-                intent.putExtra("INTENT", "about");
-                startActivity(intent);
-                break;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Google Analytics
-        EasyTracker.getInstance(this).activityStart(this);
-      }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        // Google Analytics
-        EasyTracker.getInstance(this).activityStop(this);
     }
 
     /**
