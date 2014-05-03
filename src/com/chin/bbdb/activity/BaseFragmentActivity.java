@@ -34,6 +34,7 @@ public class BaseFragmentActivity extends FragmentActivity{
 
         // setContentView based on the actual class of this object
         // not sure if this is the right approach. It is ugly, obviously, but it works
+        // TODO: change to use the abstract method approach
         if (this instanceof MainActivity) {
             setContentView(R.layout.activity_main);
         }
@@ -49,10 +50,13 @@ public class BaseFragmentActivity extends FragmentActivity{
         else if (this instanceof TierTableActivity) {
             setContentView(R.layout.activity_tier_table);
         }
+        else if (this instanceof BuildBrigActivity) {
+            setContentView(R.layout.activity_build_brig);
+        }
 
         // create the navigation drawer
         String[] mListTitles = {"Familiar", "Tier lists", "Build brigade"};
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, // set the adapter for the list view
@@ -65,19 +69,21 @@ public class BaseFragmentActivity extends FragmentActivity{
                 Intent intent = null;
 
                 // first just close the drawer
-                DrawerLayout mDrawerLayout = (DrawerLayout) BaseFragmentActivity.this.findViewById(R.id.drawer_layout);
                 mDrawerLayout.closeDrawers();
 
                 if (position == 0) { // Familiar
                     intent = new Intent(v.getContext(), MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                 }
                 else if (position == 1) { // Tier list
                     intent = new Intent(v.getContext(), TierTableActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                 }
                 else if (position == 2) { // Build brigade
                     intent = new Intent(v.getContext(), BuildBrigActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                 }
             }

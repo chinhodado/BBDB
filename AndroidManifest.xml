@@ -25,8 +25,7 @@
         <activity
             android:name="com.chin.bbdb.activity.MainActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTask" >
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -67,8 +66,7 @@
         <activity
             android:name="com.chin.bbdb.activity.TierTableActivity"
             android:label="@string/title_activity_tier_table"
-            android:parentActivityName="com.chin.bbdb.activity.MainActivity"
-            android:launchMode="singleTask" >
+            android:parentActivityName="com.chin.bbdb.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chin.bbdb.activity.MainActivity" />
