@@ -55,7 +55,7 @@ public class BaseFragmentActivity extends FragmentActivity{
         }
 
         // create the navigation drawer
-        String[] mListTitles = {"Familiar", "Tier lists", "Build brigade"};
+        String[] mListTitles = {"Familiar", "Tier lists", "Build brigade (beta)"};
         final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 

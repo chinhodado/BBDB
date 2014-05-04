@@ -39,6 +39,140 @@
                         android:inputType="textNoSuggestions"
                         android:completionThreshold="1">
                     </AutoCompleteTextView>
+
+                    <Button
+                        android:id="@+id/button1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Save picture" />
+                    
+                    <LinearLayout
+                        android:id="@+id/brig_layout_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+                        
+                        <LinearLayout
+                            android:id="@+id/column1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center" >
+                            
+                            <ImageView
+                                android:id="@+id/fam0"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            
+                            <ImageView
+                                android:id="@+id/fam5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            
+                        </LinearLayout>
+                        
+                        <View
+                            android:layout_width="1dip"
+                            android:layout_height="fill_parent"
+                            android:background="@android:color/darker_gray" />
+                        
+                        <LinearLayout
+                            android:id="@+id/column2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center" >
+                            
+                            <ImageView
+                                android:id="@+id/fam1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            
+                            <ImageView
+                                android:id="@+id/fam6"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            
+                        </LinearLayout>
+                        
+                        <View
+                            android:layout_width="1dip"
+                            android:layout_height="fill_parent"
+                            android:background="@android:color/darker_gray" />
+                        
+                        <LinearLayout
+                            android:id="@+id/column3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center" >
+                            
+                            <ImageView
+                                android:id="@+id/fam2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            
+                            <ImageView
+                                android:id="@+id/fam7"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            
+                        </LinearLayout>
+                        
+                        <View
+                            android:layout_width="1dip"
+                            android:layout_height="fill_parent"
+                            android:background="@android:color/darker_gray" />
+                        
+                        <LinearLayout
+                            android:id="@+id/column4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center" >
+                            
+                            <ImageView
+                                android:id="@+id/fam3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            
+                            <ImageView
+                                android:id="@+id/fam8"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            
+                        </LinearLayout>
+                        
+                        <View
+                            android:layout_width="1dip"
+                            android:layout_height="fill_parent"
+                            android:background="@android:color/darker_gray" />
+                        
+                        <LinearLayout
+                            android:id="@+id/column5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center" >
+                            
+                            <ImageView
+                                android:id="@+id/fam4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            
+                            <ImageView
+                                android:id="@+id/fam9"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            
+                        </LinearLayout>
+                        
+                    </LinearLayout>
         
             </LinearLayout>
         
