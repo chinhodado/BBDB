@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Activity for building brig
@@ -61,7 +62,7 @@ public class BuildBrigActivity extends BaseFragmentActivity {
 
         final LinearLayout mainLayout = (LinearLayout) findViewById(R.id.linearLayout_main_build_brig);
         final AutoCompleteTextView atv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_build_brig);
-        final LinearLayout brigLayout = (LinearLayout) findViewById(R.id.brig);
+        final LinearLayout brigLayout = (LinearLayout) findViewById(R.id.brig_and_formation);
         final ImageView[] imgViewArray = {
                 (ImageView) findViewById(R.id.fam0), (ImageView) findViewById(R.id.fam1), (ImageView) findViewById(R.id.fam2),
                 (ImageView) findViewById(R.id.fam3), (ImageView) findViewById(R.id.fam4), (ImageView) findViewById(R.id.fam5),
@@ -139,10 +140,11 @@ public class BuildBrigActivity extends BaseFragmentActivity {
         formation.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         formation.setBackgroundColor(Color.parseColor("#00ffffff"));
         formationWrapper.addView(formation);
+        formationWrapper.getLayoutParams().height = (int) (scaleWidth*1.5); // make sure our formation looks nice
+        formationWrapper.requestLayout();
 
         Button saveImgButton = (Button) findViewById(R.id.button1);
         saveImgButton.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 // clear the bg
@@ -154,10 +156,17 @@ public class BuildBrigActivity extends BaseFragmentActivity {
 
                 brigLayout.setDrawingCacheEnabled(true);
                 Bitmap bitmap = brigLayout.getDrawingCache();
-                try {
-                    MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "foo.png" , "bar");
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                // it seems we can't specify the name, instead the system automatically assigns
+                // a number id as the name of the newly added image
+                String result = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Blood Brothers brigade" , "Blood Brothers brigade");
+                if (result != null) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Picture saved to Gallery.", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                else {
+                  Toast toast = Toast.makeText(getApplicationContext(), "An error occurred. Image not saved.", Toast.LENGTH_SHORT);
+                  toast.show();
                 }
 
                 brigLayout.setBackgroundColor(Color.parseColor("#00ffffff"));
@@ -168,6 +177,7 @@ public class BuildBrigActivity extends BaseFragmentActivity {
         ImageView prevFormation = (ImageView) findViewById(R.id.imageView_prev_formation);
         final TextView tvFormationLabel = (TextView) findViewById(R.id.textView_formation_label);
 
+        // TODO: remove/show the next/prev icons when appropriate
         nextFormation.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
