@@ -7,6 +7,7 @@
     <string name="title_activity_fam_detail">Familiar detail</string>
     <string name="title_activity_fam_compare">Familiar comparison</string>
     <string name="title_activity_help">Help</string>
+    <string name="title_activity_build_brig">Build brigade</string>
     <string name="title_activity_tier_table">Tier list</string>
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>
