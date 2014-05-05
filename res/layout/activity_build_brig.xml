@@ -38,19 +38,21 @@
                         android:layout_height="wrap_content" 
                         android:inputType="textNoSuggestions"
                         android:completionThreshold="1">
-                    </AutoCompleteTextView>
-
-                    <Button
-                        android:id="@+id/button1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Save picture" />
+                    </AutoCompleteTextView>                    
                     
                     <LinearLayout
                         android:id="@+id/brig_and_formation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/textView_formation_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:text="5-Skein" />
                         
                         <LinearLayout
                             android:id="@+id/formation_wrapper"
@@ -210,6 +212,12 @@
                         </LinearLayout>
                         
                     </LinearLayout>
+                    
+                    <Button
+                        android:id="@+id/button1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Save picture" />
         
             </LinearLayout>
         

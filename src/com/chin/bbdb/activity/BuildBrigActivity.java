@@ -23,6 +23,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * Activity for building brig
@@ -41,6 +42,9 @@ public class BuildBrigActivity extends BaseFragmentActivity {
         {new IntPair(1, 3), new IntPair(2, 3), new IntPair(3, 3), new IntPair(4, 3), new IntPair(5, 3)}, // 5-rear
         {new IntPair(1, 3), new IntPair(2, 3), new IntPair(3, 1), new IntPair(4, 3), new IntPair(5, 3)}, // 5-pike
         {new IntPair(1, 1), new IntPair(2, 1), new IntPair(3, 3), new IntPair(4, 1), new IntPair(5, 1)}, // 5-shield
+    };
+    static final String[] formationLabelTexts = {
+      "5-Skein", "5-Valley", "5-Tooth", "5-Wave", "5-Front", "5-Mid", "5-Rear", "5-Pike", "5-Shield"
     };
 
     @Override
@@ -162,6 +166,7 @@ public class BuildBrigActivity extends BaseFragmentActivity {
 
         ImageView nextFormation = (ImageView) findViewById(R.id.imageView_next_formation);
         ImageView prevFormation = (ImageView) findViewById(R.id.imageView_prev_formation);
+        final TextView tvFormationLabel = (TextView) findViewById(R.id.textView_formation_label);
 
         nextFormation.setOnClickListener(new OnClickListener() {
             @Override
@@ -171,6 +176,7 @@ public class BuildBrigActivity extends BaseFragmentActivity {
                 }
                 currentFormationIndex++;
                 formation.invalidate();
+                tvFormationLabel.setText(formationLabelTexts[currentFormationIndex]);
             }
         });
 
@@ -182,6 +188,7 @@ public class BuildBrigActivity extends BaseFragmentActivity {
                 }
                 currentFormationIndex--;
                 formation.invalidate();
+                tvFormationLabel.setText(formationLabelTexts[currentFormationIndex]);
             }
         });
     }
