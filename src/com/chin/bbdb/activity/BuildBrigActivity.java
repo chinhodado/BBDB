@@ -4,8 +4,11 @@ import com.chin.bbdb.FamStore;
 import com.chin.bbdb.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +17,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -26,6 +30,18 @@ import android.widget.LinearLayout;
 public class BuildBrigActivity extends BaseFragmentActivity {
 
     static String currentSelectedTag = "imgView_build_brig_0";
+    static int currentFormationIndex = 0;
+    static final IntPair[][] formationTypes = {
+        {new IntPair(1, 3), new IntPair(2, 2), new IntPair(3, 1), new IntPair(4, 2), new IntPair(5, 3)}, // 5-skein
+        {new IntPair(1, 1), new IntPair(2, 2), new IntPair(3, 3), new IntPair(4, 2), new IntPair(5, 1)}, // 5-valley
+        {new IntPair(1, 1), new IntPair(2, 3), new IntPair(3, 1), new IntPair(4, 3), new IntPair(5, 1)}, // 5-tooth
+        {new IntPair(1, 3), new IntPair(2, 1), new IntPair(3, 2), new IntPair(4, 1), new IntPair(5, 3)}, // 5-wave
+        {new IntPair(1, 1), new IntPair(2, 1), new IntPair(3, 1), new IntPair(4, 1), new IntPair(5, 1)}, // 5-front
+        {new IntPair(1, 2), new IntPair(2, 2), new IntPair(3, 2), new IntPair(4, 2), new IntPair(5, 2)}, // 5-mid
+        {new IntPair(1, 3), new IntPair(2, 3), new IntPair(3, 3), new IntPair(4, 3), new IntPair(5, 3)}, // 5-rear
+        {new IntPair(1, 3), new IntPair(2, 3), new IntPair(3, 1), new IntPair(4, 3), new IntPair(5, 3)}, // 5-pike
+        {new IntPair(1, 1), new IntPair(2, 1), new IntPair(3, 3), new IntPair(4, 1), new IntPair(5, 1)}, // 5-shield
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +57,7 @@ public class BuildBrigActivity extends BaseFragmentActivity {
 
         final LinearLayout mainLayout = (LinearLayout) findViewById(R.id.linearLayout_main_build_brig);
         final AutoCompleteTextView atv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_build_brig);
-        final LinearLayout brigLayout = (LinearLayout) findViewById(R.id.brig_layout_wrapper);
+        final LinearLayout brigLayout = (LinearLayout) findViewById(R.id.brig);
         final ImageView[] imgViewArray = {
                 (ImageView) findViewById(R.id.fam0), (ImageView) findViewById(R.id.fam1), (ImageView) findViewById(R.id.fam2),
                 (ImageView) findViewById(R.id.fam3), (ImageView) findViewById(R.id.fam4), (ImageView) findViewById(R.id.fam5),
@@ -114,6 +130,12 @@ public class BuildBrigActivity extends BaseFragmentActivity {
             }
         });
 
+        LinearLayout formationWrapper = (LinearLayout) findViewById(R.id.formation);
+        final MyLinearLayout formation = new MyLinearLayout(this);
+        formation.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        formation.setBackgroundColor(Color.parseColor("#00ffffff"));
+        formationWrapper.addView(formation);
+
         Button saveImgButton = (Button) findViewById(R.id.button1);
         saveImgButton.setOnClickListener(new OnClickListener() {
 
@@ -137,5 +159,80 @@ public class BuildBrigActivity extends BaseFragmentActivity {
                 brigLayout.setBackgroundColor(Color.parseColor("#00ffffff"));
             }
         });
+
+        ImageView nextFormation = (ImageView) findViewById(R.id.imageView_next_formation);
+        ImageView prevFormation = (ImageView) findViewById(R.id.imageView_prev_formation);
+
+        nextFormation.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentFormationIndex >= 8) {
+                    return;
+                }
+                currentFormationIndex++;
+                formation.invalidate();
+            }
+        });
+
+        prevFormation.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentFormationIndex <= 0) {
+                    return;
+                }
+                currentFormationIndex--;
+                formation.invalidate();
+            }
+        });
+    }
+
+    /**
+     * Just a pair of integer. Nothing fancy.
+     * @author Chin
+     *
+     */
+    public static class IntPair {
+        public int x, y;
+        public IntPair (int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    /**
+     * A custom view that we can draw on
+     * @author Chin
+     *
+     */
+    public static class MyLinearLayout extends LinearLayout {
+
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        public MyLinearLayout(Context context) {
+            super(context);
+            paint.setColor(0xFF000000);
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+
+            IntPair[] formationType = formationTypes[currentFormationIndex];
+
+            int horizontalStep = getWidth() / 10;
+            int verticalStep = getHeight() / 6;
+
+            for (int i = 0; i < 4; i++) {
+                int bullet1X = (formationType[i].x * 2 - 1) * horizontalStep;
+                int bullet1Y = (formationType[i].y * 2 - 1) * verticalStep - 1;
+
+                int bullet2X = (formationType[i + 1].x * 2 - 1) * horizontalStep;
+                int bullet2Y = (formationType[i + 1].y * 2 - 1) * verticalStep;
+
+                canvas.drawLine(bullet1X, bullet1Y, bullet2X, bullet2Y, paint);
+                canvas.drawCircle(bullet1X, bullet1Y, 10, paint);
+                canvas.drawCircle(bullet2X, bullet2Y, 10, paint);
+            }
+        }
     }
 }
