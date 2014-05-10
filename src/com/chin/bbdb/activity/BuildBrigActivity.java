@@ -173,9 +173,16 @@ public class BuildBrigActivity extends BaseFragmentActivity {
             }
         });
 
-        ImageView nextFormation = (ImageView) findViewById(R.id.imageView_next_formation);
-        ImageView prevFormation = (ImageView) findViewById(R.id.imageView_prev_formation);
+        final ImageView nextFormation = (ImageView) findViewById(R.id.imageView_next_formation);
+        final ImageView prevFormation = (ImageView) findViewById(R.id.imageView_prev_formation);
         final TextView tvFormationLabel = (TextView) findViewById(R.id.textView_formation_label);
+
+        if (currentFormationIndex == 0) {
+            prevFormation.setVisibility(View.INVISIBLE);
+        }
+        else if (currentFormationIndex == 8) {
+            nextFormation.setVisibility(View.INVISIBLE);
+        }
 
         // TODO: remove/show the next/prev icons when appropriate
         nextFormation.setOnClickListener(new OnClickListener() {
@@ -187,6 +194,13 @@ public class BuildBrigActivity extends BaseFragmentActivity {
                 currentFormationIndex++;
                 formation.invalidate();
                 tvFormationLabel.setText(formationLabelTexts[currentFormationIndex]);
+
+                if (currentFormationIndex == 8) {
+                    nextFormation.setVisibility(View.INVISIBLE);
+                }
+                if (currentFormationIndex != 0) {
+                    prevFormation.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -199,6 +213,13 @@ public class BuildBrigActivity extends BaseFragmentActivity {
                 currentFormationIndex--;
                 formation.invalidate();
                 tvFormationLabel.setText(formationLabelTexts[currentFormationIndex]);
+
+                if (currentFormationIndex != 8) {
+                    nextFormation.setVisibility(View.VISIBLE);
+                }
+                if (currentFormationIndex == 0) {
+                    prevFormation.setVisibility(View.INVISIBLE);
+                }
             }
         });
     }
