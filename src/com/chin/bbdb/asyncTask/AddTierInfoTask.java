@@ -34,6 +34,7 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
                 FamStore.getInstance().initializeAllTierMap();
             } catch (Exception e) {
                 Log.e("FamDetail", "Error fetching the tier HTML pages");
+                e.printStackTrace();
                 cancel(true);
             }
         }

@@ -558,11 +558,11 @@ public final class FamStore {
         Document tierDOM   = Jsoup.parse(tierHTML);
         Elements tierTables   = tierDOM.getElementsByClass("wikitable");
 
-        String[] tiers = {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"};
+        String[] tiers = {"X", "S+", "S", "A+", "A", "B", "C"};
 
         HashMap<String, String> tierMap = new HashMap<String, String>();
 
-        for (int i = 0; i < 9; i++){ // 9 tables
+        for (int i = 0; i < 7; i++){ // 7 tables
             Elements rows = tierTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
             int countRow = 0;
             for (Element row : rows) {

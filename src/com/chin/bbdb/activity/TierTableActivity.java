@@ -135,18 +135,6 @@ public class TierTableActivity extends BaseFragmentActivity {
             mTabHost.addTab(mTabHost.newTabSpec("C").setIndicator("Tier C"),
                     TierTableFragment.class, bundle);
 
-            bundle = new Bundle();
-            bundle.putSerializable("category", category);
-            bundle.putString("tier", "D");
-            mTabHost.addTab(mTabHost.newTabSpec("D").setIndicator("Tier D"),
-                    TierTableFragment.class, bundle);
-
-            bundle = new Bundle();
-            bundle.putSerializable("category", category);
-            bundle.putString("tier", "E");
-            mTabHost.addTab(mTabHost.newTabSpec("E").setIndicator("Tier E"),
-                    TierTableFragment.class, bundle);
-
             // make the tabs scrollable
             TabWidget tw = (TabWidget) mTabHost.findViewById(android.R.id.tabs);
             LinearLayout ll = (LinearLayout) tw.getParent();
