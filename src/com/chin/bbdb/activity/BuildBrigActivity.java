@@ -3,6 +3,8 @@ package com.chin.bbdb.activity;
 import com.chin.bbdb.FamStore;
 import com.chin.bbdb.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.core.assist.FailReason;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -23,6 +25,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,6 +121,12 @@ public class BuildBrigActivity extends BaseFragmentActivity {
                 final String famName = (String)parent.getItemAtPosition(position);
                 final ImageView imgView1 = (ImageView) mainLayout.findViewWithTag(currentSelectedTag);
 
+                // add the spinner, we will remove it later
+                final LinearLayout parentView = (LinearLayout) imgView1.getParent();
+                imgView1.setVisibility(View.GONE);
+                final ProgressBar spinner = new ProgressBar(getBaseContext());
+                parentView.addView(spinner);
+
                 new AsyncTask<Void, Void, Void>(){
                     @Override
                     protected Void doInBackground(Void... params) {
@@ -127,9 +136,23 @@ public class BuildBrigActivity extends BaseFragmentActivity {
 
                     @Override
                     protected void onPostExecute(Void param) {
-                        ImageLoader.getInstance()
-                        .displayImage(FamStore.getInstance()
-                                                .getImageLink(famName), imgView1);
+                        ImageLoader.getInstance().displayImage(FamStore.getInstance().getImageLink(famName),
+                                imgView1, new SimpleImageLoadingListener() {
+                            @Override
+                            public void onLoadingStarted(String imageUri, View view) {}
+
+                            @Override
+                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                                parentView.removeView(spinner);
+                                imgView1.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                parentView.removeView(spinner);
+                                imgView1.setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
                 }.execute();
             }
@@ -159,6 +182,7 @@ public class BuildBrigActivity extends BaseFragmentActivity {
 
                 // it seems we can't specify the name, instead the system automatically assigns
                 // a number id as the name of the newly added image
+                // TODO: make our own implementation to be able to specify the name and compression level?
                 String result = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Blood Brothers brigade" , "Blood Brothers brigade");
                 if (result != null) {
                     Toast toast = Toast.makeText(getApplicationContext(), "Picture saved to Gallery.", Toast.LENGTH_SHORT);
@@ -184,7 +208,6 @@ public class BuildBrigActivity extends BaseFragmentActivity {
             nextFormation.setVisibility(View.INVISIBLE);
         }
 
-        // TODO: remove/show the next/prev icons when appropriate
         nextFormation.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
