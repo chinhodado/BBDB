@@ -234,6 +234,13 @@ public class FamDetailActivity extends BaseFragmentActivity {
                 dom = Jsoup.parse(html);
             } catch (IOException e) {
                 e.printStackTrace();
+
+                // remove the spinner
+                try { // maybe this try is redundant TODO: check if it is indeed redundant
+                    ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar_fragment_general);
+                    layout.removeView(pgrBar);
+                }
+                catch (Exception e2) {}
             }
             return null;
         }
