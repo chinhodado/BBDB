@@ -1,6 +1,5 @@
 package com.chin.bbdb.activity;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import org.jsoup.Jsoup;
@@ -212,6 +211,7 @@ public class FamDetailActivity extends BaseFragmentActivity {
         Document dom;
         int page;
         String baseUrl;
+        boolean exceptionOccurred = false;
 
         public PopulateCommentAsyncTask(LinearLayout layout, FamDetailActivity activity, int page) {
             this.layout = layout;
@@ -232,21 +232,24 @@ public class FamDetailActivity extends BaseFragmentActivity {
                 }
 
                 dom = Jsoup.parse(html);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
 
-                // remove the spinner
-                try { // maybe this try is redundant TODO: check if it is indeed redundant
-                    ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar_fragment_general);
-                    layout.removeView(pgrBar);
-                }
-                catch (Exception e2) {}
+                // set the flag so we can do something about this in onPostExecute()
+                exceptionOccurred = true;
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void param) {
+
+            if (exceptionOccurred) {
+                // remove the spinner
+                ProgressBar pgrBar = (ProgressBar) activity.findViewById(R.id.progressBar_fragment_general);
+                layout.removeView(pgrBar);
+                return;
+            }
 
             try {
                 // calculate the width of the textviews for subcomments to be displayed later on
