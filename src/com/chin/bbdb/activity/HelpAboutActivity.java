@@ -1,6 +1,8 @@
 package com.chin.bbdb.activity;
 
+import com.chin.bbdb.BBDBApplication;
 import com.chin.bbdb.R;
+
 import android.support.v4.app.NavUtils;
 import android.text.Html;
 import android.content.Intent;
@@ -34,8 +36,10 @@ public class HelpAboutActivity extends BaseFragmentActivity {
                 String aboutText = "";
 
                 try {
+                    String appNameInfo = BBDBApplication.IS_PRO_VERSION?
+                            getString(R.string.about_text_pro) : getString(R.string.about_text);
                     String version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-                    aboutText = getString(R.string.about_text) + "\nVersion " + version + "\n\n" + getString(R.string.about_text_part2);
+                    aboutText = appNameInfo + "\nVersion " + version + "\n\n" + getString(R.string.about_text_part2);
                 } catch (NameNotFoundException e) {
                     e.printStackTrace();
                 }

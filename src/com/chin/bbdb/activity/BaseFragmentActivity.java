@@ -8,6 +8,7 @@ import com.google.android.gms.ads.AdView;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
@@ -132,7 +133,12 @@ public class BaseFragmentActivity extends FragmentActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        if (BBDBApplication.IS_PRO_VERSION) {
+            getMenuInflater().inflate(R.menu.main_pro, menu);
+        }
+        else {
+            getMenuInflater().inflate(R.menu.main, menu);
+        }
         return true;
     }
 
@@ -167,6 +173,16 @@ public class BaseFragmentActivity extends FragmentActivity{
                 Intent intent = new Intent(this, HelpAboutActivity.class);
                 intent.putExtra("INTENT", "about");
                 startActivity(intent);
+                break;
+            }
+            case R.id.action_getPro:
+            {
+                final String appPackageName = "com.chin.bbdbpro";
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
                 break;
             }
         }

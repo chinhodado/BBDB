@@ -61,7 +61,8 @@
         A: This app does some caching for performance reason, so you can force close and restart it to force it to load the latest data. <br/><br/>
         
         <b>Q: I like this app!</b> <br/>
-        A: I\'m glad to hear it. Please rate it on the Play Store :)<br/><br/>
+        A: I\'m glad to hear it. Please rate it on the Play Store :) <br/><br/>
+        Also if you don\'t like the ads, you may consider getting the ads-free version on the Play store.<br/><br/>
         
         <b>Q: This app sucks!/I found a bug/This is not useful/I have a suggestion...</b> <br/>
         A: Please drop me a line at chinho.dev@gmail.com and let me know how I can improve it. Thank you :)<br/><br/>
@@ -70,6 +71,11 @@
     
     <string name="about_text">
         Blood Brothers Database
+        \nCopyright Chin 2014
+    </string>
+    
+    <string name="about_text_pro">
+        Blood Brothers Database Pro
         \nCopyright Chin 2014
     </string>
     
