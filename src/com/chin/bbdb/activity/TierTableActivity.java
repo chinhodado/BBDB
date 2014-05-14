@@ -60,7 +60,7 @@ public class TierTableActivity extends BaseFragmentActivity {
                 .setTabListener(new TabListener<TierFragment>(this, "raid", TierFragment.class, bundleRAID)));
 
         Bundle bundleTOWER = new Bundle();
-        bundleTOWER.putSerializable("category", TierCategory.RAID);
+        bundleTOWER.putSerializable("category", TierCategory.TOWER);
         bar.addTab(bar.newTab().setText("Tower Tier")
                 .setTabListener(new TabListener<TierFragment>(this, "tower", TierFragment.class, bundleTOWER)));
 
