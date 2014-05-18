@@ -285,7 +285,7 @@ public final class FamStore {
     }
 
     /**
-     * Get the POPE stats table of all fams
+     * Get the POPE stats table of all fams. Careful, it can block.
      */
     public void initializePOPETable() {
 
@@ -312,15 +312,15 @@ public final class FamStore {
         for (int i = rows.size() - 1; i >= 2; i--) { // first two rows are headers and such
             try {
                 Elements cells = rows.get(i).getElementsByTag("td");
-                String cellFam = cells.get(1).text().trim();
+                String cellFam = cells.get(2).text().trim();
 
                 IntPOPE popeStats = new IntPOPE();
 
-                popeStats.hpPOPE  = Integer.parseInt(cells.get(3).text().replace(",", "").replace(" ", ""));
-                popeStats.atkPOPE = Integer.parseInt(cells.get(4).text().replace(",", "").replace(" ", ""));
-                popeStats.defPOPE = Integer.parseInt(cells.get(5).text().replace(",", "").replace(" ", ""));
-                popeStats.wisPOPE = Integer.parseInt(cells.get(6).text().replace(",", "").replace(" ", ""));
-                popeStats.agiPOPE = Integer.parseInt(cells.get(7).text().replace(",", "").replace(" ", ""));
+                popeStats.hpPOPE  = Integer.parseInt(cells.get(5).text().replace(",", "").replace(" ", ""));
+                popeStats.atkPOPE = Integer.parseInt(cells.get(6).text().replace(",", "").replace(" ", ""));
+                popeStats.defPOPE = Integer.parseInt(cells.get(7).text().replace(",", "").replace(" ", ""));
+                popeStats.wisPOPE = Integer.parseInt(cells.get(8).text().replace(",", "").replace(" ", ""));
+                popeStats.agiPOPE = Integer.parseInt(cells.get(9).text().replace(",", "").replace(" ", ""));
 
                 popeTable.put(cellFam, popeStats);
 

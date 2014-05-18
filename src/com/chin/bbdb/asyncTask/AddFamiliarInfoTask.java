@@ -56,9 +56,6 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
         try { famStore.getGeneralInfo(this.famName);     } catch (Exception e) {e.printStackTrace();}
         if (isCancelled()) {return null; }; // attempt to return early
 
-        //try { famStore.getImage(this.famName);           } catch (Exception e) {e.printStackTrace();}
-        //if (isCancelled()) {return null; }; // attempt to return early
-
         try { famStore.getSkillHTMLString(this.famName); } catch (Exception e) {e.printStackTrace();}
         return null;
     }
