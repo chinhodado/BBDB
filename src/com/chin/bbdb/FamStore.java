@@ -96,9 +96,14 @@ public final class FamStore {
         TOWER
     }
 
-    // a simple struct for holding 5 integers, used for holding the POPE stats
-    static class IntPOPE {
-        int hpPOPE, atkPOPE, defPOPE, wisPOPE, agiPOPE;
+    // a simple struct for holding 6 integers, used for holding the POPE stats
+    public static class IntPOPE {
+        int hpPOPE, atkPOPE, defPOPE, wisPOPE, agiPOPE, totalPOPE;
+
+        public int[] toArray() {
+            int[] toReturn = {hpPOPE, atkPOPE, defPOPE, wisPOPE, agiPOPE, totalPOPE};
+            return toReturn;
+        }
     }
     // the POPE stats table
     static HashMap<String, IntPOPE> popeTable = null;
@@ -136,6 +141,10 @@ public final class FamStore {
      * - isFinalEvolution
      * - isWarlord
      * so if you want to use those make sure to call this function first
+     *
+     * Note: this function calculates the POPE stats manually. Do not use the POPE
+     *       stats calculated by this function for EP4 familiar! Use getPOPEStats()
+     *       instead.
      *
      * @param famName The familiar name
      */
@@ -250,37 +259,40 @@ public final class FamStore {
         currentFam.rarity = tmpArr[tmpArr.length - 2]; // get the second last token
 
         if (currentFam.isWarlord || currentFam.isFinalEvolution) {
-            // POPE stats
-            initializePOPETable();
-            if (popeTable.containsKey(famName)) {
-                IntPOPE popeStats = popeTable.get(famName);
-                currentFam.stats.POPEStats[0] = popeStats.hpPOPE;
-                currentFam.stats.POPEStats[1] = popeStats.atkPOPE;
-                currentFam.stats.POPEStats[2] = popeStats.defPOPE;
-                currentFam.stats.POPEStats[3] = popeStats.wisPOPE;
-                currentFam.stats.POPEStats[4] = popeStats.agiPOPE;
-                currentFam.stats.POPEStats[5] = popeStats.hpPOPE + popeStats.atkPOPE + popeStats.defPOPE +
-                                                    popeStats.wisPOPE + popeStats.agiPOPE;
-            }
-            else { // fam is not in POPE table, we calculate the POPE manually
-                int toAdd = 0;
+            // calculate the POPE manually
+            int toAdd = 0;
 
-                if (currentFam.isWarlord || starLevel.startsWith("1")) toAdd = 500;      // 1 star
-                else if (starLevel.startsWith("2")) toAdd = 550; // 2 star
-                else if (starLevel.startsWith("3")) toAdd = 605; // 3 star
-                else if (starLevel.startsWith("4")) toAdd = 666; // 4 star
+            if (currentFam.isWarlord || starLevel.startsWith("1")) toAdd = 500;      // 1 star
+            else if (starLevel.startsWith("2")) toAdd = 550; // 2 star
+            else if (starLevel.startsWith("3")) toAdd = 605; // 3 star
+            else if (starLevel.startsWith("4")) toAdd = 666; // 4 star
 
-                for (int i = 0; i < 6; i++) {
-                    if (i <= 4) { // the individual stats
-                        if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd;
-                        else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd;
-                    }
-                    else if (i == 5) { // the total
-                        if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd*5;
-                        else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd*5;
-                    }
+            for (int i = 0; i < 6; i++) {
+                if (i <= 4) { // the individual stats
+                    if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd;
+                    else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd;
+                }
+                else if (i == 5) { // the total
+                    if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd*5;
+                    else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd*5;
                 }
             }
+        }
+    }
+
+    /**
+     * Get the POPE stats of a fam from the POPE stats table
+     * @param famName The fam to get POPE stats
+     * @return the POPE stats of the fam, or null if the fam is not in the table
+     */
+    public IntPOPE getPOPEStats(String famName) {
+        initializePOPETable();
+        if (popeTable.containsKey(famName)) {
+            IntPOPE popeStats = popeTable.get(famName);
+            return popeStats;
+        }
+        else {
+            return null;
         }
     }
 
@@ -321,6 +333,7 @@ public final class FamStore {
                 popeStats.defPOPE = Integer.parseInt(cells.get(7).text().replace(",", "").replace(" ", ""));
                 popeStats.wisPOPE = Integer.parseInt(cells.get(8).text().replace(",", "").replace(" ", ""));
                 popeStats.agiPOPE = Integer.parseInt(cells.get(9).text().replace(",", "").replace(" ", ""));
+                popeStats.totalPOPE = popeStats.hpPOPE + popeStats.atkPOPE + popeStats.defPOPE + popeStats.wisPOPE + popeStats.agiPOPE;
 
                 popeTable.put(cellFam, popeStats);
 
