@@ -369,7 +369,7 @@ public final class FamStore {
 
         Element infoBoxFam = null;
         infoBoxFam = currentFam.famDOM.getElementsByClass("infobox").first();
-        String imageUrl = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr").get(1).getElementsByTag("th").first().getElementsByTag("a").first().attr("href");
+        String imageUrl = infoBoxFam.getElementsByTag("img").first().attr("src");
         return imageUrl;
     }
 

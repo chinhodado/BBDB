@@ -8,8 +8,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.text.Html;
+import android.view.Display;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -19,6 +21,7 @@ import com.chin.bbdb.FamStore;
 import com.chin.bbdb.FamStore.TierCategory;
 import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
+import com.chin.bbdb.Util;
 import com.chin.bbdb.activity.FamCompareActivity;
 import com.chin.bbdb.activity.FamDetailActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -75,12 +78,21 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
         TableRow row = (TableRow) activity.findViewById(R.id.tableRow_waiting);
         compareTable.removeView(row);
 
-        // set the image
-        ImageView imgView = (ImageView) activity.findViewById(R.id.imageView_leftFam);
-        ImageLoader.getInstance().displayImage(famStore.getImageLink(famNameLeft), imgView);
+        // calculate the width of the images to be displayed
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int scaleWidth = screenWidth / 2; // set it to be 1/2 of the screen width
 
+        // set the image
+        String originalLinkLeft = famStore.getImageLink(famNameLeft);
+        ImageView imgView = (ImageView) activity.findViewById(R.id.imageView_leftFam);
+        ImageLoader.getInstance().displayImage(Util.getScaledWikiaImageLink(originalLinkLeft, scaleWidth), imgView);
+
+        String originalLinkRight = famStore.getImageLink(famNameRight);
         imgView = (ImageView) activity.findViewById(R.id.imageView_rightFam);
-        ImageLoader.getInstance().displayImage(famStore.getImageLink(famNameRight), imgView);
+        ImageLoader.getInstance().displayImage(Util.getScaledWikiaImageLink(originalLinkRight, scaleWidth), imgView);
     }
 
     public void addFamStat() {

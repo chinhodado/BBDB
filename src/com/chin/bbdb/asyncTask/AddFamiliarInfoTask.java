@@ -16,9 +16,11 @@ import com.chin.bbdb.activity.MainActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -77,9 +79,17 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
         LinearLayout layout = (LinearLayout) activity.findViewById(R.id.linearLayout1);
         layout.removeView(pgrBar);
 
+        // calculate the width of the images to be displayed
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int scaleWidth = screenWidth / 3; // set it to be 1/3 of the screen width
+
         // set the image
+        String originalLink = famStore.getImageLink(famName);
         ImageView imgView = (ImageView) activity.findViewById(R.id.imageView_detail_fam);
-        ImageLoader.getInstance().displayImage(famStore.getImageLink(famName), imgView);
+        ImageLoader.getInstance().displayImage(Util.getScaledWikiaImageLink(originalLink, scaleWidth), imgView);
     }
 
     public void addFamSkill() {
