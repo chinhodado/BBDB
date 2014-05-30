@@ -46,9 +46,10 @@ public class BuildBrigActivity extends BaseFragmentActivity {
         {new IntPair(1, 3), new IntPair(2, 3), new IntPair(3, 3), new IntPair(4, 3), new IntPair(5, 3)}, // 5-rear
         {new IntPair(1, 3), new IntPair(2, 3), new IntPair(3, 1), new IntPair(4, 3), new IntPair(5, 3)}, // 5-pike
         {new IntPair(1, 1), new IntPair(2, 1), new IntPair(3, 3), new IntPair(4, 1), new IntPair(5, 1)}, // 5-shield
+        {new IntPair(1, 3), new IntPair(2, 1), new IntPair(3, 3), new IntPair(4, 1), new IntPair(5, 3)}, // 5-pincer
     };
     static final String[] formationLabelTexts = {
-      "5-Skein", "5-Valley", "5-Tooth", "5-Wave", "5-Front", "5-Mid", "5-Rear", "5-Pike", "5-Shield"
+      "5-Skein", "5-Valley", "5-Tooth", "5-Wave", "5-Front", "5-Mid", "5-Rear", "5-Pike", "5-Shield", "5-Pincer"
     };
 
     @Override
@@ -204,21 +205,21 @@ public class BuildBrigActivity extends BaseFragmentActivity {
         if (currentFormationIndex == 0) {
             prevFormation.setVisibility(View.INVISIBLE);
         }
-        else if (currentFormationIndex == 8) {
+        else if (currentFormationIndex == formationLabelTexts.length - 1) {
             nextFormation.setVisibility(View.INVISIBLE);
         }
 
         nextFormation.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentFormationIndex >= 8) {
+                if (currentFormationIndex >= formationLabelTexts.length -1) {
                     return;
                 }
                 currentFormationIndex++;
                 formation.invalidate();
                 tvFormationLabel.setText(formationLabelTexts[currentFormationIndex]);
 
-                if (currentFormationIndex == 8) {
+                if (currentFormationIndex == formationLabelTexts.length - 1) {
                     nextFormation.setVisibility(View.INVISIBLE);
                 }
                 if (currentFormationIndex != 0) {
@@ -237,7 +238,7 @@ public class BuildBrigActivity extends BaseFragmentActivity {
                 formation.invalidate();
                 tvFormationLabel.setText(formationLabelTexts[currentFormationIndex]);
 
-                if (currentFormationIndex != 8) {
+                if (currentFormationIndex != formationLabelTexts.length - 1) {
                     nextFormation.setVisibility(View.VISIBLE);
                 }
                 if (currentFormationIndex == 0) {
