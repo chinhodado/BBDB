@@ -47,9 +47,11 @@ public class BuildBrigActivity extends BaseFragmentActivity {
         {new IntPair(1, 3), new IntPair(2, 3), new IntPair(3, 1), new IntPair(4, 3), new IntPair(5, 3)}, // 5-pike
         {new IntPair(1, 1), new IntPair(2, 1), new IntPair(3, 3), new IntPair(4, 1), new IntPair(5, 1)}, // 5-shield
         {new IntPair(1, 3), new IntPair(2, 1), new IntPair(3, 3), new IntPair(4, 1), new IntPair(5, 3)}, // 5-pincer
+        {new IntPair(1, 1), new IntPair(2, 3), new IntPair(3, 2), new IntPair(4, 3), new IntPair(5, 1)}, // 5-saw
+        {new IntPair(1, 3), new IntPair(2, 3), new IntPair(3, 1), new IntPair(4, 1), new IntPair(5, 1)}, // 5-hydra
     };
     static final String[] formationLabelTexts = {
-      "5-Skein", "5-Valley", "5-Tooth", "5-Wave", "5-Front", "5-Mid", "5-Rear", "5-Pike", "5-Shield", "5-Pincer"
+      "5-Skein", "5-Valley", "5-Tooth", "5-Wave", "5-Front", "5-Mid", "5-Rear", "5-Pike", "5-Shield", "5-Pincer", "5-Saw", "5-Hydra"
     };
 
     @Override
