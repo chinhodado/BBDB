@@ -382,7 +382,9 @@ public final class FamStore {
 
         Element infoBoxFam = null;
         infoBoxFam = currentFam.famDOM.getElementsByClass("infobox").first();
-        String imageUrl = infoBoxFam.getElementsByTag("img").first().attr("src");
+
+        // relying on the fact the the first link in the infobox is the image
+        String imageUrl = infoBoxFam.getElementsByTag("a").first().attr("href");
         return imageUrl;
     }
 

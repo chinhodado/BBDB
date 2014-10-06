@@ -90,7 +90,7 @@ public class Util {
     }
 
     /**
-     * Given a link to a (already scaled) wikia image, return a new scaled version with the specified width
+     * Given a link to a wikia image (scaled or not scaled), return a (new) scaled version with the specified width
      * @param link The link to the original scaled wikia image
      * @param newWidth The width of the new image
      * @return The link to the new scaled image
@@ -101,17 +101,26 @@ public class Util {
         String scaledName = link.substring(lastSlash + 1); // the original scaled image name
 
         // get the original image name
-        int firstOriginalImageNamePosition = scaledName.indexOf("px-") + 3;
-        String originalName = scaledName.substring(firstOriginalImageNamePosition);
+        int prefixIndex = scaledName.indexOf("px-");
+        String originalName = scaledName;
+        if (prefixIndex != -1) {
+            // this is a scaled link
+            int firstOriginalImageNamePosition = scaledName.indexOf("px-") + 3;
+            originalName = scaledName.substring(firstOriginalImageNamePosition);
+        }
 
-        // the new scaled image new
+        // the new scaled image
         String newScaledName = newWidth + "px-" + originalName;
 
         // original image link with the slash
-        String originalLink = link.substring(0, lastSlash + 1);
+        String originalLink = (prefixIndex == -1)? (link + "/") : link.substring(0, lastSlash + 1);
 
         // complete new link
         String newScaledLink = originalLink + newScaledName;
+        if (prefixIndex == -1) {
+            // some additional work to turn a normal image to a thumb/scaled one
+            newScaledLink = newScaledLink.replace("/images/", "/images/thumb/");
+        }
         return newScaledLink;
     }
 }
