@@ -85,6 +85,16 @@ public class TierTableActivity extends BaseFragmentActivity {
      */
     public static class TierFragment extends Fragment {
         private FragmentTabHost mTabHost;
+        private static HashMap<TierCategory, String[]> catTierList;
+        static
+        {
+            // needed since each category may have different tiers...
+            catTierList = new HashMap<TierCategory, String[]>();
+            catTierList.put(TierCategory.PVP, new String[] {"X+", "X", "S+", "S", "A+", "A", "B", "C"});
+            catTierList.put(TierCategory.RAID, new String[] {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"});
+            catTierList.put(TierCategory.TOWER, new String[] {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"});
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Bundle args = getArguments();
@@ -93,47 +103,16 @@ public class TierTableActivity extends BaseFragmentActivity {
             mTabHost = new FragmentTabHost(getActivity());
             mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.tab_viewgroup);
 
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("category", category);
-            bundle.putString("tier", "X");
-            mTabHost.addTab(mTabHost.newTabSpec("X").setIndicator("Tier X"),
-                    TierTableFragment.class, bundle);
-
-            bundle = new Bundle();
-            bundle.putSerializable("category", category);
-            bundle.putString("tier", "S+");
-            mTabHost.addTab(mTabHost.newTabSpec("S+").setIndicator("Tier S+"),
-                    TierTableFragment.class, bundle);
-
-            bundle = new Bundle();
-            bundle.putSerializable("category", category);
-            bundle.putString("tier", "S");
-            mTabHost.addTab(mTabHost.newTabSpec("S").setIndicator("Tier S"),
-                    TierTableFragment.class, bundle);
-
-            bundle = new Bundle();
-            bundle.putSerializable("category", category);
-            bundle.putString("tier", "A+");
-            mTabHost.addTab(mTabHost.newTabSpec("A+").setIndicator("Tier A+"),
-                    TierTableFragment.class, bundle);
-
-            bundle = new Bundle();
-            bundle.putSerializable("category", category);
-            bundle.putString("tier", "A");
-            mTabHost.addTab(mTabHost.newTabSpec("A").setIndicator("Tier A"),
-                    TierTableFragment.class, bundle);
-
-            bundle = new Bundle();
-            bundle.putSerializable("category", category);
-            bundle.putString("tier", "B");
-            mTabHost.addTab(mTabHost.newTabSpec("B").setIndicator("Tier B"),
-                    TierTableFragment.class, bundle);
-
-            bundle = new Bundle();
-            bundle.putSerializable("category", category);
-            bundle.putString("tier", "C");
-            mTabHost.addTab(mTabHost.newTabSpec("C").setIndicator("Tier C"),
-                    TierTableFragment.class, bundle);
+            // make the X+, X, S+, etc. tabs
+            String[] listOfTiers = catTierList.get(category);
+            for (int i = 0; i < listOfTiers.length; i++) {
+                String tier = listOfTiers[i];
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("category", category);
+                bundle.putString("tier", tier);
+                mTabHost.addTab(mTabHost.newTabSpec(tier).setIndicator("Tier " + tier),
+                        TierTableFragment.class, bundle);
+            }
 
             // make the tabs scrollable
             TabWidget tw = (TabWidget) mTabHost.findViewById(android.R.id.tabs);
@@ -207,19 +186,27 @@ public class TierTableActivity extends BaseFragmentActivity {
         TierCategory category;
 
         // map a tier string to an int (the table number)
-        private static final HashMap<String, Integer> tierMap;
+        private static final HashMap<TierCategory, HashMap<String, Integer>> tierMap;
         static
         {
-            tierMap = new HashMap<String, Integer>();
-            tierMap.put("X", 0);
-            tierMap.put("S+", 1);
-            tierMap.put("S", 2);
-            tierMap.put("A+", 3);
-            tierMap.put("A", 4);
-            tierMap.put("B", 5);
-            tierMap.put("C", 6);
-            tierMap.put("D", 7);
-            tierMap.put("E", 8);
+            // darn java, why do you make things so hard for me?
+            tierMap = new HashMap<TierCategory, HashMap<String, Integer>>();
+            HashMap<String, Integer> pvp = new HashMap<String, Integer>();
+            HashMap<String, Integer> raid = new HashMap<String, Integer>();
+            HashMap<String, Integer> tower = new HashMap<String, Integer>();
+
+            pvp.put("X+", 0); pvp.put("X", 1); pvp.put("S+", 2); pvp.put("S", 3); pvp.put("A+", 4);
+            pvp.put("A", 5); pvp.put("B", 6); pvp.put("C", 7);
+
+            raid.put("X", 0); raid.put("S+", 1); raid.put("S", 2); raid.put("A+", 3);
+            raid.put("A", 4); raid.put("B", 5); raid.put("C", 6); raid.put("D", 7); raid.put("E", 8);
+
+            tower.put("X", 0); tower.put("S+", 1); tower.put("S", 2); tower.put("A+", 3);
+            tower.put("A", 4); tower.put("B", 5); tower.put("C", 6); tower.put("D", 7); tower.put("E", 8);
+
+            tierMap.put(TierCategory.PVP, pvp);
+            tierMap.put(TierCategory.RAID, raid);
+            tierMap.put(TierCategory.TOWER, tower);
         }
 
         public PopulateTierTableAsyncTask(Activity activity, LinearLayout layout, TierCategory category) {
@@ -253,7 +240,7 @@ public class TierTableActivity extends BaseFragmentActivity {
                 return; // instead of try-catch
             }
 
-            Elements tierTables   = pageDOM.getElementsByClass("wikitable");
+            Elements tierTables = pageDOM.getElementsByClass("wikitable");
 
             // calculate the width of the images to be displayed later on
             Display display = activity.getWindowManager().getDefaultDisplay();
@@ -262,7 +249,7 @@ public class TierTableActivity extends BaseFragmentActivity {
             int screenWidth = size.x;
             int scaleWidth = screenWidth / 10; // set it to be 1/10 of the screen width
 
-            int tableIndex = tierMap.get(tier);
+            int tableIndex = tierMap.get(category).get(tier);
             Element tierTable = tierTables.get(tableIndex);
 
             TableLayout table = new TableLayout(activity);
@@ -270,8 +257,8 @@ public class TierTableActivity extends BaseFragmentActivity {
             int countRow = 0;
             for (Element row : rows) {
                 countRow++;
-                if (countRow == 1 || countRow == 2) {
-                    // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+                if (countRow == 1) {
+                    // row 1 is the column headers. This may be different in the DOM in browser
                     continue;
                 }
                 else {
@@ -280,7 +267,7 @@ public class TierTableActivity extends BaseFragmentActivity {
                     ImageView imgView = new ImageView(activity); tr.addView(imgView);
 
                     // get the thubnail image src
-                    Element link = cells.get(0).getElementsByTag("a").first();
+                    Element link = row.getElementsByTag("a").first();
                     String imgSrc = link.getElementsByTag("img").first().attr("data-src");
                     if (imgSrc == null || imgSrc.equals("")) imgSrc = link.getElementsByTag("img").first().attr("src");
 
@@ -291,7 +278,7 @@ public class TierTableActivity extends BaseFragmentActivity {
                     String newScaledLink = Util.getScaledWikiaImageLink(imgSrc, scaleWidth);
                     ImageLoader.getInstance().displayImage(newScaledLink, imgView);
 
-                    String famName = cells.get(1).text();
+                    String famName = cells.get(2).text();
                     TextView tv = new TextView(activity);
                     tv.setText(famName);
                     tr.addView(tv);
