@@ -85,15 +85,7 @@ public class TierTableActivity extends BaseFragmentActivity {
      */
     public static class TierFragment extends Fragment {
         private FragmentTabHost mTabHost;
-        private static HashMap<TierCategory, String[]> catTierList;
-        static
-        {
-            // needed since each category may have different tiers...
-            catTierList = new HashMap<TierCategory, String[]>();
-            catTierList.put(TierCategory.PVP, new String[] {"X+", "X", "S+", "S", "A+", "A", "B", "C"});
-            catTierList.put(TierCategory.RAID, new String[] {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"});
-            catTierList.put(TierCategory.TOWER, new String[] {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"});
-        }
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -104,7 +96,7 @@ public class TierTableActivity extends BaseFragmentActivity {
             mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.tab_viewgroup);
 
             // make the X+, X, S+, etc. tabs
-            String[] listOfTiers = catTierList.get(category);
+            String[] listOfTiers = FamStore.catTierList.get(category);
             for (int i = 0; i < listOfTiers.length; i++) {
                 String tier = listOfTiers[i];
                 Bundle bundle = new Bundle();

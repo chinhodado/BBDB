@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -78,6 +79,16 @@ public final class FamStore {
 
     // map a fam name to its wiki page url, initialized in MainActivity's onCreate()
     public static Hashtable<String, String[]> famLinkTable = null;
+
+    public static HashMap<TierCategory, String[]> catTierList;
+    static
+    {
+        // needed since each category may have different tiers...
+        catTierList = new HashMap<TierCategory, String[]>();
+        catTierList.put(TierCategory.PVP, new String[] {"X+", "X", "S+", "S", "A+", "A", "B", "C"});
+        catTierList.put(TierCategory.RAID, new String[] {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"});
+        catTierList.put(TierCategory.TOWER, new String[] {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"});
+    }
 
     // map a fam name to its tiers, initialized in AddTierInfoTask
     public static HashMap<String, String> pvpTierMap    = null;
@@ -573,19 +584,19 @@ public final class FamStore {
         Document tierDOM   = Jsoup.parse(tierHTML);
         Elements tierTables   = tierDOM.getElementsByClass("wikitable");
 
-        String[] tiers = {"X", "S+", "S", "A+", "A", "B", "C"};
+        String[] tiers = catTierList.get(category);
 
         HashMap<String, String> tierMap = new HashMap<String, String>();
 
-        for (int i = 0; i < 7; i++){ // 7 tables
+        for (int i = 0; i < tiers.length; i++){
             Elements rows = tierTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
             int countRow = 0;
             for (Element row : rows) {
                 countRow++;
-                if (countRow < 3) continue; // row 1 is the table title, row 2 is the column headers. This is different in the DOM in browser
+                if (countRow == 1) continue; // row 1 is the column headers. This may be different in the DOM in browser
 
-                // second cell's text
-                String famName = row.getElementsByTag("td").get(1).text();
+                // third cell's text
+                String famName = row.getElementsByTag("td").get(2).text();
                 tierMap.put(famName, tiers[i]);
             }
         }
