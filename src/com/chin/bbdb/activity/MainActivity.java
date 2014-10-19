@@ -65,7 +65,7 @@ public class MainActivity extends BaseFragmentActivity {
                 JSONObject myJSON = new JSONObject(jsonString);
 
                 FamStore.famList = new ArrayList<String>();
-                FamStore.famLinkTable = new Hashtable<String, String[]>();
+                FamStore.famLinkTable = new Hashtable<String, String[]>(1536);
 
                 JSONArray myArray = myJSON.getJSONArray("items");
                 for (int i = 0; i < myArray.length(); i++) {

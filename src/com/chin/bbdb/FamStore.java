@@ -317,7 +317,7 @@ public final class FamStore {
             return;
         }
 
-        popeTable = new HashMap<String, IntPOPE>();
+        popeTable = new HashMap<String, IntPOPE>(512);
         String url = "http://bloodbrothersgame.wikia.com/wiki/POPE_Stats_Table";
 
         String popeHTML = null;
@@ -332,7 +332,7 @@ public final class FamStore {
         Element table = doc.getElementsByClass("wikitable").first();
         Elements rows = table.getElementsByTag("tbody").first().getElementsByTag("tr");
 
-        for (int i = rows.size() - 1; i >= 2; i--) { // first two rows are headers and such
+        for (int i = 1; i < rows.size(); i++) { // first row is header
             try {
                 Elements cells = rows.get(i).getElementsByTag("td");
                 String cellFam = cells.get(2).text().trim();
@@ -586,7 +586,7 @@ public final class FamStore {
 
         String[] tiers = catTierList.get(category);
 
-        HashMap<String, String> tierMap = new HashMap<String, String>();
+        HashMap<String, String> tierMap = new HashMap<String, String>(512);
 
         for (int i = 0; i < tiers.length; i++){
             Elements rows = tierTables.get(i).getElementsByTag("tbody").first().getElementsByTag("tr"); // get all rows in each table
