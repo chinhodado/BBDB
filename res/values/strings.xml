@@ -4,6 +4,7 @@
     <string name="app_name">Blood Brothers Database</string>
     <string name="action_help">Help</string>
     <string name="action_about">About</string>
+    <string name="title_activity_advanced_search">Advanced search</string>
     <string name="title_activity_fam_detail">Familiar detail</string>
     <string name="title_activity_fam_compare">Familiar comparison</string>
     <string name="title_activity_help">Help</string>

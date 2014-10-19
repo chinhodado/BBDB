@@ -33,6 +33,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.chin.bbdb.activity.AdvancedSearchActivity"
+            android:label="@string/title_activity_advanced_search" >
+        </activity>
+        <activity
             android:name="com.chin.bbdb.activity.FamDetailActivity"
             android:label="@string/title_activity_fam_detail"
             android:parentActivityName="com.chin.bbdb.activity.MainActivity"

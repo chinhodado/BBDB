@@ -5,6 +5,7 @@
     </issue>
     <issue id="HardcodedText">
         <ignore path="res/layout/activity_fam_detail.xml" />
+        <ignore path="res/layout/fragment_advanced_search_criteria.xml" />
         <ignore path="res/layout/fragment_fam_info.xml" />
     </issue>
 </lint>

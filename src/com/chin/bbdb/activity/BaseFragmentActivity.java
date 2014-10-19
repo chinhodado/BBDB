@@ -40,6 +40,9 @@ public class BaseFragmentActivity extends FragmentActivity{
         if (this instanceof MainActivity) {
             setContentView(R.layout.activity_main);
         }
+        else if (this instanceof AdvancedSearchActivity) {
+            setContentView(R.layout.activity_advanced_search);
+        }
         else if (this instanceof FamCompareActivity) {
             setContentView(R.layout.activity_fam_compare);
         }
@@ -57,7 +60,7 @@ public class BaseFragmentActivity extends FragmentActivity{
         }
 
         // create the navigation drawer
-        String[] mListTitles = {"Familiar", "Tier lists", "Build brigade (beta)"};
+        String[] mListTitles = {"Familiar", "Advanced search", "Tier lists", "Build brigade (beta)"};
         final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -78,12 +81,17 @@ public class BaseFragmentActivity extends FragmentActivity{
                     intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                 }
-                else if (position == 1) { // Tier list
+                else if (position == 1) { // Advanced search
+                    intent = new Intent(v.getContext(), AdvancedSearchActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(intent);
+                }
+                else if (position == 2) { // Tier list
                     intent = new Intent(v.getContext(), TierTableActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                 }
-                else if (position == 2) { // Build brigade
+                else if (position == 3) { // Build brigade
                     intent = new Intent(v.getContext(), BuildBrigActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);

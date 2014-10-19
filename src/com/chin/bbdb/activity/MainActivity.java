@@ -98,7 +98,7 @@ public class MainActivity extends BaseFragmentActivity {
             // Select the tab that was selected before orientation change
             int index = savedInstanceState.getInt("TAB_INDEX");
             bar.setSelectedNavigationItem(index);
-         }
+        }
 
         // for our purposes, consider the app already opened at this point
         hasJustBeenStarted = false;
@@ -157,14 +157,13 @@ public class MainActivity extends BaseFragmentActivity {
                 famListView.setAdapter(adapter);
                 famListView.setOnItemClickListener(new OnItemClickListener(){
                     @Override
-                    public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3)
-                      {
+                    public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
                             String famName = (String)arg0.getItemAtPosition(position);
                             Intent intent = new Intent(v.getContext(), FamDetailActivity.class);
                             intent.putExtra(FAM_NAME, famName);
                             intent.putExtra(FAM_LINK, FamStore.famLinkTable.get(famName));
                             startActivity(intent);
-                      }
+                    }
                 });
 
             } catch (Exception e) {
