@@ -184,21 +184,22 @@ public final class FamStore {
         // save the DOM for later use. Should look into this so that it doesn't cause huge mem usage
         currentFam.famDOM = famDOM;
 
-        Elements statTable = famDOM.getElementsByClass("article-table");
-        Element rowBase = statTable.first().getElementsByTag("tbody").first().getElementsByTag("tr").get(1);
-        Element rowMax = statTable.first().getElementsByTag("tbody").first().getElementsByTag("tr").get(2);
+        Element rowBase = famDOM.getElementById("base");
+        Element rowMax = famDOM.getElementById("max");
 
-        String hpBase  = rowBase.getElementsByTag("td").get(1).childNode(0).toString();
-        String atkBase = rowBase.getElementsByTag("td").get(2).childNode(0).toString();
-        String defBase = rowBase.getElementsByTag("td").get(3).childNode(0).toString();
-        String wisBase = rowBase.getElementsByTag("td").get(4).childNode(0).toString();
-        String agiBase = rowBase.getElementsByTag("td").get(5).childNode(0).toString();
+        Elements rowBaseCells = rowBase.getElementsByTag("td");
+        String hpBase  = rowBaseCells.get(1).text();
+        String atkBase = rowBaseCells.get(2).text();
+        String defBase = rowBaseCells.get(3).text();
+        String wisBase = rowBaseCells.get(4).text();
+        String agiBase = rowBaseCells.get(5).text();
 
-        String hpMax  = rowMax.getElementsByTag("td").get(1).childNode(0).toString();
-        String atkMax = rowMax.getElementsByTag("td").get(2).childNode(0).toString();
-        String defMax = rowMax.getElementsByTag("td").get(3).childNode(0).toString();
-        String wisMax = rowMax.getElementsByTag("td").get(4).childNode(0).toString();
-        String agiMax = rowMax.getElementsByTag("td").get(5).childNode(0).toString();
+        Elements rowMaxCells = rowMax.getElementsByTag("td");
+        String hpMax  = rowMaxCells.get(1).text();
+        String atkMax = rowMaxCells.get(2).text();
+        String defMax = rowMaxCells.get(3).text();
+        String wisMax = rowMaxCells.get(4).text();
+        String agiMax = rowMaxCells.get(5).text();
 
         String hpPE = null, atkPE = null, defPE = null, wisPE = null, agiPE = null;
         currentFam.isWarlord = famDOM.getElementById("WikiaArticleCategories").text().contains("Warlord");
@@ -206,46 +207,42 @@ public final class FamStore {
 
 
         if (!currentFam.isWarlord) {
-            Element rowPE = statTable.first().getElementsByTag("tbody").first().getElementsByTag("tr").get(3);
-            hpPE = rowPE.getElementsByTag("td").get(1).childNode(0).toString();
-            atkPE = rowPE.getElementsByTag("td").get(2).childNode(0).toString();
-            defPE = rowPE.getElementsByTag("td").get(3).childNode(0).toString();
-            wisPE = rowPE.getElementsByTag("td").get(4).childNode(0).toString();
-            agiPE = rowPE.getElementsByTag("td").get(5).childNode(0).toString();
+            Element rowPE = famDOM.getElementById("pe");
+            hpPE = rowPE.getElementsByTag("td").get(1).text();
+            atkPE = rowPE.getElementsByTag("td").get(2).text();
+            defPE = rowPE.getElementsByTag("td").get(3).text();
+            wisPE = rowPE.getElementsByTag("td").get(4).text();
+            agiPE = rowPE.getElementsByTag("td").get(5).text();
         }
 
         // array to store stats: HP, ATK, DEF, WIS, AGI, Total
         currentFam.stats = new FamStats();
 
         try {
+            int[] baseStats = currentFam.stats.baseStats;
+            baseStats[0] = getStatFromText(hpBase);
+            baseStats[1] = getStatFromText(atkBase);
+            baseStats[2] = getStatFromText(defBase);
+            baseStats[3] = getStatFromText(wisBase);
+            baseStats[4] = getStatFromText(agiBase);
+            baseStats[5] = baseStats[0] + baseStats[1] + baseStats[2] + baseStats[3] + baseStats[4];
 
-            currentFam.stats.baseStats[0] = Integer.parseInt(hpBase.replace(",", "").replace(" ", ""));
-            currentFam.stats.baseStats[1] = Integer.parseInt(atkBase.replace(",", "").replace(" ", ""));
-            currentFam.stats.baseStats[2] = Integer.parseInt(defBase.replace(",", "").replace(" ", ""));
-            currentFam.stats.baseStats[3] = Integer.parseInt(wisBase.replace(",", "").replace(" ", ""));
-            currentFam.stats.baseStats[4] = Integer.parseInt(agiBase.replace(",", "").replace(" ", ""));
-            currentFam.stats.baseStats[5] = currentFam.stats.baseStats[0] + currentFam.stats.baseStats[1] +
-                                            currentFam.stats.baseStats[2] + currentFam.stats.baseStats[3] +
-                                            currentFam.stats.baseStats[4];
-
-            currentFam.stats.maxStats[0] = Integer.parseInt(hpMax.replace(",", "").replace(" ", ""));
-            currentFam.stats.maxStats[1] = Integer.parseInt(atkMax.replace(",", "").replace(" ", ""));
-            currentFam.stats.maxStats[2] = Integer.parseInt(defMax.replace(",", "").replace(" ", ""));
-            currentFam.stats.maxStats[3] = Integer.parseInt(wisMax.replace(",", "").replace(" ", ""));
-            currentFam.stats.maxStats[4] = Integer.parseInt(agiMax.replace(",", "").replace(" ", ""));
-            currentFam.stats.maxStats[5] = currentFam.stats.maxStats[0] + currentFam.stats.maxStats[1] +
-                                           currentFam.stats.maxStats[2] + currentFam.stats.maxStats[3] +
-                                           currentFam.stats.maxStats[4];
+            int[] maxStats = currentFam.stats.maxStats;
+            maxStats[0] = getStatFromText(hpMax);
+            maxStats[1] = getStatFromText(atkMax);
+            maxStats[2] = getStatFromText(defMax);
+            maxStats[3] = getStatFromText(wisMax);
+            maxStats[4] = getStatFromText(agiMax);
+            maxStats[5] = maxStats[0] + maxStats[1] + maxStats[2] + maxStats[3] + maxStats[4];
 
             if (!currentFam.isWarlord) {
-                currentFam.stats.PEStats[0] = Integer.parseInt(hpPE.replace(",", "").replace(" ", ""));
-                currentFam.stats.PEStats[1] = Integer.parseInt(atkPE.replace(",", "").replace(" ", ""));
-                currentFam.stats.PEStats[2] = Integer.parseInt(defPE.replace(",", "").replace(" ", ""));
-                currentFam.stats.PEStats[3] = Integer.parseInt(wisPE.replace(",", "").replace(" ", ""));
-                currentFam.stats.PEStats[4] = Integer.parseInt(agiPE.replace(",", "").replace(" ", ""));
-                currentFam.stats.PEStats[5] = currentFam.stats.PEStats[0] + currentFam.stats.PEStats[1] +
-                                              currentFam.stats.PEStats[2] + currentFam.stats.PEStats[3] +
-                                              currentFam.stats.PEStats[4];
+                int[] PEStats = currentFam.stats.PEStats;
+                PEStats[0] = getStatFromText(hpPE);
+                PEStats[1] = getStatFromText(atkPE);
+                PEStats[2] = getStatFromText(defPE);
+                PEStats[3] = getStatFromText(wisPE);
+                PEStats[4] = getStatFromText(agiPE);
+                PEStats[5] = PEStats[0] + PEStats[1] + PEStats[2] + PEStats[3] + PEStats[4];
             }
 
         } catch (Exception e) {
@@ -273,7 +270,7 @@ public final class FamStore {
             // calculate the POPE manually
             int toAdd = 0;
 
-            if (currentFam.isWarlord || starLevel.startsWith("1")) toAdd = 500;      // 1 star
+            if (currentFam.isWarlord || starLevel.startsWith("1")) toAdd = 500; // 1 star
             else if (starLevel.startsWith("2")) toAdd = 550; // 2 star
             else if (starLevel.startsWith("3")) toAdd = 605; // 3 star
             else if (starLevel.startsWith("4")) toAdd = 666; // 4 star
@@ -289,6 +286,15 @@ public final class FamStore {
                 }
             }
         }
+    }
+
+    /**
+     * Get the stat from the text
+     * @param text The stat in text form
+     * @return The stat
+     */
+    private int getStatFromText(String text) {
+        return Integer.parseInt(text.replace(",", "").replace(" ", ""));
     }
 
     /**
@@ -339,11 +345,11 @@ public final class FamStore {
 
                 IntPOPE popeStats = new IntPOPE();
 
-                popeStats.hpPOPE  = Integer.parseInt(cells.get(5).text().replace(",", "").replace(" ", ""));
-                popeStats.atkPOPE = Integer.parseInt(cells.get(6).text().replace(",", "").replace(" ", ""));
-                popeStats.defPOPE = Integer.parseInt(cells.get(7).text().replace(",", "").replace(" ", ""));
-                popeStats.wisPOPE = Integer.parseInt(cells.get(8).text().replace(",", "").replace(" ", ""));
-                popeStats.agiPOPE = Integer.parseInt(cells.get(9).text().replace(",", "").replace(" ", ""));
+                popeStats.hpPOPE  = getStatFromText(cells.get(5).text());
+                popeStats.atkPOPE = getStatFromText(cells.get(6).text());
+                popeStats.defPOPE = getStatFromText(cells.get(7).text());
+                popeStats.wisPOPE = getStatFromText(cells.get(8).text());
+                popeStats.agiPOPE = getStatFromText(cells.get(9).text());
                 popeStats.totalPOPE = popeStats.hpPOPE + popeStats.atkPOPE + popeStats.defPOPE + popeStats.wisPOPE + popeStats.agiPOPE;
 
                 popeTable.put(cellFam, popeStats);
