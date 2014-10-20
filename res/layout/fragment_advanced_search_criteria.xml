@@ -15,7 +15,7 @@
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Please specify search criteria" />
+            android:text="Please specify search criteria. For more information, see Help." />
         
         <LinearLayout
             android:layout_width="match_parent"
@@ -150,6 +150,81 @@
                 android:inputType="number" >
 
             </EditText>
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+    
+            <Spinner
+                android:id="@+id/spinnerSkillType"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2" />
+            <TextView
+                android:id="@+id/textViewSkillTypeOperator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" = "/>
+
+            <Spinner
+                android:id="@+id/spinnerSkillTypeChoice"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+    
+            <Spinner
+                android:id="@+id/spinnerSkillFunc"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2" />
+            <TextView
+                android:id="@+id/textViewSkillFuncOperator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" = " />
+
+            <Spinner
+                android:id="@+id/spinnerSkillFuncChoice"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+    
+            <Spinner
+                android:id="@+id/spinnerSkillRange"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2" />
+            <TextView
+                android:id="@+id/textViewSkillRangeOperator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" = "/>
+
+            <Spinner
+                android:id="@+id/spinnerSkillRangeChoice"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4" />
+
         </LinearLayout>
 
         <Button

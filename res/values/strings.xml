@@ -16,6 +16,7 @@
     
     <string name="help_text">
 <![CDATA[
+        <h1> Familiar details </h1>
         <b>Q: What are the different stats type (Base, Max, PE, POPE)?</b> <br/>
         A: <br/> 
         Base is the stats of a familiar at capture or from a pact (at LV1). 
@@ -27,10 +28,10 @@
             PE Epic 4 familiar you need 8 Rare 1 familiars.<br/><br/>
         POPE (Perfect Over Perfect Evolution) is similar to PE, but with the maximum number of crystals added. 
             This is generally 400 crystals for 8-card evolutions and 100 for 2-card evolutions. <br/><br/>
-            
+
         <b>Q: What are the different tiers for PvP, Raid and Tower?</b> <br/>
         A: <br/> 
-        Tier X: These familiars are the most powerful in the game. They are extremely difficult to obtain, 
+        Tier X/X+: These familiars are the most powerful in the game. They are extremely difficult to obtain, 
             and are almost always found amongst the highest ranking players. They excel in the roles they play, 
             having exceptional skills and high stats. While these familiars are universally Legendaries or Mythics, 
             not all Legendaries qualify for this tier.  <br/><br/>
@@ -54,7 +55,38 @@
         Tier C: Familiars in this tier are considered to be fair to average. They are good choices for anyone on the path to building a higher-tier team. 
             The skills they possess are usually either highly situational, or inferior in damage and/or utility to those held by higher tier familiars. 
             Good performance in events with a team entirely comprised of these familiars is difficult, but not impossible. <br/><br/>
-            
+
+        <h1> Advanced search </h1>
+        <b>Q: How does it work?</b> <br/>
+        A: To search, specify the crteria of the familiars you want to search for. The criteria can be stat-related or skill-related. <br/><br/>
+        
+        <b>Q: What should I know about stat-related criteria?</b> <br/>
+        A: The stats used for searching are the POPE stats of the familiar. So for example if you search for HP > 20000, the results are 
+        familiars with POPE HP > 20000. Base, max and PE stats are not taken into consideration. <br/>
+        An important thing to note is that if you specify at least one stat-related criterion, the search result will only return final evolution familiars. <br/><br/>
+        
+        <b>Q: What are skill type, skill function and skill range?</b> <br/>
+        A: 
+        Skill type specifies when the skill can be activated. 
+        Skill function specifies what the skill does. 
+        Skill range specifies the targets of the skill<br/><br/>
+        
+        <b>Q: What do PI and CB mean?</b> <br/>
+        A: 
+        PI means Position Independent (aka \"ignoring position\") <br/> 
+        CB means Caster-based (CB debuff is a new, powerful type of debuff)<br/><br/>
+        
+        <b>Q: How do I search for Fork-3, AoE-4, Sweeping, etc.?</b> <br/>
+        A: 
+        Fork-3: Use \"Attack\" + \"3 near enemies\" <br/>
+        AoE-4: Use \"Attack PI\" + \"4 near enemies\" <br/>
+        Sweeping: Use \"Attack\" + \"All enemies\" <br/><br/>
+        
+        <b>Q: Why can\'t I find a familiar?</b> <br/>
+        A: The advanced search function used an offline database which may be outdated. You may need to wait for a new update. <br/>
+        Also, as noted above, if you specify at least one stat-related criterion, the search result will only return final evolution familiars. <br/><br/>
+        
+        <h1> General </h1>
         <b>Q: How often is this app\'s data updated?</b> <br/>
         A: This app pulls all data from the Blood Brothers Wikia in real time, so the data is always up-to-date. <br/><br/>
         

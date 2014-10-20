@@ -26,11 +26,27 @@ public class DatabaseQuerier {
      * @param whereClause The where clause that represents the criteria of the search
      * @return List of familiars that satisfy the criteria
      */
-    public ArrayList<String> executeQuery(String whereClause) {
+    public ArrayList<String> executeQuery(String famCriteria, String skillCriteria) {
         ArrayList<String> resultSet = new ArrayList<String>();
         try {
             SQLiteDatabase db = getDatabase();
-            Cursor cursor = db.rawQuery("Select name from Familiar where " + whereClause, null);
+
+            String joinClause = " and (f.skillId1 = s.id or f.skillId2 = s.id or f.skillId3 = s.id)";
+            String tables;
+            String whereClause;
+            if (!famCriteria.equals("") && !skillCriteria.equals("")) {
+                tables = "familiar f, skill s";
+                whereClause = famCriteria + " and " + skillCriteria + joinClause;
+            }
+            else if (!skillCriteria.equals("")){ // skill but no fam
+                tables = "familiar f, skill s";
+                whereClause = skillCriteria + joinClause;
+            }
+            else { // fam but no skill
+                tables = "familiar f";
+                whereClause = famCriteria;
+            }
+            Cursor cursor = db.rawQuery("Select f.name from " + tables + " where " + whereClause, null);
             if (cursor.moveToFirst()) {
                 while (cursor.isAfterLast() == false) {
                     String name = cursor.getString(cursor.getColumnIndex("name"));
