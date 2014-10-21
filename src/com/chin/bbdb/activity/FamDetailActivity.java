@@ -1,12 +1,10 @@
 package com.chin.bbdb.activity;
 
 import java.util.HashMap;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import com.chin.bbdb.FamStore;
 import com.chin.bbdb.Util;
 import com.chin.bbdb.R;
@@ -14,6 +12,7 @@ import com.chin.bbdb.TabListener;
 import com.chin.bbdb.asyncTask.AddFamiliarInfoTask;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
@@ -178,6 +177,7 @@ public class FamDetailActivity extends BaseFragmentActivity {
      */
     public static class FamCommentFragment extends Fragment {
         PopulateCommentAsyncTask myTask;
+        @SuppressLint("RtlHardcoded")
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Bundle bundle = getArguments();

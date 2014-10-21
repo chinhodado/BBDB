@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.chin.bbdb"
-    android:versionCode="23"
-    android:versionName="1.4.1" >
+    android:versionCode="24"
+    android:versionName="1.5" >
 
     <uses-sdk
         android:minSdkVersion="13"
@@ -39,7 +39,6 @@
         <activity
             android:name="com.chin.bbdb.activity.FamDetailActivity"
             android:label="@string/title_activity_fam_detail"
-            android:parentActivityName="com.chin.bbdb.activity.MainActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" >
             <meta-data
@@ -49,7 +48,6 @@
         <activity
             android:name="com.chin.bbdb.activity.FamCompareActivity"
             android:label="@string/title_activity_fam_compare"
-            android:parentActivityName="com.chin.bbdb.activity.FamDetailActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" >
             <meta-data
@@ -69,8 +67,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
         <activity
             android:name="com.chin.bbdb.activity.TierTableActivity"
-            android:label="@string/title_activity_tier_table"
-            android:parentActivityName="com.chin.bbdb.activity.MainActivity" >
+            android:label="@string/title_activity_tier_table">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chin.bbdb.activity.MainActivity" />
