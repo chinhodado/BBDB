@@ -10,6 +10,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 /**
@@ -126,22 +129,27 @@ public final class FamStore {
     // maps a skill name to its DOM
     private static Hashtable<String, String> skillStore = new Hashtable<String, String>();
 
-    private static final FamStore FAMSTORE = new FamStore();
+    private static FamStore FAMSTORE;
+    private static Context context;
 
     /**
      * Private constructor. For singleton.
      */
-    private FamStore() {
+    private FamStore(Context context) {
         if (FAMSTORE != null) {
             throw new IllegalStateException("Already instantiated");
         }
+        FamStore.context = context;
     }
 
     /**
      * Get the only instance of this class. Because of singleton.
      * @return The only instance of this class.
      */
-    public static FamStore getInstance() {
+    public static FamStore getInstance(Context context) {
+        if (FAMSTORE == null) {
+            FAMSTORE = new FamStore(context);
+        }
         return FAMSTORE;
     }
 
@@ -267,36 +275,43 @@ public final class FamStore {
                 .split("\\."); // split by .
         currentFam.rarity = tmpArr[tmpArr.length - 2]; // get the second last token
 
+        // POPE and CC reduction
         if (currentFam.isWarlord || currentFam.isFinalEvolution) {
 
+            // procedure: if is 4-star,
+            //                try to get POPE from sqlite, if not success get it from POPE table
+            //            if not 4-star, or if both the above fail, calculate it manually
+            //                (with the risk of inaccurate 4-star POPE)
             if (starLevel.startsWith("4")) {
                 IntPOPE pope = null;
+
+                // first try to get from sqlite db
                 try {
-                    pope = getPOPEStats(famName);
+                    pope = getPOPEStatsFromSQLite(famName);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e("FamDetail", "Error getting POPE from POPE table.");
+                    Log.e("FamDetail", "Error getting POPE from SQLite db.");
                 }
+
+                // ok, no choice but to go to our POPE table
+                if (pope == null) {
+                    try {
+                        pope = getPOPEStatsFromPOPETable(famName);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e("FamDetail", "Error getting POPE from POPE table.");
+                    }
+                }
+
                 if (pope != null) {
                     currentFam.stats.POPEStats = pope.toArray();
                 }
 
                 // cc
                 String evo3Name = famDOM.getElementById("evoStep3").text();
-                FamStats evo3Stats = getStats(evo3Name);
-                currentFam.ccReduction = new int[5];
-
-                for (int i = 0; i < 5; i++) {
-                    double stat = evo3Stats.PEStats[i];
-                    if (Math.round((stat + 605) / 10) - Math.round((stat + 600) / 10) > 0) {
-                        double b = Math.round((stat + 600) / 10);
-                        double c = Math.round((stat * 10 + 6000) / 10);
-                        double d = 0.5 - (c / 10 - b);
-                        currentFam.ccReduction[i] = (int) Math.round(d * 10 / 0.5);
-                    } else {
-                        currentFam.ccReduction[i] = 0;
-                    }
-                }
+                int[] cc = new int[5];
+                initializeCCList(evo3Name, cc);
+                currentFam.ccReduction = cc;
             }
 
             if (currentFam.stats.POPEStats[0] == 0) { // fam not in POPE table, or not 4 stars
@@ -317,6 +332,7 @@ public final class FamStore {
                         else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd*5;
                     }
                 }
+                Log.i("FamStore", "Calculated POPE manually.");
             }
         }
     }
@@ -335,15 +351,53 @@ public final class FamStore {
      * @param famName The fam to get POPE stats
      * @return the POPE stats of the fam, or null if the fam is not in the table
      */
-    public IntPOPE getPOPEStats(String famName) {
+    public IntPOPE getPOPEStatsFromPOPETable(String famName) {
         initializePOPETable();
         if (popeTable.containsKey(famName)) {
             IntPOPE popeStats = popeTable.get(famName);
+            Log.i("FamStore", "Got POPE from POPE table.");
             return popeStats;
         }
         else {
             return null;
         }
+    }
+
+    /**
+     * Get the POPE stats of a fam from the SQLite database
+     * @param famName The fam to get POPE stats
+     * @return the POPE stats of the fam, or null if the fam is not in the database
+     */
+    public IntPOPE getPOPEStatsFromSQLite(String famName) {
+        SQLiteDatabase db = new DatabaseQuerier(FamStore.context).getDatabase();
+        Cursor cursor = db.rawQuery("Select popeHp, popeAtk, popeDef, popeWis, popeAgi"
+                + " from familiar where name = \"" + famName + "\"", null);
+        IntPOPE pope = null;
+        if (cursor.moveToFirst()) {
+            while (cursor.isAfterLast() == false) {
+                pope = new IntPOPE();
+                String popeHp  = cursor.getString(cursor.getColumnIndex("popeHp"));
+                String popeAtk = cursor.getString(cursor.getColumnIndex("popeAtk"));
+                String popeDef = cursor.getString(cursor.getColumnIndex("popeDef"));
+                String popeWis = cursor.getString(cursor.getColumnIndex("popeWis"));
+                String popeAgi = cursor.getString(cursor.getColumnIndex("popeAgi"));
+
+                pope.hpPOPE  = Integer.parseInt(popeHp);
+                pope.atkPOPE = Integer.parseInt(popeAtk);
+                pope.defPOPE = Integer.parseInt(popeDef);
+                pope.wisPOPE = Integer.parseInt(popeWis);
+                pope.agiPOPE = Integer.parseInt(popeAgi);
+                pope.totalPOPE = pope.hpPOPE + pope.atkPOPE + pope.defPOPE + pope.wisPOPE + pope.agiPOPE;
+
+                Log.i("FamStore", "Got POPE from sqlite.");
+                cursor.moveToNext();
+            }
+        }
+        else {
+            Log.i("POPE", "Not found in SQLite for POPE: " + famName);
+        }
+
+        return pope;
     }
 
     /**
@@ -356,6 +410,7 @@ public final class FamStore {
             return;
         }
 
+        Log.i("FamStore", "Initializing POPE table.");
         popeTable = new HashMap<String, IntPOPE>(512);
         String url = "http://bloodbrothersgame.wikia.com/wiki/POPE_Stats_Table";
 
@@ -389,6 +444,27 @@ public final class FamStore {
 
             } catch (Exception e) {
                 Log.i("FamStore", "There's an error in parsing the POPE table.");
+            }
+        }
+    }
+
+    /**
+     * Initialize the Last CC array of a fam with the specified evo 3 name
+     * @param evo3Name The name of the 3-star evolution of the fam we want to get the Lass CC list
+     * @param ccList The CC List. It cannot be null, and will be modified.
+     */
+    public void initializeCCList(String evo3Name, int[] ccList) {
+        FamStats evo3Stats = getStats(evo3Name);
+
+        for (int i = 0; i < 5; i++) {
+            double stat = evo3Stats.PEStats[i];
+            if (Math.round((stat + 605) / 10) - Math.round((stat + 600) / 10) > 0) {
+                double b = Math.round((stat + 600) / 10);
+                double c = Math.round((stat * 10 + 6000) / 10);
+                double d = 0.5 - (c / 10 - b);
+                ccList[i] = (int) Math.round(d * 10 / 0.5);
+            } else {
+                ccList[i] = 0;
             }
         }
     }
@@ -635,7 +711,7 @@ public final class FamStore {
             return;
         }
 
-        String tierHTML = FamStore.getInstance().getTierHTML(category);
+        String tierHTML = FAMSTORE.getTierHTML(category);
         Document tierDOM   = Jsoup.parse(tierHTML);
         Elements tierTables   = tierDOM.getElementsByClass("wikitable");
 

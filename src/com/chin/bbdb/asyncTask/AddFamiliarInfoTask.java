@@ -48,7 +48,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 
     public AddFamiliarInfoTask(FamDetailActivity activity) {
         this.activity = activity;
-        this.famStore = FamStore.getInstance();
+        this.famStore = FamStore.getInstance(activity);
     }
 
     @Override

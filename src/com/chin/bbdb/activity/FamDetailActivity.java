@@ -223,7 +223,7 @@ public class FamDetailActivity extends BaseFragmentActivity {
         protected Void doInBackground(String... params) {
             String html;
             try {
-                FamStore.getInstance();
+                FamStore.getInstance(activity);
                 baseUrl = params[0];
                 html = Jsoup.connect(baseUrl).ignoreContentType(true).execute().body();
 

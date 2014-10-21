@@ -211,7 +211,7 @@ public class TierTableActivity extends BaseFragmentActivity {
         protected Void doInBackground(String... params) {
             String mainHTML = null;
             try {
-                mainHTML = FamStore.getInstance().getTierHTML(category);
+                mainHTML = FamStore.getInstance(activity).getTierHTML(category);
 
                 if (isCancelled()) {
                     return null; // try to return early if possible

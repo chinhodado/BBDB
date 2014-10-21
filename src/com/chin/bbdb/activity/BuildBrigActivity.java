@@ -118,6 +118,7 @@ public class BuildBrigActivity extends BaseFragmentActivity {
         }
 
         atv.setAdapter(MainActivity.adapter);
+        final BuildBrigActivity activity = this;
         atv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -133,13 +134,13 @@ public class BuildBrigActivity extends BaseFragmentActivity {
                 new AsyncTask<Void, Void, Void>(){
                     @Override
                     protected Void doInBackground(Void... params) {
-                        FamStore.getInstance().getGeneralInfo(famName);
+                        FamStore.getInstance(activity).getGeneralInfo(famName);
                         return null;
                     }
 
                     @Override
                     protected void onPostExecute(Void param) {
-                        ImageLoader.getInstance().displayImage(FamStore.getInstance().getImageLink(famName),
+                        ImageLoader.getInstance().displayImage(FamStore.getInstance(activity).getImageLink(famName),
                                 imgView1, new SimpleImageLoadingListener() {
                             @Override
                             public void onLoadingStarted(String imageUri, View view) {}

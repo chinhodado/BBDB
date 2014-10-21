@@ -71,7 +71,7 @@ public class DatabaseQuerier {
         return resultSet;
     }
 
-    private SQLiteDatabase getDatabase() {
+    public SQLiteDatabase getDatabase() {
         if (db == null) {
             BBSqliteDatabase dbHelper = new BBSqliteDatabase(context);
             db = dbHelper.getReadableDatabase();

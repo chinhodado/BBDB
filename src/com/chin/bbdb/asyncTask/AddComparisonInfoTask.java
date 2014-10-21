@@ -38,7 +38,7 @@ public class AddComparisonInfoTask extends AsyncTask<String, Void, Void>{
 
     public AddComparisonInfoTask(FamCompareActivity activity) {
         this.activity = activity;
-        this.famStore = FamStore.getInstance();
+        this.famStore = FamStore.getInstance(activity);
     }
 
     @Override

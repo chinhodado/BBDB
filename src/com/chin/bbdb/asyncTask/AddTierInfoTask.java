@@ -31,7 +31,7 @@ class AddTierInfoTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         if (FamStore.pvpTierMap == null || FamStore.raidTierMap == null || FamStore.towerTierMap == null) {
             try {
-                FamStore.getInstance().initializeAllTierMap();
+                FamStore.getInstance(activity).initializeAllTierMap();
             } catch (Exception e) {
                 Log.e("FamDetail", "Error fetching the tier HTML pages");
                 e.printStackTrace();
