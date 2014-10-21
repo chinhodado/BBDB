@@ -8,13 +8,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.chin.bbdb.FamStore;
-import com.chin.bbdb.FamStore.IntPOPE;
 import com.chin.bbdb.Util;
 import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
 import com.chin.bbdb.activity.FamDetailActivity;
 import com.chin.bbdb.activity.MainActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -208,42 +208,37 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 
         // POPE row
         if (famStore.isFinalEvolution(famName) || isWarlord) {
+            if (stats.POPEStats[0] != 0) {
+                Util.addLineSeparator(activity, statTableLayout);
+                TableRow popeRow = new TableRow(activity); statTableLayout.addView(popeRow);
+                TextView tmpTv1 = new TextView(activity); tmpTv1.setText("POPE"); popeRow.addView(tmpTv1);
 
-            new AsyncTask<Void, Void, int[]>(){
-                @Override
-                protected int[] doInBackground(Void... params) {
-                    if (famStore.getStarLevel(famName).startsWith("4")) {
-                        IntPOPE pope = famStore.getPOPEStats(famName);
-                        if (pope != null) {
-                            return pope.toArray();
-                        }
-                        else { // the POPE is not in the table
-                            return null;
-                        }
-                    }
-                    else {
-                        return stats.POPEStats;
-                    }
+                for (int i = 0; i < 6; i++) {
+                    TextView tmpTv = new TextView(activity); tmpTv.setText(formatter.format(stats.POPEStats[i])); popeRow.addView(tmpTv);
                 }
+            }
 
-                @Override
-                protected void onPostExecute(int[] param) {
+            // add a blank line
+            TableRow emptyRow = new TableRow(activity); statTableLayout.addView(emptyRow);
+            TextView emptyTv = new TextView(activity); emptyRow.addView(emptyTv);
+        }
 
-                    if (param != null) {
-                        Util.addLineSeparator(activity, statTableLayout);
-                        TableRow popeRow = new TableRow(activity); statTableLayout.addView(popeRow);
-                        TextView tmpTv1 = new TextView(activity); tmpTv1.setText("POPE"); popeRow.addView(tmpTv1);
+        // cc row
+        int cc[] = famStore.getCC(famName);
+        if (famStore.getStarLevel(famName).startsWith("4")) {
+            if (cc != null) {
+                Util.addLineSeparator(activity, statTableLayout);
+                TableRow ccRow = new TableRow(activity); statTableLayout.addView(ccRow);
+                TextView tmpTv1 = new TextView(activity); tmpTv1.setText("Last CC"); ccRow.addView(tmpTv1);
 
-                        for (int i = 0; i < 6; i++) {
-                            TextView tmpTv = new TextView(activity); tmpTv.setText(formatter.format(param[i])); popeRow.addView(tmpTv);
-                        }
-                    }
-
-                    // add a blank line
-                    TableRow emptyRow = new TableRow(activity); statTableLayout.addView(emptyRow);
-                    TextView emptyTv = new TextView(activity); emptyRow.addView(emptyTv);
+                for (int i = 0; i < 5; i++) {
+                    TextView tmpTv = new TextView(activity); tmpTv.setText(cc[i] + ""); ccRow.addView(tmpTv);
                 }
-            }.execute();
+            }
+
+            // add a blank line
+            TableRow emptyRow = new TableRow(activity); statTableLayout.addView(emptyRow);
+            TextView emptyTv = new TextView(activity); emptyRow.addView(emptyTv);
         }
 
         // set the name label

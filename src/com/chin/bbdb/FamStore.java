@@ -37,6 +37,7 @@ public final class FamStore {
         FamStats stats = null;
         String starLevel = null;
         String rarity = null;
+        int[] ccReduction = null;
         Document famDOM;
 
         boolean isFinalEvolution = false;
@@ -267,22 +268,54 @@ public final class FamStore {
         currentFam.rarity = tmpArr[tmpArr.length - 2]; // get the second last token
 
         if (currentFam.isWarlord || currentFam.isFinalEvolution) {
-            // calculate the POPE manually
-            int toAdd = 0;
 
-            if (currentFam.isWarlord || starLevel.startsWith("1")) toAdd = 500; // 1 star
-            else if (starLevel.startsWith("2")) toAdd = 550; // 2 star
-            else if (starLevel.startsWith("3")) toAdd = 605; // 3 star
-            else if (starLevel.startsWith("4")) toAdd = 666; // 4 star
-
-            for (int i = 0; i < 6; i++) {
-                if (i <= 4) { // the individual stats
-                    if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd;
-                    else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd;
+            if (starLevel.startsWith("4")) {
+                IntPOPE pope = null;
+                try {
+                    pope = getPOPEStats(famName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("FamDetail", "Error getting POPE from POPE table.");
                 }
-                else if (i == 5) { // the total
-                    if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd*5;
-                    else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd*5;
+                if (pope != null) {
+                    currentFam.stats.POPEStats = pope.toArray();
+                }
+
+                // cc
+                String evo3Name = famDOM.getElementById("evoStep3").text();
+                FamStats evo3Stats = getStats(evo3Name);
+                currentFam.ccReduction = new int[5];
+
+                for (int i = 0; i < 5; i++) {
+                    double stat = evo3Stats.PEStats[i];
+                    if (Math.round((stat + 605) / 10) - Math.round((stat + 600) / 10) > 0) {
+                        double b = Math.round((stat + 600) / 10);
+                        double c = Math.round((stat * 10 + 6000) / 10);
+                        double d = 0.5 - (c / 10 - b);
+                        currentFam.ccReduction[i] = (int) Math.round(d * 10 / 0.5);
+                    } else {
+                        currentFam.ccReduction[i] = 0;
+                    }
+                }
+            }
+
+            if (currentFam.stats.POPEStats[0] == 0) { // fam not in POPE table, or not 4 stars
+                // calculate the POPE manually
+                int toAdd = 0;
+                if (currentFam.isWarlord || starLevel.startsWith("1")) toAdd = 500; // 1 star
+                else if (starLevel.startsWith("2")) toAdd = 550; // 2 star
+                else if (starLevel.startsWith("3")) toAdd = 605; // 3 star
+                else if (starLevel.startsWith("4")) toAdd = 666; // 4 star
+
+                for (int i = 0; i < 6; i++) {
+                    if (i <= 4) { // the individual stats
+                        if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd;
+                        else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd;
+                    }
+                    else if (i == 5) { // the total
+                        if (currentFam.isWarlord || starLevel.startsWith("1")) currentFam.stats.POPEStats[i] = currentFam.stats.maxStats[i] + toAdd*5;
+                        else currentFam.stats.POPEStats[i] = currentFam.stats.PEStats[i] + toAdd*5;
+                    }
                 }
             }
         }
@@ -355,7 +388,7 @@ public final class FamStore {
                 popeTable.put(cellFam, popeStats);
 
             } catch (Exception e) {
-                Log.i("FamStore", "There's an error in parsing the POPE table, probably the tier section dividers");
+                Log.i("FamStore", "There's an error in parsing the POPE table.");
             }
         }
     }
@@ -377,7 +410,23 @@ public final class FamStore {
         if (currentFam == null) {
             getGeneralInfo(famName);
         }
-        return currentFam.stats;
+        return famStore.get(famName).stats;
+    }
+
+    /**
+     *
+     * Get the cc reduction of a familiar. Careful, it can block.
+     *
+     * @param famName The name of the familiar
+     * @return The cc reduction of that familiar
+     */
+    public int[] getCC(String famName) {
+        FamDetail currentFam = famStore.get(famName);
+
+        if (currentFam == null) {
+            getGeneralInfo(famName);
+        }
+        return famStore.get(famName).ccReduction;
     }
 
     /**
