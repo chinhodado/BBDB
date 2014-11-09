@@ -11,7 +11,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
  */
 public class BBSqliteDatabase extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "database.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public BBSqliteDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
