@@ -32,11 +32,12 @@ public class DatabaseQuerier {
             SQLiteDatabase db = getDatabase();
 
             String joinClause = " and (f.skillId1 = s.id or f.skillId2 = s.id or f.skillId3 = s.id)";
+            String finalEvoClause = " and popeAtk != \"N/A\" ";
             String tables;
             String whereClause;
             if (!famCriteria.equals("") && !skillCriteria.equals("")) {
                 tables = "familiar f, skill s";
-                whereClause = famCriteria + " and " + skillCriteria + joinClause;
+                whereClause = famCriteria + " and " + skillCriteria + joinClause + finalEvoClause;
             }
             else if (!skillCriteria.equals("")){ // skill but no fam
                 tables = "familiar f, skill s";
@@ -44,7 +45,7 @@ public class DatabaseQuerier {
             }
             else { // fam but no skill
                 tables = "familiar f";
-                whereClause = famCriteria;
+                whereClause = famCriteria + finalEvoClause;
             }
             Cursor cursor = db.rawQuery("Select f.name from " + tables + " where " + whereClause, null);
             if (cursor.moveToFirst()) {

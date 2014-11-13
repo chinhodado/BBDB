@@ -7,12 +7,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.chin.bbdb.FamStore;
-import com.chin.bbdb.NetworkDialogFragment;
 import com.chin.bbdb.R;
-import com.chin.bbdb.RegexFilterArrayAdapter;
-import com.chin.bbdb.TabListener;
 import com.chin.bbdb.asyncTask.NetworkTask;
 import com.chin.bbdb.asyncTask.NewFamTask;
+import com.chin.common.NetworkDialogFragment;
+import com.chin.common.RegexFilterArrayAdapter;
+import com.chin.common.TabListener;
 
 import android.os.Bundle;
 import android.app.ActionBar;
@@ -89,9 +89,9 @@ public class MainActivity extends BaseFragmentActivity {
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         bar.addTab(bar.newTab().setText("All familiars")
-                .setTabListener(new TabListener<SearchFamFragment>(this, "all fam", SearchFamFragment.class, null)));
+                .setTabListener(new TabListener<SearchFamFragment>(this, "all fam", SearchFamFragment.class, null, R.id.tab_viewgroup)));
         bar.addTab(bar.newTab().setText("New familiars")
-                .setTabListener(new TabListener<NewFamFragment>(this, "new fam", NewFamFragment.class, null)));
+                .setTabListener(new TabListener<NewFamFragment>(this, "new fam", NewFamFragment.class, null, R.id.tab_viewgroup)));
 
         // if we're resuming the activity, re-select the tab that was selected before
         if (savedInstanceState != null) {

@@ -8,11 +8,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.chin.bbdb.FamStore;
-import com.chin.bbdb.Util;
 import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
 import com.chin.bbdb.activity.FamDetailActivity;
 import com.chin.bbdb.activity.MainActivity;
+import com.chin.common.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.content.Intent;

@@ -1,9 +1,9 @@
 package com.chin.bbdb.asyncTask;
 
 import com.chin.bbdb.FamStore;
-import com.chin.bbdb.Util;
 import com.chin.bbdb.R;
 import com.chin.bbdb.activity.FamDetailActivity;
+import com.chin.common.Util;
 
 import android.os.AsyncTask;
 import android.util.Log;

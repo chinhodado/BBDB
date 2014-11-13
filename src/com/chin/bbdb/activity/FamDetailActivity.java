@@ -1,15 +1,18 @@
 package com.chin.bbdb.activity;
 
 import java.util.HashMap;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import com.chin.bbdb.FamStore;
-import com.chin.bbdb.Util;
 import com.chin.bbdb.R;
-import com.chin.bbdb.TabListener;
 import com.chin.bbdb.asyncTask.AddFamiliarInfoTask;
+import com.chin.common.TabListener;
+import com.chin.common.Util;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -98,9 +101,9 @@ public class FamDetailActivity extends BaseFragmentActivity {
         Bundle bundle = new Bundle();
         bundle.putString("FAMNAME", famName);
         bar.addTab(bar.newTab().setText("Information")
-                .setTabListener(new TabListener<FamInfoFragment>(this, "fam info", FamInfoFragment.class, bundle)));
+                .setTabListener(new TabListener<FamInfoFragment>(this, "fam info", FamInfoFragment.class, bundle, R.id.tab_viewgroup)));
         bar.addTab(bar.newTab().setText("Comment")
-                .setTabListener(new TabListener<FamCommentFragment>(this, "fam comment", FamCommentFragment.class, bundle)));
+                .setTabListener(new TabListener<FamCommentFragment>(this, "fam comment", FamCommentFragment.class, bundle, R.id.tab_viewgroup)));
 
         // if we're resuming the activity, re-select the tab that was selected before
         if (savedInstanceState != null) {

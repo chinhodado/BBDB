@@ -9,7 +9,8 @@ import com.chin.bbdb.DatabaseQuerier;
 import com.chin.bbdb.FamStore;
 import com.chin.bbdb.R;
 import com.chin.bbdb.SearchCriterion;
-import com.chin.bbdb.TabListener;
+import com.chin.common.TabListener;
+
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
@@ -142,9 +143,9 @@ public class AdvancedSearchActivity extends BaseFragmentActivity {
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         bar.addTab(bar.newTab().setText("Search")
-                .setTabListener(new TabListener<SearchCriteriaFragment>(this, "search", SearchCriteriaFragment.class, null)));
+                .setTabListener(new TabListener<SearchCriteriaFragment>(this, "search", SearchCriteriaFragment.class, null, R.id.tab_viewgroup)));
         bar.addTab(bar.newTab().setText("Results")
-                .setTabListener(new TabListener<SearchResultFragment>(this, "result", SearchResultFragment.class, null)));
+                .setTabListener(new TabListener<SearchResultFragment>(this, "result", SearchResultFragment.class, null, R.id.tab_viewgroup)));
 
         // if we're resuming the activity, re-select the tab that was selected before
         if (savedInstanceState != null) {

@@ -10,8 +10,8 @@ import org.jsoup.select.Elements;
 import com.chin.bbdb.FamStore;
 import com.chin.bbdb.FamStore.TierCategory;
 import com.chin.bbdb.R;
-import com.chin.bbdb.TabListener;
-import com.chin.bbdb.Util;
+import com.chin.common.TabListener;
+import com.chin.common.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.app.ActionBar;
@@ -52,17 +52,17 @@ public class TierTableActivity extends BaseFragmentActivity {
         Bundle bundlePVP = new Bundle();
         bundlePVP.putSerializable("category", TierCategory.PVP);
         bar.addTab(bar.newTab().setText("PVP Tier")
-                .setTabListener(new TabListener<TierFragment>(this, "pvp", TierFragment.class, bundlePVP)));
+                .setTabListener(new TabListener<TierFragment>(this, "pvp", TierFragment.class, bundlePVP, R.id.tab_viewgroup)));
 
         Bundle bundleRAID = new Bundle();
         bundleRAID.putSerializable("category", TierCategory.RAID);
         bar.addTab(bar.newTab().setText("Raid Tier")
-                .setTabListener(new TabListener<TierFragment>(this, "raid", TierFragment.class, bundleRAID)));
+                .setTabListener(new TabListener<TierFragment>(this, "raid", TierFragment.class, bundleRAID, R.id.tab_viewgroup)));
 
         Bundle bundleTOWER = new Bundle();
         bundleTOWER.putSerializable("category", TierCategory.TOWER);
         bar.addTab(bar.newTab().setText("Tower Tier")
-                .setTabListener(new TabListener<TierFragment>(this, "tower", TierFragment.class, bundleTOWER)));
+                .setTabListener(new TabListener<TierFragment>(this, "tower", TierFragment.class, bundleTOWER, R.id.tab_viewgroup)));
 
         // if we're resuming the activity, re-select the tab that was selected before
         if (savedInstanceState != null) {

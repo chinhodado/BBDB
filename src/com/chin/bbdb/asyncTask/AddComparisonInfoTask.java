@@ -21,9 +21,9 @@ import com.chin.bbdb.FamStore;
 import com.chin.bbdb.FamStore.TierCategory;
 import com.chin.bbdb.R;
 import com.chin.bbdb.FamStore.FamStats;
-import com.chin.bbdb.Util;
 import com.chin.bbdb.activity.FamCompareActivity;
 import com.chin.bbdb.activity.FamDetailActivity;
+import com.chin.common.Util;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
