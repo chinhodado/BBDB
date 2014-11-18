@@ -187,7 +187,7 @@ public class BuildBrigActivity extends BaseFragmentActivity {
                 // it seems we can't specify the name, instead the system automatically assigns
                 // a number id as the name of the newly added image
                 // TODO: make our own implementation to be able to specify the name and compression level?
-                String result = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Blood Brothers brigade" , "Blood Brothers brigade");
+                String result = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "BB brigade" , "BB brigade");
                 if (result != null) {
                     Toast toast = Toast.makeText(getApplicationContext(), "Picture saved to Gallery.", Toast.LENGTH_SHORT);
                     toast.show();

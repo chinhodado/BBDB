@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Blood Brothers Database</string>
+    <string name="app_name">BB Database</string>
     <string name="action_help">Help</string>
     <string name="action_about">About</string>
     <string name="title_activity_advanced_search">Advanced search</string>
@@ -100,7 +100,7 @@
         
         <b>Q: I like this app!</b> <br/>
         A: I\'m glad to hear it. Please rate it on the Play Store :) You can also check out my other app,
-        Blood Brothers Simulator, although it\'s still quite buggy at the moment.<br/><br/>
+        BB Simulator, although it\'s still quite buggy at the moment.<br/><br/>
         Also if you don\'t like the ads, you may consider getting the ads-free version on the Play store.<br/><br/>
         
         <b>Q: This app sucks!/I found a bug/This is not useful/I have a suggestion...</b> <br/>
@@ -109,12 +109,12 @@
     </string>
     
     <string name="about_text">
-        Blood Brothers Database
+        BB Database
         \nCopyright Chin 2014
     </string>
     
     <string name="about_text_pro">
-        Blood Brothers Database Pro
+        BB Database Pro
         \nCopyright Chin 2014
     </string>
     
