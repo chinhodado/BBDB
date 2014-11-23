@@ -91,7 +91,7 @@ public final class FamStore {
         catTierList = new HashMap<TierCategory, String[]>();
         catTierList.put(TierCategory.PVP, new String[] {"X+", "X", "S+", "S", "A+", "A", "B", "C"});
         catTierList.put(TierCategory.RAID, new String[] {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"});
-        catTierList.put(TierCategory.TOWER, new String[] {"X", "S+", "S", "A+", "A", "B", "C", "D", "E"});
+        catTierList.put(TierCategory.TOWER, new String[] {"X+", "X", "S+", "S", "A+", "A", "B", "C"});
     }
 
     // map a fam name to its tiers, initialized in AddTierInfoTask

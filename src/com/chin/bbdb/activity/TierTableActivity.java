@@ -193,8 +193,8 @@ public class TierTableActivity extends BaseFragmentActivity {
             raid.put("X", 0); raid.put("S+", 1); raid.put("S", 2); raid.put("A+", 3);
             raid.put("A", 4); raid.put("B", 5); raid.put("C", 6); raid.put("D", 7); raid.put("E", 8);
 
-            tower.put("X", 0); tower.put("S+", 1); tower.put("S", 2); tower.put("A+", 3);
-            tower.put("A", 4); tower.put("B", 5); tower.put("C", 6); tower.put("D", 7); tower.put("E", 8);
+            tower.put("X+", 0); tower.put("X", 1); tower.put("S+", 2); tower.put("S", 3); tower.put("A+", 4);
+            tower.put("A", 5); tower.put("B", 6); tower.put("C", 7);
 
             tierMap.put(TierCategory.PVP, pvp);
             tierMap.put(TierCategory.RAID, raid);
