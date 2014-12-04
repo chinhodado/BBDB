@@ -10,7 +10,7 @@ import com.chin.bbdb.FamStore;
 import com.chin.bbdb.R;
 import com.chin.bbdb.asyncTask.NetworkTask;
 import com.chin.bbdb.asyncTask.NewFamTask;
-import com.chin.common.NetworkDialogFragment;
+import com.chin.common.CustomDialogFragment;
 import com.chin.common.RegexFilterArrayAdapter;
 import com.chin.common.TabListener;
 
@@ -76,7 +76,8 @@ public class MainActivity extends BaseFragmentActivity {
                     FamStore.famLinkTable.put(famName, tmp);
                 }
             } catch (Exception e) {
-                DialogFragment newFragment = new NetworkDialogFragment();
+                DialogFragment newFragment = new CustomDialogFragment("Unable to get familiar list. "
+                        + "Make sure you are connected to the internet and try again");
                 newFragment.setCancelable(false);
                 newFragment.show(getFragmentManager(), "no net");
                 e.printStackTrace();

@@ -41,7 +41,7 @@ public final class FamStore {
         String starLevel = null;
         String rarity = null;
         int[] ccReduction = null;
-        Document famDOM;
+        Element famDOM;
 
         boolean isFinalEvolution = false;
         boolean isWarlord = false;
@@ -189,6 +189,7 @@ public final class FamStore {
             e.printStackTrace();
         }
         Document famDOM = Jsoup.parse(famHTML);
+        HtmlCleaner.cleanHtml(famDOM);
 
         // save the DOM for later use. Should look into this so that it doesn't cause huge mem usage
         currentFam.famDOM = famDOM;
@@ -211,7 +212,12 @@ public final class FamStore {
         String agiMax = rowMaxCells.get(5).text();
 
         String hpPE = null, atkPE = null, defPE = null, wisPE = null, agiPE = null;
-        currentFam.isWarlord = famDOM.getElementById("WikiaArticleCategories").text().contains("Warlord");
+
+        Element categories = famDOM.getElementById("articleCategories");
+        if (categories == null) {
+            categories = famDOM.getElementById("WikiaArticleCategories");
+        }
+        currentFam.isWarlord = categories.text().contains("Warlord");
         currentFam.isFinalEvolution = famDOM.getElementsByClass("container").first().html().indexOf("Final Evolution") != -1;
 
 
@@ -259,8 +265,9 @@ public final class FamStore {
         }
 
         // get fam star level
+        int evolutionRowIndex = currentFam.isWarlord? 5 : 4;
         String starLevelLink = famDOM.getElementsByClass("infobox").first() // the detail box
-                            .getElementsByTag("tbody").first().getElementsByTag("tr").get(4) // the evolution row
+                            .getElementsByTag("tbody").first().getElementsByTag("tr").get(evolutionRowIndex) // the evolution row
                             .getElementsByTag("td").get(1) // the second cell (star image)
                             .getElementsByTag("a").last().attr("href"); // link to the image
         String starLevel =  starLevelLink.substring(starLevelLink.length() - 8, starLevelLink.length() - 4); // will be of form "AofB"
@@ -269,7 +276,7 @@ public final class FamStore {
         // get fam rarity
         // TODO: move this to a separate info parsing function
         String[] tmpArr = famDOM.getElementsByClass("infobox").first() // the detail box
-                .getElementsByTag("tbody").first().getElementsByTag("tr").get(4) // the evolution row
+                .getElementsByTag("tbody").first().getElementsByTag("tr").get(evolutionRowIndex) // the evolution row
                 .getElementsByTag("td").get(1) // the second cell (star image)
                 .getElementsByTag("a").first().attr("href") // link to the image
                 .split("\\."); // split by .
@@ -421,7 +428,7 @@ public final class FamStore {
             Log.e("FamDetail", "Error fetching the POPE HTML page");
             e.printStackTrace();
         }
-        Document doc = Jsoup.parse(popeHTML);
+        Element doc = Jsoup.parse(popeHTML);
 
         Element table = doc.getElementsByClass("wikitable").first();
         Elements rows = table.getElementsByTag("tbody").first().getElementsByTag("tr");
@@ -551,7 +558,7 @@ public final class FamStore {
         // get the skill(s) name
         Elements skillList = null;
         if (currentFam.isWarlord) {
-            skillList = currentFam.famDOM.getElementsByClass("infobox").first().getElementsByTag("tr").get(7).getElementsByTag("a");
+            skillList = currentFam.famDOM.getElementsByClass("infobox").first().getElementsByTag("tr").get(8).getElementsByTag("a");
         }
         else {
             skillList = currentFam.famDOM.getElementsByClass("infobox").first().getElementsByTag("tr").get(3).getElementsByTag("a");
@@ -647,7 +654,7 @@ public final class FamStore {
      * @param famName The name of the familiar
      * @return The DOM of the familiar's wiki page
      */
-    public Document getFamDOM(String famName) {
+    public Element getFamDOM(String famName) {
         return famStore.get(famName).famDOM;
     }
 

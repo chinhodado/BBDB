@@ -247,7 +247,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
     }
 
     public void addFamDetail() {
-        Document famDOM = famStore.getFamDOM(famName);
+        Element famDOM = famStore.getFamDOM(famName);
         int count = 0;
         TableLayout detailTable = (TableLayout) activity.findViewById(R.id.detailTable);
         Element infoBoxFam = famDOM.getElementsByClass("infobox").first();
@@ -364,7 +364,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 
     public void addFamSpecialInformation() {
         if (famStore.isWarlord(famName)) return;
-        Document famDOM = famStore.getFamDOM(famName);
+        Element famDOM = famStore.getFamDOM(famName);
         Element div = famDOM.getElementById("mw-content-text");
         boolean hasSpecialInformation = false;
         for (Element child : div.children()) {
@@ -389,8 +389,12 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
             }
         }
 
-        String categories = famDOM.getElementById("WikiaArticleCategories").text();
-        if (categories.contains("Mounted Familiars")) {
+        Element categories = famDOM.getElementById("articleCategories");
+        if (categories == null) {
+            categories = famDOM.getElementById("WikiaArticleCategories");
+        }
+        String categoriesTxt = categories.text();
+        if (categoriesTxt.contains("Mounted Familiars")) {
             // maybe called several times, doesn't matter
             activity.findViewById(R.id.textViewSpecialInformationLabel).setVisibility(View.VISIBLE);
             activity.findViewById(R.id.textViewSpecialInformation).setVisibility(View.VISIBLE);
@@ -406,7 +410,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
     public void addFamEvolutionLine() {
         if (famStore.isWarlord(famName)) return;
         TableLayout evoTable = (TableLayout) activity.findViewById(R.id.evoTable);
-        Document famDOM = famStore.getFamDOM(famName);
+        Element famDOM = famStore.getFamDOM(famName);
 
         // get the evolution names
         Elements evos = famDOM.getElementById("mw-content-text").getElementsByTag("ol").first().getElementsByTag("li");
