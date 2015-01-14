@@ -270,7 +270,8 @@ public final class FamStore {
                             .getElementsByTag("tbody").first().getElementsByTag("tr").get(evolutionRowIndex) // the evolution row
                             .getElementsByTag("td").get(1) // the second cell (star image)
                             .getElementsByTag("a").last().attr("href"); // link to the image
-        String starLevel =  starLevelLink.substring(starLevelLink.length() - 8, starLevelLink.length() - 4); // will be of form "AofB"
+        int pngSuffixIndex = starLevelLink.indexOf(".png");
+        String starLevel =  starLevelLink.substring(pngSuffixIndex - 4, pngSuffixIndex); // will be of form "AofB"
         currentFam.starLevel = starLevel;
 
         // get fam rarity

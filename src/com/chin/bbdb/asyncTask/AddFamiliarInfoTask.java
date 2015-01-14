@@ -270,7 +270,8 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 
                     // get the star name
                     String tmpStr = cells.get(1).getElementsByTag("a").last().attr("href");
-                    st2 = tmpStr.substring(tmpStr.length() - 8, tmpStr.length() - 4); // will be of form "AofB"
+                    int pngSuffixIndex = tmpStr.indexOf(".png");
+                    st2 =  tmpStr.substring(pngSuffixIndex - 4, pngSuffixIndex); // will be of form "AofB"
                 } catch (Exception e) {
                     Log.e("FamDetail", "Error getting the evolution images' details");
                 }
