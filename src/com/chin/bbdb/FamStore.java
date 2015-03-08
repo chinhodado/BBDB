@@ -265,9 +265,7 @@ public final class FamStore {
         }
 
         // get fam star level
-        int evolutionRowIndex = currentFam.isWarlord? 5 : 4;
-        String starLevelLink = famDOM.getElementsByClass("infobox").first() // the detail box
-                            .getElementsByTag("tbody").first().getElementsByTag("tr").get(evolutionRowIndex) // the evolution row
+        String starLevelLink = famDOM.getElementById("evolutionRow") // the evolution row
                             .getElementsByTag("td").get(1) // the second cell (star image)
                             .getElementsByTag("a").last().attr("href"); // link to the image
         int pngSuffixIndex = starLevelLink.indexOf(".png");
@@ -276,8 +274,7 @@ public final class FamStore {
 
         // get fam rarity
         // TODO: move this to a separate info parsing function
-        String[] tmpArr = famDOM.getElementsByClass("infobox").first() // the detail box
-                .getElementsByTag("tbody").first().getElementsByTag("tr").get(evolutionRowIndex) // the evolution row
+        String[] tmpArr = famDOM.getElementById("evolutionRow") // the evolution row
                 .getElementsByTag("td").get(1) // the second cell (star image)
                 .getElementsByTag("a").first().attr("href") // link to the image
                 .split("\\."); // split by .

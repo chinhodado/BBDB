@@ -259,7 +259,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
                 // do nothing
                 count++;
             }
-            else if (count == 4) { // evolution star and rarity
+            else if (detailRow.text().startsWith("Evolution")) { // evolution star and rarity
                 Elements cells = detailRow.getElementsByTag("td");
                 String st1 = "", st2 = "";
                 try {
