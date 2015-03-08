@@ -7,7 +7,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import android.app.Application;
 
 public class BBDBApplication extends Application {
-    public static boolean IS_PRO_VERSION = false;
+    public static boolean IS_PRO_VERSION = true;
     @Override
     public void onCreate() {
         super.onCreate();
