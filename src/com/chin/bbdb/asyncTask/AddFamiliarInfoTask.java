@@ -248,16 +248,16 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
 
     public void addFamDetail() {
         Element famDOM = famStore.getFamDOM(famName);
-        int count = 0;
         TableLayout detailTable = (TableLayout) activity.findViewById(R.id.detailTable);
         Element infoBoxFam = famDOM.getElementsByClass("infobox").first();
         Elements detailRows = infoBoxFam.getElementsByTag("tbody").first().getElementsByTag("tr");
 
-        for (Element detailRow : detailRows) {
-            if (count <= 3 && count!=2) {
-                // 0: fam name, 1: image, 2: detail, 3: skill/race(on warlord)
+        for (int i = 0; i < detailRows.size(); i++) {
+            Element detailRow = detailRows.get(i);
+            if (i <= 2 || (i == 3 && !famStore.isWarlord(famName))) {
+                // 0: fam name, 1: image, 2: "Details" header, 3: skill (normal fam) or race/gender (warlord)
                 // do nothing
-                count++;
+                continue;
             }
             else if (detailRow.text().startsWith("Evolution")) { // evolution star and rarity
                 Elements cells = detailRow.getElementsByTag("td");
@@ -301,16 +301,28 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
                     Log.e("FamDetail", "Error setting the evolution images");
                     e.printStackTrace();
                 }
-                count++;
 
                 // add the line separator
                 Util.addLineSeparator(activity, detailTable);
             }
-            else {
-                if (count == 2 && !famStore.isWarlord(famName)) {
-                    count++;
-                    continue;
+            else if (detailRow.text().startsWith("Race")) { // Race/Gender/Tradable/Sacrificable row
+                detailRow = detailRows.get(++i);
+                Elements cells = detailRow.getElementsByTag("td");
+                String race   = cells.get(0).getElementsByTag("a").first().attr("title")
+                        .substring("Category:Race ".length());
+                String gender = cells.get(1).getElementsByTag("a").first().attr("title")
+                        .substring("Category:Gender ".length());
+                Util.addRowWithTwoTextView(activity, detailTable, "Race", race, true);
+                Util.addRowWithTwoTextView(activity, detailTable, "Gender", gender, true);
+
+                if (!famStore.isWarlord(famName)) {
+                    String tradable     = cells.get(2).getElementsByTag("a").first().attr("title");
+                    String sacrificable = cells.get(3).getElementsByTag("a").first().attr("title");
+                    Util.addRowWithTwoTextView(activity, detailTable, "Tradable", tradable, true);
+                    Util.addRowWithTwoTextView(activity, detailTable, "Sacrificable", sacrificable, true);
                 }
+            }
+            else {
                 Elements cells = detailRow.getElementsByTag("td");
                 String st1 = "", st2 = "";
                 try {
@@ -318,7 +330,7 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
                     st2 = cells.get(1).text().trim();
                 } catch (Exception e) {}
 
-                if (st1.equals("Elite")){ // if this is the elite row, we need to add the elite seal image
+                if (st1.equals("Elite")) { // if this is the elite row, we need to add the elite seal image
                     // add the word "Elite"
                     TableRow tr = new TableRow(activity);
                     TextView tv1 = new TextView(activity); tv1.setText(st1);
@@ -352,7 +364,6 @@ public class AddFamiliarInfoTask extends AsyncTask<String, Void, Void> {
                 else if (!st1.equals("") || !st2.equals("")) {
                     Util.addRowWithTwoTextView(activity, detailTable, st1, st2, true);
                 }
-                count++;
             }
         }
 
