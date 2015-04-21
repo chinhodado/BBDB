@@ -3,6 +3,7 @@
 
     <string name="app_name">BB Database</string>
     <string name="action_help">Help</string>
+    <string name="action_checkUpdate">Check for update</string>
     <string name="action_about">About</string>
     <string name="title_activity_advanced_search">Advanced search</string>
     <string name="title_activity_fam_detail">Familiar detail</string>

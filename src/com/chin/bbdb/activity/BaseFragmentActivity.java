@@ -1,11 +1,5 @@
 package com.chin.bbdb.activity;
 
-import com.chin.bbdb.BBDBApplication;
-import com.chin.bbdb.R;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -18,9 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.chin.bbdb.BBDBApplication;
+import com.chin.bbdb.R;
+import com.chin.common.Util;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 /**
  * A base class for a FragmentActivity with a navigation drawer, Google Analytics and ads
@@ -174,6 +175,12 @@ public class BaseFragmentActivity extends FragmentActivity{
                 Intent intent = new Intent(this, HelpAboutActivity.class);
                 intent.putExtra("INTENT", "help");
                 startActivity(intent);
+                break;
+            }
+            case R.id.action_checkUpdate:
+            {
+                Util.checkNewVersion(this, "https://api.github.com/repos/chinhodado/BBDB/releases/latest",
+                        "https://github.com/chinhodado/BBDB/releases", true);
                 break;
             }
             case R.id.action_about:

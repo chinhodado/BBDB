@@ -1,16 +1,15 @@
 package com.chin.bbdb.activity;
 
-import com.chin.bbdb.BBDBApplication;
-import com.chin.bbdb.R;
-
-import android.support.v4.app.NavUtils;
-import android.text.Html;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.chin.bbdb.R;
 
 /**
  * Activity to show the help texts

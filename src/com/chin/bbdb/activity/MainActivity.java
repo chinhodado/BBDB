@@ -6,20 +6,12 @@ import java.util.Hashtable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.chin.bbdb.FamStore;
-import com.chin.bbdb.R;
-import com.chin.bbdb.asyncTask.NetworkTask;
-import com.chin.bbdb.asyncTask.NewFamTask;
-import com.chin.common.CustomDialogFragment;
-import com.chin.common.RegexFilterArrayAdapter;
-import com.chin.common.TabListener;
-
-import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.DialogFragment;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,6 +23,15 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import com.chin.bbdb.FamStore;
+import com.chin.bbdb.R;
+import com.chin.bbdb.asyncTask.NetworkTask;
+import com.chin.bbdb.asyncTask.NewFamTask;
+import com.chin.common.CustomDialogFragment;
+import com.chin.common.RegexFilterArrayAdapter;
+import com.chin.common.TabListener;
+import com.chin.common.Util;
 
 /**
  * The main activity, entry point of the app. It consists of two main view, the familiar search
@@ -53,6 +54,8 @@ public class MainActivity extends BaseFragmentActivity {
         ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
         if (hasJustBeenStarted) {
             mDrawerLayout.openDrawer(mDrawerList);
+            Util.checkNewVersion(this, "https://api.github.com/repos/chinhodado/BBDB/releases/latest",
+                    "https://github.com/chinhodado/BBDB/releases", false);
         }
 
         // get the familiar list and their wiki url
